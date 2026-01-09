@@ -16,11 +16,11 @@ if [[ -f .env ]]; then
     export $(cat .env | grep -v '^#' | xargs)
 fi
 
-# Default port values (from config.toml)
+# Default port values (from config.toml and .env)
 SUPABASE_API_PORT=${SUPABASE_API_PORT:-64321}
 SUPABASE_DB_PORT=${SUPABASE_DB_PORT:-64322}
 SUPABASE_STUDIO_PORT=${SUPABASE_STUDIO_PORT:-64323}
-FRONTEND_PORT=${FRONTEND_PORT:-3000}
+FRONTEND_PORT=${FRONTEND_PORT:-3001}
 
 # Trap Ctrl+C and cleanup properly
 cleanup() {

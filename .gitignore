@@ -216,3 +216,4 @@ tmp/
 test_output.txt
 TaskModal-Legacy
 cypress/screenshots
+.env*.local

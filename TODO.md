@@ -1,14 +1,8 @@
-# Auto Scheduling App — Active TODO
+# Active TODO
 
 ===
 
-Files of interest. The files:
-docs/00_Introduction.md
-docs/01_Gatekeeper.md
-docs/02_DependencyGraph.md
-docs/03_DispatchQueue.md
-docs/04_SchedulingLoop.md
-describe how the smart scheduler works. Revise them at least once; you shoud be aware of this.
+Files of interest. 
 
 The files: DB_STRUCTURE.md and APP_FILE_INDEX.md can be used as general guides to avoid guessing or making erroneous
 assumptions. When you notice a discrepancy between what's real (changes to the DB that are not present in DB_STRUCTURE.md), 
