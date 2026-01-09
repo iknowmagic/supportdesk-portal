@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - cypress
+  - es5-ext
+  - esbuild
+  - sharp
+  - supabase

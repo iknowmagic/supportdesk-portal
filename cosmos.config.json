@@ -1,0 +1,7 @@
+{
+  "plugins": ["react-cosmos-plugin-vite"],
+  "vite": {
+    "configPath": "./vite.config.cosmos.ts"
+  },
+  "globalImports": ["./src/index.css"]
+}

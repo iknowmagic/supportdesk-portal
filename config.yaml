@@ -1,0 +1,10 @@
+models:
+	- name: Ollama
+		provider: ollama
+		model qwen3:latest
+		roles:
+			- chat
+			- edit
+			- apply
+			- rerank
+			- autocomplete

@@ -1,0 +1,4 @@
+{
+  "nodeModulesDir": "none",
+  "exclude": [".history", "node_modules", "coverage", "tmp", "dist", "src", "fixtures", "tests"]
+}

@@ -1,0 +1,842 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+
+/* ============================================================================
+   LIGHT THEME COLOR PALETTE (consolidated)
+   ============================================================================ */
+:root {
+  /* Monochrome Elegance bases */
+  --light-mine-shaft: oklch(0.239 0 89.876);
+  --light-wild-sand: oklch(0.97 0 89.876);
+  --light-silver-chalice: oklch(0.757 0 89.876);
+  --light-white: oklch(1 0 89.876);
+  --light-alto: oklch(0.885 0 89.876);
+
+  /* Derived neutrals */
+  --light-gray-50: var(--light-wild-sand);
+  --light-gray-200: var(--light-alto);
+  --light-gray-400: var(--light-silver-chalice);
+  --light-gray-500: color-mix(in oklch, var(--light-silver-chalice) 60%, var(--light-mine-shaft) 40%);
+  --light-gray-600: color-mix(in oklch, var(--light-silver-chalice) 50%, var(--light-mine-shaft) 50%);
+  --light-gray-700: color-mix(in oklch, var(--light-silver-chalice) 40%, var(--light-mine-shaft) 60%);
+  --light-gray-800: color-mix(in oklch, var(--light-silver-chalice) 30%, var(--light-mine-shaft) 70%);
+  --light-gray-900: color-mix(in oklch, var(--light-silver-chalice) 20%, var(--light-mine-shaft) 80%);
+  --light-gray-950: color-mix(in oklch, var(--light-silver-chalice) 10%, var(--light-mine-shaft) 90%);
+
+  /* Accent Colors (Light) */
+  --light-red-50: var(--light-wild-sand);
+  --light-red-200: color-mix(in oklch, var(--light-alto) 70%, var(--light-mine-shaft) 30%);
+  --light-red-500: color-mix(in oklch, var(--light-mine-shaft) 60%, var(--light-silver-chalice) 40%);
+  --light-red-600: color-mix(in oklch, var(--light-mine-shaft) 70%, var(--light-silver-chalice) 30%);
+  --light-red-700: color-mix(in oklch, var(--light-mine-shaft) 80%, var(--light-silver-chalice) 20%);
+  --light-destructive: oklch(0.72 0.16 24);
+
+  --light-orange-400: var(--light-silver-chalice);
+  --light-orange-500: color-mix(in oklch, var(--light-silver-chalice) 80%, var(--light-mine-shaft) 20%);
+  --light-orange-700: color-mix(in oklch, var(--light-mine-shaft) 70%, var(--light-silver-chalice) 30%);
+
+  --light-amber-100: color-mix(in oklch, var(--light-wild-sand) 80%, white 20%);
+  --light-amber-500: color-mix(in oklch, var(--light-silver-chalice) 70%, var(--light-wild-sand) 30%);
+  --light-yellow-500: color-mix(in oklch, var(--light-alto) 70%, var(--light-wild-sand) 30%);
+
+  --light-green-500: color-mix(in oklch, var(--light-wild-sand) 50%, var(--light-silver-chalice) 50%);
+  --light-green-700: color-mix(in oklch, var(--light-silver-chalice) 60%, var(--light-mine-shaft) 40%);
+
+  --light-sky-50: color-mix(in oklch, var(--light-wild-sand) 85%, var(--light-silver-chalice) 15%);
+  --light-sky-200: color-mix(in oklch, var(--light-wild-sand) 70%, var(--light-silver-chalice) 30%);
+  --light-sky-500: color-mix(in oklch, var(--light-silver-chalice) 70%, var(--light-mine-shaft) 30%);
+  --light-sky-600: color-mix(in oklch, var(--light-silver-chalice) 60%, var(--light-mine-shaft) 40%);
+  --light-sky-700: color-mix(in oklch, var(--light-silver-chalice) 50%, var(--light-mine-shaft) 50%);
+
+  /* Chart Colors (Light) */
+  --light-chart-1: var(--light-silver-chalice);
+  --light-chart-2: var(--light-alto);
+  --light-chart-3: color-mix(in oklch, var(--light-mine-shaft) 40%, var(--light-silver-chalice) 60%);
+  --light-chart-4: color-mix(in oklch, var(--light-wild-sand) 60%, var(--light-silver-chalice) 40%);
+  --light-chart-5: color-mix(in oklch, var(--light-mine-shaft) 60%, var(--light-alto) 40%);
+}
+
+/* ============================================================================
+   DARK THEME COLOR PALETTE (consolidated)
+   ============================================================================ */
+:root {
+  /* Gothic Cyber bases */
+  --dark-pickled-bluewood: oklch(0.353 0.041 250.363);
+  --dark-pickled-bluewood-mid: oklch(0.401 0.044 248.985);
+  --dark-oslo-gray: oklch(0.633 0.015 202.368);
+  --dark-cinnabar: oklch(0.632 0.193 29.71);
+  --dark-buttercup: oklch(0.836 0.169 91.787);
+
+  /* Derived neutrals */
+  --dark-white: oklch(0.96 0 270);
+  --dark-gray-50: color-mix(in oklch, var(--dark-white) 80%, var(--dark-oslo-gray) 20%);
+  --dark-gray-400: var(--dark-oslo-gray);
+  --dark-gray-500: color-mix(in oklch, var(--dark-oslo-gray) 70%, var(--dark-pickled-bluewood-mid) 30%);
+  --dark-gray-700: color-mix(in oklch, var(--dark-pickled-bluewood-mid) 70%, var(--dark-oslo-gray) 30%);
+  --dark-gray-800: var(--dark-pickled-bluewood-mid);
+  --dark-gray-900: var(--dark-pickled-bluewood);
+
+  /* Accent Colors (Dark) */
+  --dark-red-400: var(--dark-cinnabar);
+  --dark-red-500: color-mix(in oklch, var(--dark-cinnabar) 80%, black 20%);
+  --dark-red-800: color-mix(in oklch, var(--dark-cinnabar) 50%, black 50%);
+  --dark-destructive: var(--dark-cinnabar);
+
+  --dark-orange-400: var(--dark-buttercup);
+  --dark-orange-500: color-mix(in oklch, var(--dark-buttercup) 80%, black 20%);
+
+  --dark-amber-500: var(--dark-buttercup);
+  --dark-yellow-500: var(--dark-buttercup);
+
+  --dark-green-500: color-mix(in oklch, var(--dark-oslo-gray) 60%, var(--dark-buttercup) 40%);
+
+  --dark-sky-500: color-mix(in oklch, var(--dark-oslo-gray) 80%, var(--dark-buttercup) 20%);
+
+  --dark-purple-500: color-mix(in oklch, var(--dark-oslo-gray) 60%, var(--dark-pickled-bluewood-mid) 40%);
+
+  /* Chart Colors (Dark) */
+  --dark-chart-1: var(--dark-buttercup);
+  --dark-chart-2: var(--dark-oslo-gray);
+  --dark-chart-3: var(--dark-cinnabar);
+  --dark-chart-4: var(--dark-pickled-bluewood-mid);
+  --dark-chart-5: var(--dark-pickled-bluewood);
+}
+
+/* ============================================================================
+   FUNCTIONAL COLOR TOKENS (creative names)
+   ============================================================================ */
+:root {
+  /* Light tokens */
+  --tone-surface: var(--light-white);
+  --tone-surface-muted: var(--light-gray-50);
+  --tone-surface-strong: var(--light-gray-200);
+  --tone-border: var(--light-silver-chalice);
+  --tone-ring: color-mix(in oklch, var(--light-silver-chalice) 70%, var(--light-mine-shaft) 30%);
+  --tone-text-strong: var(--light-mine-shaft);
+  --tone-text: color-mix(in oklch, var(--light-mine-shaft) 80%, var(--light-silver-chalice) 20%);
+  --tone-text-muted: color-mix(in oklch, var(--light-mine-shaft) 60%, var(--light-silver-chalice) 40%);
+  --tone-overlay-soft: var(--light-gray-50);
+
+  /* shadcn sidebar tokens (light) mapped to our palette */
+  --tone-sidebar-surface: var(--light-gray-50);
+  --tone-sidebar-border: var(--light-gray-200);
+  --tone-sidebar-button: var(--light-white);
+  --tone-sidebar-button-hover: var(--light-gray-50);
+  --tone-sidebar-text: var(--light-gray-950);
+  --tone-sidebar-muted: var(--light-gray-700);
+  --tone-sidebar-primary: var(--light-mine-shaft);
+  --tone-sidebar-primary-foreground: var(--light-white);
+
+  --tone-header-surface: var(--light-gray-50);
+  --tone-header-border: var(--tone-sidebar-border);
+
+  --tone-timeinput-surface: var(--light-white);
+  --tone-timeinput-active: var(--light-gray-50);
+
+  --tone-urgent-border: var(--light-red-500);
+  --tone-urgent-bg: var(--light-red-50);
+  --tone-urgent-text: var(--light-red-700);
+
+  --tone-priority-high-border: var(--light-orange-400);
+  --tone-priority-high-bg: var(--light-gray-50);
+  --tone-priority-high-text: var(--light-orange-700);
+
+  --tone-priority-normal-border: var(--light-green-500);
+  --tone-priority-normal-bg: var(--light-gray-50);
+  --tone-priority-normal-text: var(--light-green-700);
+
+  --tone-priority-low-border: var(--light-gray-400);
+  --tone-priority-low-bg: var(--light-gray-50);
+  --tone-priority-low-text: var(--light-gray-600);
+
+  --tone-warning-amber: var(--light-amber-500);
+  --tone-warning-orange: var(--light-orange-500);
+  --tone-warning-yellow: var(--light-yellow-500);
+  --tone-warning-red: var(--light-red-500);
+
+  --tone-info-bg: var(--light-sky-50);
+  --tone-info-border: var(--light-sky-500);
+  --tone-info-ring: var(--light-sky-200);
+  --tone-info-text-strong: var(--light-sky-700);
+  --tone-info-text: var(--light-sky-600);
+  --tone-info-text-soft: var(--light-sky-500);
+
+  --tone-taskmodal-buffers-bg: var(--light-gray-50);
+  --tone-sectioncard-bg: var(--light-gray-50);
+  --tone-taskcolorpicker-bg: var(--light-white);
+  --tone-categories-bg: var(--light-red-50);
+  --tone-categories-border: var(--light-red-200);
+  --tone-categories-text: var(--light-red-600);
+
+  --tone-chart-1: var(--light-chart-1);
+  --tone-chart-2: var(--light-chart-2);
+  --tone-chart-3: var(--light-chart-3);
+  --tone-chart-4: var(--light-chart-4);
+  --tone-chart-5: var(--light-chart-5);
+
+  --tone-destructive: var(--light-destructive);
+
+  /* Dark tokens */
+  --tone-dark-surface: oklch(0.22 0.014 250);
+  --tone-dark-surface-elevated: oklch(0.38 0.032 250);
+  --tone-dark-border: oklch(0.8 0.045 250);
+  --tone-dark-ring: oklch(0.9 0.055 250);
+  --tone-dark-text-strong: oklch(1 0.02 260);
+  --tone-dark-text: oklch(0.99 0.015 260);
+  --tone-dark-text-muted: oklch(0.92 0.01 260);
+
+  /* shadcn sidebar tokens (dark) mapped to our palette */
+  --tone-dark-sidebar-surface: var(--tone-dark-surface);
+  --tone-dark-sidebar-border: var(--tone-dark-border);
+  --tone-dark-sidebar-button: var(--tone-dark-surface);
+  --tone-dark-sidebar-button-hover: var(--tone-dark-surface-elevated);
+  --tone-dark-sidebar-text: var(--tone-dark-text-strong);
+  --tone-dark-sidebar-muted: var(--tone-dark-text);
+  --tone-dark-sidebar-primary: var(--tone-dark-header-border);
+  --tone-dark-sidebar-primary-foreground: var(--tone-dark-text-strong);
+
+  --tone-dark-header-surface: oklch(0.32 0.024 250);
+  --tone-dark-header-border: oklch(0.8 0.045 250);
+
+  --tone-dark-timeinput-surface: oklch(0.42 0.03 250);
+  --tone-dark-timeinput-active: oklch(0.52 0.035 250);
+
+  --tone-dark-urgent-border: oklch(0.7 0.15 30);
+  --tone-dark-urgent-bg: oklch(0.35 0.04 30 / 0.35);
+  --tone-dark-urgent-text: oklch(0.82 0.1 30);
+
+  --tone-dark-priority-high-border: oklch(0.72 0.11 85);
+  --tone-dark-priority-high-bg: oklch(0.3 0.02 85 / 0.35);
+  --tone-dark-priority-high-text: oklch(0.85 0.08 85);
+
+  --tone-dark-priority-normal-border: oklch(0.62 0.07 180);
+  --tone-dark-priority-normal-bg: oklch(0.28 0.02 180 / 0.35);
+  --tone-dark-priority-normal-text: oklch(0.8 0.06 180);
+
+  --tone-dark-priority-low-border: oklch(0.45 0.015 250);
+  --tone-dark-priority-low-bg: oklch(0.28 0.01 250 / 0.35);
+  --tone-dark-priority-low-text: oklch(0.7 0.01 250);
+
+  --tone-dark-warning-amber: oklch(0.78 0.14 95);
+  --tone-dark-warning-orange: oklch(0.72 0.12 70);
+  --tone-dark-warning-yellow: oklch(0.82 0.12 95);
+  --tone-dark-warning-red: oklch(0.7 0.15 30);
+
+  --tone-dark-info-bg: oklch(0.3 0.02 250);
+  --tone-dark-info-border: var(--tone-dark-ring);
+  --tone-dark-info-ring: oklch(0.75 0.045 250);
+  --tone-dark-info-text: var(--tone-dark-text-strong);
+
+  --tone-dark-taskmodal-buffers-bg: oklch(0.42 0.03 250);
+  --tone-dark-sectioncard-bg: oklch(0.42 0.03 250);
+  --tone-dark-taskcolorpicker-bg: oklch(0.42 0.03 250);
+  --tone-dark-categories-bg: oklch(0.32 0.02 250);
+  --tone-dark-categories-border: oklch(0.8 0.045 250);
+  --tone-dark-categories-text: var(--tone-dark-text-strong);
+
+  --tone-dark-chart-1: oklch(0.78 0.14 95);
+  --tone-dark-chart-2: oklch(0.62 0.07 180);
+  --tone-dark-chart-3: oklch(0.52 0.06 260);
+  --tone-dark-chart-4: oklch(0.7 0.12 20);
+  --tone-dark-chart-5: oklch(0.45 0.05 310);
+
+  --tone-dark-destructive: oklch(0.6 0.14 30);
+}
+
+/* ============================================================================
+   @theme inline - Tailwind CSS Variable Mappings (including component colors)
+   ============================================================================ */
+/** Semantic Mappings Start Here **/
+/** Do not rename variables on the left unless you are certain no components depend on them. **/
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* src/components/AppSidebar.tsx */
+  --color-light-sidebar-bg: var(--light-sidebar-bg);
+  --color-light-sidebar-border: var(--light-sidebar-border);
+  --color-light-sidebar-button-bg: var(--light-sidebar-button-bg);
+  --color-light-sidebar-button-border: var(--light-sidebar-button-border);
+  --color-light-sidebar-button-text: var(--light-sidebar-button-text);
+  --color-light-sidebar-button-hover-bg: var(--light-sidebar-button-hover-bg);
+  --color-light-sidebar-divider-bg: var(--light-sidebar-divider-bg);
+  --color-light-sidebar-menu-trigger-bg: var(--light-sidebar-menu-trigger-bg);
+  --color-light-sidebar-menu-trigger-text: var(--light-sidebar-menu-trigger-text);
+  --color-dark-sidebar-bg: var(--dark-sidebar-bg);
+  --color-dark-sidebar-border: var(--dark-sidebar-border);
+  --color-dark-sidebar-button-bg: var(--dark-sidebar-button-bg);
+  --color-dark-sidebar-button-border: var(--dark-sidebar-button-border);
+  --color-dark-sidebar-button-text: var(--dark-sidebar-button-text);
+  --color-dark-sidebar-button-hover-bg: var(--dark-sidebar-button-hover-bg);
+  --color-dark-sidebar-divider-bg: var(--dark-sidebar-divider-bg);
+  --color-dark-sidebar-menu-trigger-bg: var(--dark-sidebar-menu-trigger-bg);
+  --color-dark-sidebar-menu-trigger-text: var(--dark-sidebar-menu-trigger-text);
+
+  /* src/components/LayoutHeader.tsx */
+  --color-light-header-bg: var(--light-header-bg);
+  --color-light-header-border: var(--light-header-border);
+  --color-dark-header-bg: var(--dark-header-bg);
+  --color-dark-header-border: var(--dark-header-border);
+
+  /* src/components/TimeInput.tsx */
+  --color-light-timeinput-dropdown-bg: var(--light-timeinput-dropdown-bg);
+  --color-light-timeinput-dropdown-selected-bg: var(--light-timeinput-dropdown-selected-bg);
+  --color-dark-timeinput-dropdown-bg: var(--dark-timeinput-dropdown-bg);
+  --color-dark-timeinput-dropdown-selected-bg: var(--dark-timeinput-dropdown-selected-bg);
+
+  /* src/components/settings/sections/TaskDefaultsSection.tsx */
+  --color-light-taskdefaults-bg-muted: var(--light-taskdefaults-bg-muted);
+  --color-light-taskdefaults-urgent-asap-border: var(--light-taskdefaults-urgent-asap-border);
+  --color-light-taskdefaults-urgent-asap-bg: var(--light-taskdefaults-urgent-asap-bg);
+  --color-light-taskdefaults-urgent-asap-text: var(--light-taskdefaults-urgent-asap-text);
+  --color-dark-taskdefaults-urgent-asap-text: var(--dark-taskdefaults-urgent-asap-text);
+  --color-light-taskdefaults-urgent-high-border: var(--light-taskdefaults-urgent-high-border);
+  --color-light-taskdefaults-urgent-high-bg: var(--light-taskdefaults-urgent-high-bg);
+  --color-light-taskdefaults-urgent-high-text: var(--light-taskdefaults-urgent-high-text);
+  --color-dark-taskdefaults-urgent-high-text: var(--dark-taskdefaults-urgent-high-text);
+  --color-light-taskdefaults-urgent-normal-border: var(--light-taskdefaults-urgent-normal-border);
+  --color-light-taskdefaults-urgent-normal-bg: var(--light-taskdefaults-urgent-normal-bg);
+  --color-light-taskdefaults-urgent-normal-text: var(--light-taskdefaults-urgent-normal-text);
+  --color-dark-taskdefaults-urgent-normal-text: var(--dark-taskdefaults-urgent-normal-text);
+  --color-light-taskdefaults-urgent-low-border: var(--light-taskdefaults-urgent-low-border);
+  --color-light-taskdefaults-urgent-low-bg: var(--light-taskdefaults-urgent-low-bg);
+  --color-light-taskdefaults-urgent-low-text: var(--light-taskdefaults-urgent-low-text);
+  --color-dark-taskdefaults-urgent-low-text: var(--dark-taskdefaults-urgent-low-text);
+  --color-dark-taskdefaults-urgent-asap-border: var(--dark-taskdefaults-urgent-asap-border);
+  --color-dark-taskdefaults-urgent-asap-bg: var(--dark-taskdefaults-urgent-asap-bg);
+  --color-dark-taskdefaults-urgent-high-border: var(--dark-taskdefaults-urgent-high-border);
+  --color-dark-taskdefaults-urgent-high-bg: var(--dark-taskdefaults-urgent-high-bg);
+  --color-dark-taskdefaults-urgent-normal-border: var(--dark-taskdefaults-urgent-normal-border);
+  --color-dark-taskdefaults-urgent-normal-bg: var(--dark-taskdefaults-urgent-normal-bg);
+  --color-dark-taskdefaults-urgent-low-border: var(--dark-taskdefaults-urgent-low-border);
+  --color-dark-taskdefaults-urgent-low-bg: var(--dark-taskdefaults-urgent-low-bg);
+
+  /* src/components/TaskModal/BuffersSection.tsx */
+  --color-light-taskmodal-buffers-bg-muted: var(--light-taskmodal-buffers-bg-muted);
+  --color-dark-taskmodal-buffers-bg-muted: var(--dark-taskmodal-buffers-bg-muted);
+
+  /* src/components/TaskModal/DependenciesSection.tsx */
+  --color-light-taskmodal-dependencies-bg-sky: var(--light-taskmodal-dependencies-bg-sky);
+  --color-light-taskmodal-dependencies-border-sky: var(--light-taskmodal-dependencies-border-sky);
+  --color-light-taskmodal-dependencies-ring-sky: var(--light-taskmodal-dependencies-ring-sky);
+  --color-light-taskmodal-dependencies-text-sky-600: var(--light-taskmodal-dependencies-text-sky-600);
+  --color-light-taskmodal-dependencies-text-sky-500: var(--light-taskmodal-dependencies-text-sky-500);
+  --color-light-taskmodal-dependencies-text-sky-700: var(--light-taskmodal-dependencies-text-sky-700);
+  --color-dark-taskmodal-dependencies-bg-sky: var(--dark-taskmodal-dependencies-bg-sky);
+  --color-dark-taskmodal-dependencies-border-sky: var(--dark-taskmodal-dependencies-border-sky);
+  --color-dark-taskmodal-dependencies-ring-sky: var(--dark-taskmodal-dependencies-ring-sky);
+  --color-dark-taskmodal-dependencies-text-sky-600: var(--dark-taskmodal-dependencies-text-sky-600);
+  --color-dark-taskmodal-dependencies-text-sky-500: var(--dark-taskmodal-dependencies-text-sky-500);
+  --color-dark-taskmodal-dependencies-text-sky-700: var(--dark-taskmodal-dependencies-text-sky-700);
+
+  /* src/components/SectionCard.tsx */
+  --color-light-sectioncard-bg-muted: var(--light-sectioncard-bg-muted);
+  --color-dark-sectioncard-bg-muted: var(--dark-sectioncard-bg-muted);
+
+  /* src/components/TaskColorPicker.tsx */
+  --color-light-taskcolorpicker-bg: var(--light-taskcolorpicker-bg);
+  --color-dark-taskcolorpicker-bg: var(--dark-taskcolorpicker-bg);
+
+  /* src/components/warning-panel/WarningPanel.tsx */
+  --color-light-warning-amber-500: var(--light-warning-amber-500);
+  --color-light-warning-orange-500: var(--light-warning-orange-500);
+  --color-light-warning-yellow-500: var(--light-warning-yellow-500);
+  --color-light-warning-red-500: var(--light-warning-red-500);
+  --color-dark-warning-amber-500: var(--dark-warning-amber-500);
+  --color-dark-warning-orange-500: var(--dark-warning-orange-500);
+  --color-dark-warning-yellow-500: var(--dark-warning-yellow-500);
+  --color-dark-warning-red-500: var(--dark-warning-red-500);
+
+  /* src/pages/Categories/AutoAssignColorsModal.tsx */
+  --color-light-autocolors-bg-muted: var(--light-autocolors-bg-muted);
+  --color-light-autocolors-border-blue: var(--light-autocolors-border-blue);
+  --color-dark-autocolors-bg-muted: var(--dark-autocolors-bg-muted);
+  --color-dark-autocolors-border-blue: var(--dark-autocolors-border-blue);
+
+  /* src/pages/Categories/CategoriesPage.tsx */
+  --color-light-categories-bg-red: var(--light-categories-bg-red);
+  --color-light-categories-border-red: var(--light-categories-border-red);
+  --color-light-categories-text-red: var(--light-categories-text-red);
+  --color-dark-categories-bg-red: var(--dark-categories-bg-red);
+  --color-dark-categories-border-red: var(--dark-categories-border-red);
+  --color-dark-categories-text-red: var(--dark-categories-text-red);
+}
+
+/* ============================================================================
+   LIGHT THEME - Semantic Mappings & Component Variables
+   ============================================================================ */
+/** Semantic Mappings Start Here **/
+/** Do not rename variables on the left unless you are certain no components depend on them. **/
+:root {
+  /* Border Radius */
+  --radius: 0.625rem;
+
+  /* Core Semantic (shadcn/ui convention) */
+  --background: var(--tone-surface);
+  --foreground: var(--tone-text-strong);
+  --card: var(--tone-surface);
+  --card-foreground: var(--tone-text-strong);
+  --popover: var(--tone-surface);
+  --popover-foreground: var(--tone-text-strong);
+  --primary: var(--tone-sidebar-primary);
+  --primary-foreground: var(--tone-sidebar-primary-foreground);
+  --secondary: var(--tone-surface-muted);
+  --secondary-foreground: var(--tone-text-strong);
+  --muted: var(--tone-surface-muted);
+  --muted-foreground: var(--tone-text-muted);
+  --accent: var(--tone-surface-muted);
+  --accent-foreground: var(--tone-text-strong);
+  --destructive: var(--tone-destructive);
+  --destructive-foreground: var(--tone-surface);
+  --border: var(--tone-border);
+  --input: var(--tone-border);
+  --ring: var(--tone-ring);
+
+  /* Chart Colors */
+  --chart-1: var(--tone-chart-1);
+  --chart-2: var(--tone-chart-2);
+  --chart-3: var(--tone-chart-3);
+  --chart-4: var(--tone-chart-4);
+  --chart-5: var(--tone-chart-5);
+
+  /* Sidebar Semantic */
+  --sidebar: var(--tone-sidebar-surface);
+  --sidebar-foreground: var(--tone-text-strong);
+  --sidebar-primary: var(--tone-sidebar-primary);
+  --sidebar-primary-foreground: var(--tone-sidebar-primary-foreground);
+  --sidebar-accent: var(--tone-sidebar-muted);
+  --sidebar-accent-foreground: var(--tone-text-strong);
+  --sidebar-border: var(--tone-sidebar-border);
+  --sidebar-ring: var(--tone-ring);
+
+  /* src/components/AppSidebar.tsx */
+  --light-sidebar-bg: var(--tone-sidebar-surface);
+  --light-sidebar-border: var(--tone-sidebar-border);
+  --light-sidebar-button-bg: var(--tone-sidebar-button);
+  --light-sidebar-button-border: var(--tone-sidebar-border);
+  --light-sidebar-button-text: var(--tone-sidebar-text);
+  --light-sidebar-button-hover-bg: var(--tone-sidebar-button-hover);
+  --light-sidebar-divider-bg: var(--tone-sidebar-border);
+  --light-sidebar-menu-trigger-bg: var(--tone-sidebar-button);
+  --light-sidebar-menu-trigger-text: var(--tone-sidebar-muted);
+
+  --dark-sidebar-bg: var(--tone-dark-sidebar-surface);
+  --dark-sidebar-border: var(--tone-dark-sidebar-border);
+  --dark-sidebar-button-bg: var(--tone-dark-sidebar-button);
+  --dark-sidebar-button-border: var(--tone-dark-sidebar-border);
+  --dark-sidebar-button-text: var(--tone-dark-sidebar-text);
+  --dark-sidebar-button-hover-bg: var(--tone-dark-sidebar-button-hover);
+  --dark-sidebar-divider-bg: var(--tone-dark-sidebar-border);
+  --dark-sidebar-menu-trigger-bg: var(--tone-dark-sidebar-button);
+  --dark-sidebar-menu-trigger-text: var(--tone-dark-sidebar-text);
+
+  /* src/components/LayoutHeader.tsx */
+  --light-header-bg: var(--tone-header-surface);
+  --light-header-border: var(--tone-header-border);
+
+  --dark-header-bg: var(--tone-dark-header-surface);
+  --dark-header-border: var(--tone-dark-header-border);
+
+  /* src/components/TimeInput.tsx */
+  --light-timeinput-dropdown-bg: var(--tone-timeinput-surface);
+  --light-timeinput-dropdown-selected-bg: var(--tone-timeinput-active);
+
+  --dark-timeinput-dropdown-bg: var(--tone-dark-timeinput-surface);
+  --dark-timeinput-dropdown-selected-bg: var(--tone-dark-timeinput-active);
+
+  /* src/components/settings/sections/TaskDefaultsSection.tsx */
+  --light-taskdefaults-bg-muted: var(--tone-surface-muted);
+  --light-taskdefaults-urgent-asap-border: var(--tone-urgent-border);
+  --light-taskdefaults-urgent-asap-bg: var(--tone-urgent-bg);
+  --light-taskdefaults-urgent-asap-text: var(--tone-urgent-text);
+  --dark-taskdefaults-urgent-asap-text: var(--tone-dark-urgent-text);
+  --light-taskdefaults-urgent-high-border: var(--tone-priority-high-border);
+  --light-taskdefaults-urgent-high-bg: var(--tone-priority-high-bg);
+  --light-taskdefaults-urgent-high-text: var(--tone-priority-high-text);
+  --dark-taskdefaults-urgent-high-text: var(--tone-dark-priority-high-text);
+  --light-taskdefaults-urgent-normal-border: var(--tone-priority-normal-border);
+  --light-taskdefaults-urgent-normal-bg: var(--tone-priority-normal-bg);
+  --light-taskdefaults-urgent-normal-text: var(--tone-priority-normal-text);
+  --dark-taskdefaults-urgent-normal-text: var(--tone-dark-priority-normal-text);
+  --light-taskdefaults-urgent-low-border: var(--tone-priority-low-border);
+  --light-taskdefaults-urgent-low-bg: var(--tone-priority-low-bg);
+  --light-taskdefaults-urgent-low-text: var(--tone-priority-low-text);
+  --dark-taskdefaults-urgent-low-text: var(--tone-dark-priority-low-text);
+
+  --dark-taskdefaults-bg-muted: var(--tone-dark-sectioncard-bg);
+  --dark-taskdefaults-urgent-asap-border: var(--tone-dark-urgent-border);
+  --dark-taskdefaults-urgent-asap-bg: var(--tone-dark-urgent-bg);
+  --dark-taskdefaults-urgent-high-border: var(--tone-dark-priority-high-border);
+  --dark-taskdefaults-urgent-high-bg: var(--tone-dark-priority-high-bg);
+  --dark-taskdefaults-urgent-normal-border: var(--tone-dark-priority-normal-border);
+  --dark-taskdefaults-urgent-normal-bg: var(--tone-dark-priority-normal-bg);
+  --dark-taskdefaults-urgent-low-border: var(--tone-dark-priority-low-border);
+  --dark-taskdefaults-urgent-low-bg: var(--tone-dark-priority-low-bg);
+
+  /* src/components/TaskModal/BuffersSection.tsx */
+  --light-taskmodal-buffers-bg-muted: var(--tone-taskmodal-buffers-bg);
+
+  --dark-taskmodal-buffers-bg-muted: var(--tone-dark-taskmodal-buffers-bg);
+
+  /* src/components/TaskModal/DependenciesSection.tsx */
+  --light-taskmodal-dependencies-bg-sky: var(--tone-info-bg);
+  --light-taskmodal-dependencies-border-sky: var(--tone-info-border);
+  --light-taskmodal-dependencies-ring-sky: var(--tone-info-ring);
+  --light-taskmodal-dependencies-text-sky-600: var(--tone-info-text);
+  --light-taskmodal-dependencies-text-sky-500: var(--tone-info-text-soft);
+  --light-taskmodal-dependencies-text-sky-700: var(--tone-info-text-strong);
+
+  --dark-taskmodal-dependencies-bg-sky: var(--tone-dark-info-bg);
+  --dark-taskmodal-dependencies-border-sky: var(--tone-dark-info-border);
+  --dark-taskmodal-dependencies-ring-sky: var(--tone-dark-info-ring);
+  --dark-taskmodal-dependencies-text-sky-600: var(--tone-dark-info-text);
+  --dark-taskmodal-dependencies-text-sky-500: var(--tone-dark-info-text);
+  --dark-taskmodal-dependencies-text-sky-700: var(--tone-dark-info-text);
+
+  /* src/components/SectionCard.tsx */
+  --light-sectioncard-bg-muted: var(--tone-sectioncard-bg);
+
+  --dark-sectioncard-bg-muted: var(--tone-dark-sectioncard-bg);
+
+  /* src/components/TaskColorPicker.tsx */
+  --light-taskcolorpicker-bg: var(--tone-taskcolorpicker-bg);
+
+  --dark-taskcolorpicker-bg: var(--tone-dark-taskcolorpicker-bg);
+
+  /* src/components/warning-panel/WarningPanel.tsx */
+  --light-warning-amber-500: var(--tone-warning-amber);
+  --light-warning-orange-500: var(--tone-warning-orange);
+  --light-warning-yellow-500: var(--tone-warning-yellow);
+  --light-warning-red-500: var(--tone-warning-red);
+
+  --dark-warning-amber-500: var(--tone-dark-warning-amber);
+  --dark-warning-orange-500: var(--tone-dark-warning-orange);
+  --dark-warning-yellow-500: var(--tone-dark-warning-yellow);
+  --dark-warning-red-500: var(--tone-dark-warning-red);
+
+  /* src/pages/Categories/AutoAssignColorsModal.tsx */
+  --light-autocolors-bg-muted: var(--tone-surface-muted);
+  --light-autocolors-border-blue: var(--tone-info-border);
+
+  --dark-autocolors-bg-muted: var(--tone-dark-sectioncard-bg);
+  --dark-autocolors-border-blue: var(--tone-dark-info-border);
+
+  /* src/pages/Categories/CategoriesPage.tsx */
+  --light-categories-bg-red: var(--tone-categories-bg);
+  --light-categories-border-red: var(--tone-categories-border);
+  --light-categories-text-red: var(--tone-categories-text);
+
+  --dark-categories-bg-red: var(--tone-dark-categories-bg);
+  --dark-categories-border-red: var(--tone-dark-categories-border);
+  --dark-categories-text-red: var(--tone-dark-categories-text);
+}
+
+/* ============================================================================
+   DARK THEME - Semantic Mappings Override
+   ============================================================================ */
+[data-theme='dark'] {
+  color: var(--tone-dark-text-strong);
+  background-color: var(--tone-dark-surface);
+  --background: var(--tone-dark-surface);
+  --foreground: var(--tone-dark-text-strong);
+  --card: var(--tone-dark-surface-elevated);
+  --card-foreground: var(--tone-dark-text-strong);
+  --popover: var(--tone-dark-surface-elevated);
+  --popover-foreground: var(--tone-dark-text-strong);
+  --primary: var(--tone-dark-sidebar-primary);
+  --primary-foreground: var(--tone-dark-sidebar-primary-foreground);
+  --secondary: var(--tone-dark-sidebar-surface);
+  --secondary-foreground: var(--tone-dark-text-strong);
+  --muted: var(--tone-dark-sidebar-surface);
+  --muted-foreground: var(--tone-dark-text-muted);
+  --accent: var(--tone-dark-sidebar-surface);
+  --accent-foreground: var(--tone-dark-text-strong);
+  --destructive: var(--tone-dark-destructive);
+  --destructive-foreground: var(--tone-dark-text-strong);
+  --border: var(--tone-dark-border);
+  --input: var(--tone-dark-border);
+  --ring: var(--tone-dark-ring);
+  --chart-1: var(--tone-dark-chart-1);
+  --chart-2: var(--tone-dark-chart-2);
+  --chart-3: var(--tone-dark-chart-3);
+  --chart-4: var(--tone-dark-chart-4);
+  --chart-5: var(--tone-dark-chart-5);
+  --sidebar: var(--tone-dark-sidebar-surface);
+  --sidebar-foreground: var(--tone-dark-text-strong);
+  --sidebar-primary: var(--tone-dark-sidebar-primary);
+  --sidebar-primary-foreground: var(--tone-dark-sidebar-primary-foreground);
+  --sidebar-accent: var(--tone-dark-sidebar-surface);
+  --sidebar-accent-foreground: var(--tone-dark-text-strong);
+  --sidebar-border: var(--tone-dark-sidebar-border);
+  --sidebar-ring: var(--tone-dark-ring);
+}
+
+/* ============================================================================
+   Base Styles
+   ============================================================================ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  button {
+    @apply cursor-pointer;
+  }
+  /* Keep calendar slots clickable without showing a "not-allowed" cursor when selection is disabled */
+  .fc-timegrid-slot,
+  .fc-daygrid-day-frame,
+  .fc-daygrid-day-top {
+    cursor: pointer;
+  }
+  /* Prevent brief "not-allowed" cursor flash when clicking slots with selection disabled */
+  .fc-not-allowed {
+    cursor: wait !important;
+  }
+}
+
+/* ============================================================================
+   FullCalendar Overrides (light by default)
+   ============================================================================ */
+:root {
+  --fc-border-color: var(--border);
+  --fc-button-bg-color: var(--primary);
+  --fc-button-border-color: var(--primary);
+  --fc-button-hover-bg-color: var(--secondary);
+  --fc-button-hover-border-color: var(--secondary);
+  --fc-button-active-bg-color: var(--primary);
+  --fc-button-active-border-color: var(--primary);
+  --fc-button-text-color: var(--primary-foreground);
+  --fc-event-bg-color: var(--primary);
+  --fc-event-border-color: var(--primary);
+  --fc-event-text-color: var(--primary-foreground);
+  --fc-today-bg-color: color-mix(in oklch, var(--tone-info-border) 60%, var(--background) 40%);
+  --fc-today-border-color: color-mix(in oklch, var(--tone-info-border) 80%, var(--border) 20%);
+  --fc-today-text-color: var(--foreground);
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc .fc-scrollgrid {
+  border-color: var(--border);
+  background-color: var(--background);
+}
+.fc .fc-daygrid-day-frame,
+.fc .fc-timegrid-slot {
+  background-color: var(--background);
+}
+.fc .fc-col-header-cell.fc-day-today,
+.fc .fc-col-header-cell.fc-day-today .fc-col-header-cell-cushion {
+  background-color: var(--fc-today-bg-color) !important;
+  color: var(--fc-today-text-color);
+}
+.fc .fc-daygrid-day.fc-day-today,
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-frame {
+  background-color: var(--fc-today-bg-color) !important;
+  color: var(--fc-today-text-color);
+  border-color: var(--fc-today-border-color);
+}
+.fc .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+  color: var(--fc-today-text-color);
+}
+.fc .fc-timegrid-col.fc-day-today,
+.fc .fc-timegrid-col.fc-day-today .fc-timegrid-col-frame,
+.fc .fc-timegrid-slot.fc-day-today,
+.fc .fc-timegrid-col.fc-day-today .fc-timegrid-slot,
+.fc .fc-timegrid-col.fc-day-today .fc-timegrid-slot-lane {
+  background-color: var(--fc-today-bg-color) !important;
+  border-color: var(--fc-today-border-color);
+}
+.fc .fc-daygrid-day-number,
+.fc .fc-col-header-cell-cushion,
+.fc .fc-toolbar-title,
+.fc .fc-list-day-text,
+.fc .fc-list-day-side-text {
+  color: var(--foreground);
+}
+.fc-event.priority-border {
+  border-left-width: 4px !important;
+  border-left-style: solid !important;
+  padding-left: 4px !important;
+}
+.fc-event,
+.fc-event-main {
+  overflow: hidden;
+  transition:
+    transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    top 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    left 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    width 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 200ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+  will-change: transform, top, left, height, width;
+}
+.fc-event:not(.fc-event-dragging):not(.fc-event-resizing) {
+  transition:
+    top 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    left 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    height 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    width 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 200ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 200ms cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+.fc-event {
+  animation: scaleIn 160ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme='dark'] {
+  --fc-border-color: var(--tone-dark-border);
+  --fc-button-bg-color: var(--tone-dark-sidebar-button);
+  --fc-button-border-color: var(--tone-dark-sidebar-border);
+  --fc-button-hover-bg-color: var(--tone-dark-sidebar-button-hover);
+  --fc-button-hover-border-color: var(--tone-dark-sidebar-border);
+  --fc-button-active-bg-color: var(--tone-dark-sidebar-primary);
+  --fc-button-active-border-color: var(--tone-dark-sidebar-primary);
+  --fc-button-text-color: var(--tone-dark-text-strong);
+  --fc-event-bg-color: var(--tone-dark-sidebar-primary);
+  --fc-event-border-color: var(--tone-dark-sidebar-primary);
+  --fc-event-text-color: var(--tone-dark-text-strong);
+  --fc-today-bg-color: color-mix(in oklch, var(--tone-dark-info-border) 60%, var(--tone-dark-surface) 40%);
+  --fc-today-border-color: color-mix(in oklch, var(--tone-dark-info-border) 80%, var(--tone-dark-border) 20%);
+  --fc-today-text-color: var(--tone-dark-text-strong);
+
+  .fc-theme-standard td,
+  .fc-theme-standard th,
+  .fc .fc-scrollgrid {
+    border-color: var(--tone-dark-border);
+    background-color: var(--tone-dark-surface-elevated);
+  }
+  .fc .fc-daygrid-day-frame,
+  .fc .fc-timegrid-slot {
+    background-color: var(--tone-dark-surface-elevated);
+  }
+  .fc .fc-daygrid-day-number,
+  .fc .fc-col-header-cell-cushion,
+  .fc .fc-toolbar-title,
+  .fc .fc-list-day-text,
+  .fc .fc-list-day-side-text {
+    color: var(--tone-dark-text-strong);
+  }
+  .fc .fc-timegrid-axis-cushion,
+  .fc .fc-timegrid-slot-label,
+  .fc .fc-timegrid-slot {
+    color: var(--tone-dark-text-strong);
+  }
+  .fc .fc-button {
+    color: var(--tone-dark-text-strong);
+  }
+}
+
+/* ============================================================================
+   Dark Mode Form & Button Defaults
+   ============================================================================ */
+:where([data-theme='dark']) button {
+  color: var(--tone-dark-text-strong);
+}
+:where([data-theme='dark']) input,
+:where([data-theme='dark']) select,
+:where([data-theme='dark']) textarea {
+  color: var(--tone-dark-text-strong);
+  background-color: var(--tone-dark-surface-elevated);
+  border-color: var(--tone-dark-border);
+}
+:where([data-theme='dark']) input::placeholder,
+:where([data-theme='dark']) textarea::placeholder {
+  color: var(--tone-dark-text);
+}
+
+/* ============================================================================
+   Dark Mode Contrast Adjustments
+   ============================================================================ */
+:where([data-theme='dark']) {
+  color: var(--tone-dark-text-strong);
+}
+:where([data-theme='dark']) [data-slot='dialog-content'] {
+  background-color: var(--tone-dark-surface-elevated);
+  color: var(--tone-dark-text-strong);
+  border-color: var(--tone-dark-border);
+}
+:where([data-theme='dark']) [role='dialog'] .text-muted-foreground {
+  color: var(--tone-dark-text-muted) !important;
+}
+:where([data-theme='dark']) [role='dialog'] .text-foreground,
+:where([data-theme='dark']) [role='dialog'] button,
+:where([data-theme='dark']) [role='dialog'] input,
+:where([data-theme='dark']) [role='dialog'] select,
+:where([data-theme='dark']) [role='dialog'] textarea {
+  color: var(--tone-dark-text-strong);
+}
+:where([data-theme='dark']) .bg-dark-taskmodal-buffers-bg-muted,
+:where([data-theme='dark']) .bg-dark-taskmodal-dependencies-bg-sky,
+:where([data-theme='dark']) .bg-dark-sectioncard-bg-muted,
+:where([data-theme='dark']) .bg-dark-taskcolorpicker-bg {
+  color: var(--tone-dark-text-strong);
+}
+:where([data-theme='dark']) .fc .fc-button,
+:where([data-theme='dark']) .fc .fc-button .fc-icon {
+  color: var(--tone-dark-text-strong) !important;
+}
+:where([data-theme='dark']) .fc .fc-timegrid-slot-label,
+:where([data-theme='dark']) .fc .fc-timegrid-axis-cushion,
+:where([data-theme='dark']) .fc .fc-col-header-cell-cushion,
+:where([data-theme='dark']) .fc .fc-toolbar-title {
+  color: var(--tone-dark-text-strong) !important;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.98);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* new from shadcn */
+[data-theme='dark'] {
+  --sidebar: var(--tone-dark-sidebar-surface);
+  --sidebar-foreground: var(--tone-dark-text-strong);
+  --sidebar-primary: var(--tone-dark-sidebar-primary);
+  --sidebar-primary-foreground: var(--tone-dark-sidebar-primary-foreground);
+  --sidebar-accent: var(--tone-dark-sidebar-muted);
+  --sidebar-accent-foreground: var(--tone-dark-text-strong);
+  --sidebar-border: var(--tone-dark-sidebar-border);
+  --sidebar-ring: var(--tone-dark-ring);
+}
