@@ -206,6 +206,67 @@ ALL TASKS BELOW THIS POINT
 - [ ] Write test: admin can reply to conversation
 - [ ] Write E2E test: full admin workflow (login → filter → reply → update status → logout)
 
+## Demo Reset Endpoints (Internal vs External)
+
+### Database Setup
+- [ ] Create `demo_state` table (id, last_reset_at, next_reset_at)
+- [ ] Seed initial `demo_state` row with current timestamp + next hour
+
+### Shared Reset Logic
+- [ ] Create shared function: wipeAndReseedDemoData()
+- [ ] Implement: delete all demo conversations (for demo customer only)
+- [ ] Implement: delete all demo messages (via conversation cascade or explicit)
+- [ ] Implement: delete all demo attachments records (for demo customer only)
+- [ ] Implement: delete demo attachment files from Storage bucket (demo customer folder paths)
+- [ ] Implement: reseed demo conversations with sample data
+- [ ] Implement: reseed demo messages with sample replies
+- [ ] Implement: reseed demo attachments (upload sample files to Storage)
+- [ ] Implement: update `demo_state` with `last_reset_at` = now and `next_reset_at` = next hour
+
+### Internal Authenticated Reset Endpoint
+- [ ] Create endpoint: `reset-demo` (POST or GET)
+- [ ] Add authentication requirement (verify JWT)
+- [ ] Add role check: user must be "admin"
+- [ ] Add check: user must be the demo admin account (hardcode email or use flag)
+- [ ] Call shared reset function: wipeAndReseedDemoData()
+- [ ] Return success response with next_reset_at timestamp
+- [ ] Add error handling (return 403 if not authorized, 500 if reset fails)
+
+### External Unauthenticated Reset Endpoint
+- [ ] Create endpoint: `reset-84b1d9` (POST or GET)
+- [ ] No authentication required
+- [ ] Implement cooldown check: if last_reset_at < 5 minutes ago, return success without reset
+- [ ] Call shared reset function: wipeAndReseedDemoData()
+- [ ] Return success response with next_reset_at timestamp
+- [ ] Add error handling (return 429 if cooldown active, 500 if reset fails)
+
+### UI: Admin Reset Button
+- [ ] Add "Reset demo data" button to admin dashboard (admin-only, visible to demo admin)
+- [ ] Implement button click handler: call `reset-demo` endpoint
+- [ ] Show loading state during reset
+- [ ] Display success toast on reset completion
+- [ ] Display error toast on reset failure
+- [ ] Refresh conversation list after successful reset
+
+### UI: Reset Countdown Display
+- [ ] Fetch `demo_state.next_reset_at` on app load
+- [ ] Calculate time remaining until next reset (client-side)
+- [ ] Display countdown: "Demo resets in Xm" or "Next reset at HH:00"
+- [ ] Poll `demo_state` every 60 seconds to keep countdown accurate
+- [ ] Update UI when reset happens (detect next_reset_at change)
+- [ ] Position countdown in header or footer (non-intrusive)
+
+### Testing - Demo Reset
+- [ ] Write test: internal reset endpoint requires authentication
+- [ ] Write test: internal reset endpoint requires admin role
+- [ ] Write test: internal reset endpoint wipes and reseeds demo data
+- [ ] Write test: external reset endpoint works without authentication
+- [ ] Write test: external reset endpoint respects cooldown (< 5 min)
+- [ ] Write test: both endpoints update demo_state correctly
+- [ ] Write test: both endpoints delete Storage files correctly
+- [ ] Write test: countdown UI displays correct remaining time
+- [ ] Write test: countdown UI updates after polling
+
 ## Documentation
 - [ ] Update APP_FILE_INDEX.md with new components and file structure
 - [ ] Create DB_STRUCTURE.md documenting all tables, RLS policies, indexes
