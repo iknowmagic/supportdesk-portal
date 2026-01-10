@@ -40,6 +40,8 @@ START WITH the first [ ] file below, mark completed as [x].
 - **Note:** Do not use `fetch` directly in frontend code — use **TanStack Query** and centralized API helper functions instead. Server-side code (e.g. `supabase/**`) is exempt and may use global `fetch` where appropriate.
 
 ALL TASKS BELOW THIS POINT
+
+IMPORTANT: Refer APP.md for background information regarding this app. Read it at least once!
 ---
 
 ## Database Schema & Migrations
