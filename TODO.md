@@ -65,7 +65,10 @@ ALL TASKS BELOW THIS POINT
 
 ## Authentication & Login
 - [ ] Set up Supabase Auth integration (configure JWT, email settings)
+- [ ] Add demo credentials to .env (DEMO_EMAIL, DEMO_PASSWORD)
 - [ ] Create Login page UI (email + password form, error states)
+- [ ] Pre-populate login form with demo credentials from .env
+- [ ] Add optional "Log in" button that auto-submits demo credentials
 - [ ] Implement Supabase Auth login handler
 - [ ] Implement role-based route guards (redirect customer/admin to correct dashboard)
 - [ ] Create logout functionality with session cleanup
@@ -226,11 +229,9 @@ ALL TASKS BELOW THIS POINT
 ### Internal Authenticated Reset Endpoint
 - [ ] Create endpoint: `reset-demo` (POST or GET)
 - [ ] Add authentication requirement (verify JWT)
-- [ ] Add role check: user must be "admin"
-- [ ] Add check: user must be the demo admin account (hardcode email or use flag)
 - [ ] Call shared reset function: wipeAndReseedDemoData()
 - [ ] Return success response with next_reset_at timestamp
-- [ ] Add error handling (return 403 if not authorized, 500 if reset fails)
+- [ ] Add error handling (return 401 if not authenticated, 500 if reset fails)
 
 ### External Unauthenticated Reset Endpoint
 - [ ] Create endpoint: `reset-84b1d9` (POST or GET)
@@ -240,8 +241,8 @@ ALL TASKS BELOW THIS POINT
 - [ ] Return success response with next_reset_at timestamp
 - [ ] Add error handling (return 429 if cooldown active, 500 if reset fails)
 
-### UI: Admin Reset Button
-- [ ] Add "Reset demo data" button to admin dashboard (admin-only, visible to demo admin)
+### UI: Reset Button
+- [ ] Add "Reset demo data" button to dashboard (visible when authenticated)
 - [ ] Implement button click handler: call `reset-demo` endpoint
 - [ ] Show loading state during reset
 - [ ] Display success toast on reset completion
@@ -249,23 +250,23 @@ ALL TASKS BELOW THIS POINT
 - [ ] Refresh conversation list after successful reset
 
 ### UI: Reset Countdown Display
-- [ ] Fetch `demo_state.next_reset_at` on app load
-- [ ] Calculate time remaining until next reset (client-side)
-- [ ] Display countdown: "Demo resets in Xm" or "Next reset at HH:00"
-- [ ] Poll `demo_state` every 60 seconds to keep countdown accurate
-- [ ] Update UI when reset happens (detect next_reset_at change)
+- [ ] Compute next hourly reset time from current time (client-side: next HH:00:00)
+- [ ] Calculate time remaining until next top-of-hour (mm:ss format)
+- [ ] Display countdown: "Demo resets in mm:ss" or "Next reset at HH:00"
+- [ ] Update countdown every second (setInterval)
+- [ ] Reset countdown when reaching 00:00 (start next hour countdown)
 - [ ] Position countdown in header or footer (non-intrusive)
 
 ### Testing - Demo Reset
 - [ ] Write test: internal reset endpoint requires authentication
-- [ ] Write test: internal reset endpoint requires admin role
 - [ ] Write test: internal reset endpoint wipes and reseeds demo data
 - [ ] Write test: external reset endpoint works without authentication
 - [ ] Write test: external reset endpoint respects cooldown (< 5 min)
 - [ ] Write test: both endpoints update demo_state correctly
 - [ ] Write test: both endpoints delete Storage files correctly
-- [ ] Write test: countdown UI displays correct remaining time
-- [ ] Write test: countdown UI updates after polling
+- [ ] Write test: countdown UI displays correct remaining time (client-side computed)
+- [ ] Write test: countdown updates every second
+- [ ] Write test: login form pre-populated with demo credentials from .env
 
 ## Documentation
 - [ ] Update APP_FILE_INDEX.md with new components and file structure
