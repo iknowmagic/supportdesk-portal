@@ -66,8 +66,8 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Create Storage RLS policy: customer upload/read own, admin all
 
 ## Authentication & Login
-- [ ] Set up Supabase Auth integration (configure JWT, email settings)
-- [ ] Add demo credentials to .env (DEMO_EMAIL, DEMO_PASSWORD)
+- [x] Set up Supabase Auth integration (configure JWT, email settings)
+- [x] Add demo credentials to .env (DEMO_EMAIL, DEMO_PASSWORD)
 - [ ] Create Login page UI (email + password form, error states)
 - [ ] Pre-populate login form with demo credentials from .env
 - [ ] Add optional "Log in" button that auto-submits demo credentials
