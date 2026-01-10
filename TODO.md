@@ -45,25 +45,25 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 ---
 
 ## Database Schema & Migrations
-- [ ] Create migration: customers table (id, name, created_at)
-- [ ] Create migration: profiles table (id=auth.uid, role, customer_id fk, created_at)
-- [ ] Create migration: conversations table (id, customer_id fk, subject, status, tags, created_by, created_at, updated_at)
-- [ ] Create migration: messages table (id, conversation_id fk, author_id, author_role, body, created_at)
-- [ ] Create migration: attachments table (id, message_id fk, customer_id fk, file_path, file_name, file_type, file_size, created_at)
+- [x] Create migration: customers table (id, name, created_at)
+- [x] Create migration: profiles table (id=auth.uid, role, customer_id fk, created_at)
+- [x] Create migration: conversations table (id, customer_id fk, subject, status, tags, created_by, created_at, updated_at)
+- [x] Create migration: messages table (id, conversation_id fk, author_id, author_role, body, created_at)
+- [x] Create migration: attachments table (id, message_id fk, customer_id fk, file_path, file_name, file_type, file_size, created_at)
 
 ## RLS Policies & Security
-- [ ] Enable RLS on customers table
-- [ ] Enable RLS on profiles table
-- [ ] Enable RLS on conversations table
-- [ ] Enable RLS on messages table
-- [ ] Enable RLS on attachments table
-- [ ] Create RLS policy: customers (customer read own, admin read all)
-- [ ] Create RLS policy: profiles (user read own profile)
-- [ ] Create RLS policy: conversations (customer scoped to their customer_id, admin read/write all)
-- [ ] Create RLS policy: messages (customer scoped via conversation, admin read/write all)
-- [ ] Create RLS policy: attachments (customer scoped via customer_id, admin read/write all)
-- [ ] Configure Supabase Storage bucket: attachments
-- [ ] Create Storage RLS policy: customer upload/read own, admin all
+- [x] Enable RLS on customers table
+- [x] Enable RLS on profiles table
+- [x] Enable RLS on conversations table
+- [x] Enable RLS on messages table
+- [x] Enable RLS on attachments table
+- [x] Create RLS policy: customers (customer read own, admin read all)
+- [x] Create RLS policy: profiles (user read own profile)
+- [x] Create RLS policy: conversations (customer scoped to their customer_id, admin read/write all)
+- [x] Create RLS policy: messages (customer scoped via conversation, admin read/write all)
+- [x] Create RLS policy: attachments (customer scoped via customer_id, admin read/write all)
+- [x] Configure Supabase Storage bucket: attachments
+- [x] Create Storage RLS policy: customer upload/read own, admin all
 
 ## Authentication & Login
 - [ ] Set up Supabase Auth integration (configure JWT, email settings)
@@ -214,8 +214,8 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 ## Demo Reset Endpoints (Internal vs External)
 
 ### Database Setup
-- [ ] Create `demo_state` table (id, last_reset_at, next_reset_at)
-- [ ] Seed initial `demo_state` row with current timestamp + next hour
+- [x] Create `demo_state` table (id, last_reset_at, next_reset_at)
+- [x] Seed initial `demo_state` row with current timestamp + next hour
 
 ### Shared Reset Logic
 - [ ] Create shared function: wipeAndReseedDemoData()

@@ -1,53 +1,46 @@
--- WARNING: This schema is for context only and is not meant to be run.
--- Table order and constraints may not be valid for execution.
+# Database Structure - SupportDesk Portal
 
-## Time Rounding Principle
-
-**All timestamps are rounded to the nearest 5-minute interval** for consistency across the system.
-- Rationale: Cleaner UI, simpler scheduling math, consistent data
-- Implementation: `supabase/functions/_shared/timeUtils.ts` provides `roundToNearest5Minutes()`
-- Applied by: All Edge Functions that create/update tasks (task, create-task, auto-scheduler)
-- Example: `13:34:17.082` → `13:35:00.000`, `13:58:00` → `14:00:00` (handles hour rollovers)
-
-## Schema Evolution Note
-The `task_dependencies` table has been removed (2025-12-12) in favor of the ordered `dependency_stacks` and `dependency_stack_items` structure. All dependency reads/writes now flow through stacks; no direct edge table remains.
+## Overview
+SupportDesk Portal database schema for B2B support messaging system.
 
 ## Tables
 
-CREATE TABLE public.categories (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL DEFAULT auth.uid(),
-  name text NOT NULL,
-  color text,
-  created_at timestamp with time zone NOT NULL DEFAULT now(),
-  updated_at timestamp with time zone NOT NULL DEFAULT now(),
-  CONSTRAINT categories_pkey PRIMARY KEY (id),
-  CONSTRAINT categories_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
-);
--- Note: category names are not unique; users may create duplicate names with different colors if they want.
+### `customers`
+Customer organizations.
 
-CREATE TABLE public.default_values (
-  id uuid NOT NULL DEFAULT gen_random_uuid(),
-  work_hours_start time without time zone NOT NULL DEFAULT '08:00:00'::time without time zone,
-  work_hours_end time without time zone NOT NULL DEFAULT '20:00:00'::time without time zone,
-  event_color text NOT NULL DEFAULT 'rgb(96, 165, 250)'::text,
-  auto_schedule boolean NOT NULL DEFAULT true,
-  duration integer NOT NULL DEFAULT 60,
-  priority text NOT NULL DEFAULT 'normal'::text CHECK (priority = ANY (ARRAY['asap'::text, 'high'::text, 'normal'::text, 'low'::text])),
-  splittable_enabled boolean NOT NULL DEFAULT true,
-  min_splittable_duration integer NOT NULL DEFAULT 30,
-  max_splittable_duration integer NOT NULL DEFAULT 60,
-  created_at timestamp with time zone DEFAULT now(),
-  updated_at timestamp with time zone DEFAULT now(),
-  working_day_monday boolean NOT NULL DEFAULT true,
-  working_day_tuesday boolean NOT NULL DEFAULT true,
-  working_day_wednesday boolean NOT NULL DEFAULT true,
-  working_day_thursday boolean NOT NULL DEFAULT true,
-  working_day_friday boolean NOT NULL DEFAULT true,
-  working_day_saturday boolean NOT NULL DEFAULT false,
-  working_day_sunday boolean NOT NULL DEFAULT false,
-  scheduling_lookahead_weeks integer NOT NULL DEFAULT 4 CHECK (scheduling_lookahead_weeks >= 1 AND scheduling_lookahead_weeks <= 8),
-  max_segment_gap_days integer NOT NULL DEFAULT 3 CHECK (max_segment_gap_days >= 1 AND max_segment_gap_days <= 7),
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| id | uuid | PRIMARY KEY, DEFAULT gen_random_uuid() | Unique customer identifier |
+| name | text | NOT NULL | Customer organization name |
+| created_at | timestamptz | NOT NULL, DEFAULT now() | Record creation timestamp |
+
+**Indexes:** None (primary key is auto-indexed)
+
+**RLS Policies:**
+- `customers_customer_read_own`: Customer users can read only their own customer row
+- `customers_admin_read_all`: Admin users can read all customers
+- `customers_admin_write_all`: Admin users can insert/update/delete customers
+
+---
+
+### `profiles`
+One row per authenticated user, linking auth.users to roles and customers.
+
+| Column | Type | Constraints | Description |
+|--------|------|-------------|-------------|
+| id | uuid | PRIMARY KEY, REFERENCES auth.users(id) ON DELETE CASCADE | Equals auth.users.id |
+| role | text | NOT NULL, CHECK (role IN ('admin', 'customer')) | User role |
+| customer_id | uuid | REFERENCES customers(id) ON DELETE SET NULL | Foreign key to customers (required for customer role, null for admin) |
+| created_at | timestamptz | NOT NULL, DEFAULT now() | Record creation timestamp |
+
+**Constraints:**
+- `customer_role_requires_customer_id`: Ensures customer role has customer_id, admin role doesn't need it
+
+**Indexes:** None (primary key is auto-indexed)
+
+**RLS Policies:**
+- `profiles_read_own`: Users can read their own profile
+- `profiles_admin_read_all`: Admin users can read all profiles
   time_zone text NOT NULL DEFAULT 'America/Los_Angeles'::text,
   buffer_before integer NOT NULL DEFAULT 15,
   buffer_after integer NOT NULL DEFAULT 15,
