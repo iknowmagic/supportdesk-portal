@@ -1,58 +1,57 @@
-# This file describes the App's DB Schema
+# Database Structure (Context Only)
 
-## InboxHQ Database Schema
+```sql
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
 
-### `demo_profile`
-Single demo user profile (one row only)
-- `id` uuid PK
-- `user_id` uuid FK → auth.users(id)
-- `full_name` text
-- `email` text
-- `avatar_url` text
-- `created_at` timestamptz
-- `updated_at` timestamptz
+CREATE TABLE public.actors (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  name text NOT NULL,
+  email text,
+  avatar_url text,
+  role text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT actors_pkey PRIMARY KEY (id)
+);
 
-### `actors`
-Fictional people shown in UI (not real users, no auth)
-- `id` uuid PK
-- `name` text
-- `email` text
-- `avatar_url` text
-- `role` text (e.g., "Customer", "Support Agent", "Manager")
-- `created_at` timestamptz
+CREATE TABLE public.comments (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  ticket_id uuid NOT NULL,
+  actor_id uuid,
+  actor_name text NOT NULL,
+  body text NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT comments_pkey PRIMARY KEY (id),
+  CONSTRAINT comments_ticket_id_fkey FOREIGN KEY (ticket_id) REFERENCES public.tickets(id),
+  CONSTRAINT comments_actor_id_fkey FOREIGN KEY (actor_id) REFERENCES public.actors(id)
+);
 
-### `tickets`
-Support tickets
-- `id` uuid PK
-- `subject` text
-- `body` text
-- `status` text (open | pending | closed)
-- `priority` text (low | normal | high | urgent)
-- `from_actor_id` uuid FK → actors(id)
-- `from_name` text (denormalized)
-- `assigned_to_actor_id` uuid FK → actors(id)
-- `assigned_to_name` text (denormalized)
-- `created_at` timestamptz
-- `updated_at` timestamptz
+CREATE TABLE public.demo_profile (
+  id uuid NOT NULL DEFAULT gen_random_uuid() CHECK (id = id),
+  user_id uuid,
+  full_name text NOT NULL,
+  email text NOT NULL,
+  avatar_url text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT demo_profile_pkey PRIMARY KEY (id),
+  CONSTRAINT demo_profile_user_id_fkey FOREIGN KEY (user_id) REFERENCES auth.users(id)
+);
 
-### `comments`
-Replies/comments on tickets
-- `id` uuid PK
-- `ticket_id` uuid FK → tickets(id)
-- `actor_id` uuid FK → actors(id)
-- `actor_name` text (denormalized)
-- `body` text
-- `created_at` timestamptz
-
-### Indexes
-- `idx_tickets_status` on tickets(status)
-- `idx_tickets_priority` on tickets(priority)
-- `idx_tickets_created_at` on tickets(created_at DESC)
-- `idx_comments_ticket_id` on comments(ticket_id)
-- `idx_comments_created_at` on comments(created_at)
-
-### Notes
-- No RLS policies (single-user demo app per APP.md)
-- Actors are plain reference data, not auth users
-- Denormalized fields (from_name, actor_name) for simpler queries
-- `updated_at` managed by Edge Functions, not database triggers
+CREATE TABLE public.tickets (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  subject text NOT NULL,
+  body text NOT NULL,
+  status text NOT NULL DEFAULT 'open'::text,
+  priority text NOT NULL DEFAULT 'normal'::text,
+  from_actor_id uuid,
+  from_name text NOT NULL,
+  assigned_to_actor_id uuid,
+  assigned_to_name text,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  updated_at timestamp with time zone NOT NULL DEFAULT now(),
+  CONSTRAINT tickets_pkey PRIMARY KEY (id),
+  CONSTRAINT tickets_from_actor_id_fkey FOREIGN KEY (from_actor_id) REFERENCES public.actors(id),
+  CONSTRAINT tickets_assigned_to_actor_id_fkey FOREIGN KEY (assigned_to_actor_id) REFERENCES public.actors(id)
+);
+```
