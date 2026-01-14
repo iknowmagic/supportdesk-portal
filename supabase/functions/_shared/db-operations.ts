@@ -50,7 +50,7 @@ export async function populateDatabase(supabaseAdmin: SupabaseAdmin) {
           ? updatedHoursAgo * 60 * 60 * 1000
           : updatedMinutesAgo !== undefined
             ? updatedMinutesAgo * 60 * 1000
-            : hoursAgo * 60 * 60 * 1000),
+            : hoursAgo * 60 * 60 * 1000)
     );
 
     return {

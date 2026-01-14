@@ -34,25 +34,21 @@ Deno.serve(async (req) => {
           autoRefreshToken: false,
           persistSession: false,
         },
-      },
+      }
     );
 
     // Verify the user is authenticated (using anon key from request)
-    const supabaseClient = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_ANON_KEY') ?? '',
-      {
-        global: {
-          headers: {
-            Authorization: authHeader,
-          },
-        },
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
+    const supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
+      global: {
+        headers: {
+          Authorization: authHeader,
         },
       },
-    );
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
 
     const {
       data: { user },
@@ -81,7 +77,7 @@ Deno.serve(async (req) => {
       {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
-      },
+      }
     );
   } catch (error) {
     return new Response(
@@ -92,7 +88,7 @@ Deno.serve(async (req) => {
       {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
-      },
+      }
     );
   }
 });

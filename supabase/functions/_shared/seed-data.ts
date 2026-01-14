@@ -72,7 +72,7 @@ export const TICKETS = [
   {
     id: 't2222222-2222-2222-2222-222222222222',
     subject: 'Integration with Slack not working',
-    body: 'We set up the Slack integration last week and it worked fine for a few days, but now notifications have stopped coming through. I\'ve checked the webhook URL and it looks correct. Can someone help troubleshoot this?',
+    body: "We set up the Slack integration last week and it worked fine for a few days, but now notifications have stopped coming through. I've checked the webhook URL and it looks correct. Can someone help troubleshoot this?",
     status: 'pending',
     priority: 'normal',
     from_actor_id: 'a2222222-2222-2222-2222-222222222222',
@@ -85,7 +85,7 @@ export const TICKETS = [
   {
     id: 't3333333-3333-3333-3333-333333333333',
     subject: 'Question about pricing tiers',
-    body: 'Hi team, we\'re currently on the Starter plan but approaching the user limit. I\'d like to understand the differences between Professional and Enterprise tiers. Specifically, what are the rate limits and can we get custom integrations on Professional?',
+    body: "Hi team, we're currently on the Starter plan but approaching the user limit. I'd like to understand the differences between Professional and Enterprise tiers. Specifically, what are the rate limits and can we get custom integrations on Professional?",
     status: 'closed',
     priority: 'low',
     from_actor_id: 'a3333333-3333-3333-3333-333333333333',
@@ -98,7 +98,7 @@ export const TICKETS = [
   {
     id: 't4444444-4444-4444-4444-444444444444',
     subject: 'Dashboard loading very slowly',
-    body: 'The main dashboard is taking 30+ seconds to load since this morning. This is impacting our team\'s productivity. We have about 500 active tickets and the performance has been degrading over the past week.',
+    body: "The main dashboard is taking 30+ seconds to load since this morning. This is impacting our team's productivity. We have about 500 active tickets and the performance has been degrading over the past week.",
     status: 'open',
     priority: 'urgent',
     from_actor_id: 'a4444444-4444-4444-4444-444444444444',
@@ -124,7 +124,7 @@ export const TICKETS = [
   {
     id: 't6666666-6666-6666-6666-666666666666',
     subject: 'Password reset email not received',
-    body: 'I tried to reset my team member\'s password but they haven\'t received the email. I\'ve checked spam/junk folders. Their email is correct in the system. Can you help?',
+    body: "I tried to reset my team member's password but they haven't received the email. I've checked spam/junk folders. Their email is correct in the system. Can you help?",
     status: 'pending',
     priority: 'normal',
     from_actor_id: 'a3333333-3333-3333-3333-333333333333',
@@ -137,7 +137,7 @@ export const TICKETS = [
   {
     id: 't7777777-7777-7777-7777-777777777777',
     subject: 'Billing issue: Charged twice',
-    body: 'We were charged twice for this month\'s subscription. I see two transactions on our credit card ending in 4242. Can you please investigate and refund the duplicate charge?',
+    body: "We were charged twice for this month's subscription. I see two transactions on our credit card ending in 4242. Can you please investigate and refund the duplicate charge?",
     status: 'closed',
     priority: 'high',
     from_actor_id: 'a2222222-2222-2222-2222-222222222222',
@@ -168,21 +168,21 @@ export const COMMENTS = [
     ticket_id: 't1111111-1111-1111-1111-111111111111',
     actor_id: 'a5555555-5555-5555-5555-555555555555',
     actor_name: 'Alex Martinez',
-    body: 'Hi Sarah, thanks for reporting this. I\'m looking into the export issue now. Can you tell me approximately how many records you\'re trying to export?',
+    body: "Hi Sarah, thanks for reporting this. I'm looking into the export issue now. Can you tell me approximately how many records you're trying to export?",
     hours_ago: 1.75,
   },
   {
     ticket_id: 't1111111-1111-1111-1111-111111111111',
     actor_id: 'a1111111-1111-1111-1111-111111111111',
     actor_name: 'Sarah Chen',
-    body: 'It\'s about 5,000 customer records with all fields included.',
+    body: "It's about 5,000 customer records with all fields included.",
     hours_ago: 1.5,
   },
   {
     ticket_id: 't1111111-1111-1111-1111-111111111111',
     actor_id: 'a5555555-5555-5555-5555-555555555555',
     actor_name: 'Alex Martinez',
-    body: 'Got it. We recently fixed a timeout issue for large exports. I\'ll have this resolved within the hour and follow up here.',
+    body: "Got it. We recently fixed a timeout issue for large exports. I'll have this resolved within the hour and follow up here.",
     hours_ago: 0.5,
   },
   // Ticket 2 comments
@@ -190,7 +190,7 @@ export const COMMENTS = [
     ticket_id: 't2222222-2222-2222-2222-222222222222',
     actor_id: 'a6666666-6666-6666-6666-666666666666',
     actor_name: 'Jordan Lee',
-    body: 'Hi Marcus, I see the issue. Slack recently deprecated the webhook format we were using. I\'ve updated your integration to use the new format. Can you test it now?',
+    body: "Hi Marcus, I see the issue. Slack recently deprecated the webhook format we were using. I've updated your integration to use the new format. Can you test it now?",
     hours_ago: 3,
   },
   {
@@ -219,7 +219,7 @@ export const COMMENTS = [
     ticket_id: 't3333333-3333-3333-3333-333333333333',
     actor_id: 'a5555555-5555-5555-5555-555555555555',
     actor_name: 'Alex Martinez',
-    body: 'Perfect! I\'ve sent you a calendar invite for tomorrow at 2 PM. Looking forward to it!',
+    body: "Perfect! I've sent you a calendar invite for tomorrow at 2 PM. Looking forward to it!",
     hours_ago: 65,
   },
   // Ticket 4 comment
@@ -227,7 +227,7 @@ export const COMMENTS = [
     ticket_id: 't4444444-4444-4444-4444-444444444444',
     actor_id: 'a6666666-6666-6666-6666-666666666666',
     actor_name: 'Jordan Lee',
-    body: 'Hi James, we\'re investigating the performance issue. Our monitoring shows increased load on the database. Engineering team is on it and we\'ll update you within the hour.',
+    body: "Hi James, we're investigating the performance issue. Our monitoring shows increased load on the database. Engineering team is on it and we'll update you within the hour.",
     hours_ago: 3.83,
   },
   // Ticket 6 comment
@@ -235,7 +235,7 @@ export const COMMENTS = [
     ticket_id: 't6666666-6666-6666-6666-666666666666',
     actor_id: 'a5555555-5555-5555-5555-555555555555',
     actor_name: 'Alex Martinez',
-    body: 'Hi Elena, I\'ve checked the email logs and the reset email was sent successfully. Sometimes these can take up to 15 minutes. If it still hasn\'t arrived, I can manually reset the password and send it to you securely.',
+    body: "Hi Elena, I've checked the email logs and the reset email was sent successfully. Sometimes these can take up to 15 minutes. If it still hasn't arrived, I can manually reset the password and send it to you securely.",
     hours_ago: 2,
   },
   // Ticket 7 comments (closed)
@@ -243,7 +243,7 @@ export const COMMENTS = [
     ticket_id: 't7777777-7777-7777-7777-777777777777',
     actor_id: 'a7777777-7777-7777-7777-777777777777',
     actor_name: 'Taylor Swift',
-    body: 'Hi Marcus, I\'ve reviewed your account and confirmed the duplicate charge. This was due to a payment processor error. I\'ve initiated a full refund for the duplicate transaction - you should see it back on your card within 3-5 business days. My apologies for the inconvenience!',
+    body: "Hi Marcus, I've reviewed your account and confirmed the duplicate charge. This was due to a payment processor error. I've initiated a full refund for the duplicate transaction - you should see it back on your card within 3-5 business days. My apologies for the inconvenience!",
     hours_ago: 42,
   },
   {
@@ -258,7 +258,7 @@ export const COMMENTS = [
     ticket_id: 't8888888-8888-8888-8888-888888888888',
     actor_id: 'a6666666-6666-6666-6666-666666666666',
     actor_name: 'Jordan Lee',
-    body: 'Hi James, you\'re absolutely right - that parameter was deprecated in v2.0. The correct parameter is now "tags[]" (with brackets). I\'ll update the docs right away. Here\'s the correct format: /tickets?tags[]=urgent&tags[]=bug',
+    body: "Hi James, you're absolutely right - that parameter was deprecated in v2.0. The correct parameter is now \"tags[]\" (with brackets). I'll update the docs right away. Here's the correct format: /tickets?tags[]=urgent&tags[]=bug",
     hours_ago: 7.5,
   },
 ];

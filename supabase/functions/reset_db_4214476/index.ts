@@ -25,7 +25,7 @@ Deno.serve(async (req) => {
           autoRefreshToken: false,
           persistSession: false,
         },
-      },
+      }
     );
 
     // Wipe the database
@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
       {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
-      },
+      }
     );
   } catch (error) {
     return new Response(
@@ -54,7 +54,7 @@ Deno.serve(async (req) => {
       {
         status: 500,
         headers: { 'Content-Type': 'application/json' },
-      },
+      }
     );
   }
 });
