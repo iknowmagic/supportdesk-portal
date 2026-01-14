@@ -12,6 +12,7 @@ import {
 import { Spinner } from '@/components/ui/spinner';
 import { useSupabaseLogout } from '@/hooks/useSupabaseLogout';
 import { useAuth } from '@/lib/AuthProvider';
+import { useNavigate } from '@tanstack/react-router';
 import { Beaker, LogOut, Monitor, Moon, Settings, Sun, User } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
@@ -23,7 +24,15 @@ type UserMenuProps = {
 export function UserMenu({ align = 'end', side = 'top' }: UserMenuProps) {
   const { user } = useAuth();
   const { logout, isLoggingOut } = useSupabaseLogout();
+  const navigate = useNavigate();
   const { theme, setTheme } = useTheme();
+
+  const handleLogout = async () => {
+    const didLogout = await logout();
+    if (didLogout) {
+      navigate({ to: '/login' });
+    }
+  };
 
   return (
     <DropdownMenu>
@@ -71,7 +80,7 @@ export function UserMenu({ align = 'end', side = 'top' }: UserMenuProps) {
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={logout} disabled={isLoggingOut}>
+        <DropdownMenuItem onClick={handleLogout} disabled={isLoggingOut} data-testid="user-menu-logout">
           {isLoggingOut ? (
             <>
               <Spinner className="mr-2 size-4" />

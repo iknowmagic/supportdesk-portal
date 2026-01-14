@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { UserMenu } from '@/components/UserMenu';
 import { supabase } from '@/lib/supabase';
 import { useNavigate } from '@tanstack/react-router';
 import { formatDistanceToNow } from 'date-fns';
@@ -101,7 +100,6 @@ export default function InboxPage() {
             <Inbox className="text-primary dark:text-primary size-6" />
             <h1 className="text-foreground dark:text-foreground text-xl font-semibold">InboxHQ</h1>
           </div>
-          <UserMenu />
         </LayoutHeader>
 
         <main className="flex-1 p-6">

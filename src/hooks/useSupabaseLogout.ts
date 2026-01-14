@@ -12,11 +12,13 @@ export function useSupabaseLogout() {
       const { error } = await supabase.auth.signOut({ scope: 'local' });
       if (error) throw error;
       toast.success('Logged out successfully');
+      return true;
     } catch (error) {
       noctare.log('Logout error:', error);
       toast.error('Failed to log out', {
         description: error instanceof Error ? error.message : 'Please try again.',
       });
+      return false;
     } finally {
       // Always reset the loading state regardless of success or failure
       setIsLoggingOut(false);

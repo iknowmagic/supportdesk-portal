@@ -4,7 +4,8 @@
 ./src
 ├── components
 │   ├── __tests__
-│   │   └── Login.test.tsx
+│   │   ├── Login.test.tsx
+│   │   └── UserMenu.test.tsx
 │   ├── Combobox.tsx
 │   ├── ConfirmDialog.tsx
 │   ├── LayoutHeader.tsx
@@ -30,9 +31,12 @@
 │       ├── devtools.tsx
 │       └── root-provider.tsx
 ├── lib
+│   ├── __tests__
+│   │   └── authGuard.test.ts
 │   ├── graphql
 │   │   └── events.ts
 │   ├── AuthProvider.tsx
+│   ├── authGuard.ts
 │   ├── clearSupabaseStorage.ts
 │   ├── colorUtils.ts
 │   ├── devLogger.ts

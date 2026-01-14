@@ -52,10 +52,10 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 
 ### Auth & Session
 - [x] Update login form to accept DEMO_USER credentials from .env
-- [ ] Implement session management (localStorage flag or cookie)
-- [ ] Add logout functionality (clear session, return to login)
-- [ ] Add route protection (redirect to /login if not authenticated)
-- [ ] Test login/logout flow end-to-end
+- [x] Implement session management (localStorage flag or cookie)
+- [x] Add logout functionality (clear session, return to login)
+- [x] Add route protection (redirect to /login if not authenticated)
+- [x] Test login/logout flow end-to-end
 
 ## Phase 2: Core UI Structure
 

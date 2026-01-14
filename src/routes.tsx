@@ -1,4 +1,5 @@
 import { PageTransition } from '@/components/PageTransition';
+import { redirectIfAuthenticated, requireAuth } from '@/lib/authGuard';
 import ComponentsShowcasePage from '@/pages/ComponentsShowcase';
 import DashboardPage from '@/pages/Dashboard';
 import InboxPage from '@/pages/Inbox';
@@ -18,30 +19,35 @@ const rootRoute = createRootRoute({
 const inboxRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/',
+  beforeLoad: requireAuth,
   component: InboxPage,
 });
 
 const dashboardRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/dashboard',
+  beforeLoad: requireAuth,
   component: DashboardPage,
 });
 
 const componentsRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/components',
+  beforeLoad: requireAuth,
   component: ComponentsShowcasePage,
 });
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login',
+  beforeLoad: redirectIfAuthenticated,
   component: LoginPage,
 });
 
 const verifyOtpRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: '/login/verify',
+  beforeLoad: redirectIfAuthenticated,
   component: VerifyOtpPage,
 });
 
