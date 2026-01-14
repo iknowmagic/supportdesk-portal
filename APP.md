@@ -1,165 +1,139 @@
-# APP.md
-SupportDesk Portal (customer portal + admin inbox)
+# InboxHQ - APP.md (Project Guidelines)
 
-## Overview
-SupportDesk Portal is a lightweight B2B support messaging system.
+## What this project is
+InboxHQ is a portfolio/demo web app with a single demo login and a fully seeded, "feels real" dataset.
 
-Customers can:
-- Log in securely
-- Create support conversations
-- Read conversation history
-- Reply with messages
-- Upload and view attachments
+The core goal is: a user logs in with the provided demo credentials and immediately has a seamless experience exploring the product. Everything should feel populated and alive from the first click.
 
-Admins can:
-- Log in securely
-- View all customers and all conversations in an inbox
-- Filter by status and tags
-- Search across conversation history
-- Reply to customers
-- Update conversation status and tags
+This is a make-believe scenario. The app may display other "people" in the UI (names, avatars, assignees, senders), but they are fictional actors inside seeded data, not real accounts.
 
-This is an MVP that must feel like real software: persistence, permissions, search, attachments, and solid empty/error states.
+RLS is intentionally out of scope because this is a single-user demo and the database is not exposed to the client.
 
-## Roles
-Two roles exist:
+## The Golden Rule: Demo Mode, Single User
+There is exactly one real logged-in account: the demo user.
 
-- "customer"
-  - Access is restricted to a single customer account.
-  - Can create conversations and send messages within their customer scope.
-  - Can upload and view attachments within their customer scope.
+- Only one user can log in.
+- There is no registration.
+- There is no invitation system.
+- There are no teams, orgs, workspaces, or memberships.
+- There are no roles.
+- There is no RBAC.
+- There are no permission matrices.
 
-- "admin"
-  - Can access all customers, conversations, messages, and attachments.
-  - Can update conversation status and tags.
-  - Can search across all content.
+If you start building multi-user features, you are building the wrong app.
 
-User role and customer membership are stored in the `profiles` table, keyed by Supabase Auth `user.id`.
+## Non-goals (Do NOT build these)
+Hard "no" list:
 
-## Core workflows
+- Multi-user accounts beyond the single demo user
+- RBAC (roles, permissions, admin vs member)
+- Organizations, teams, workspaces, tenant isolation
+- Invites, email verification, password reset, SSO
+- User directory, admin user management pages
+- Audit logs, activity trails for compliance
+- Row-level security policies that assume many users (avoid the RLS rabbit hole)
+- Anything that requires a "currentUserId" parameter to be passed around everywhere
 
-### Customer workflow
-1) Customer logs in
-2) Customer sees a list of their conversations with:
-   - subject
-   - status ("open", "pending", "closed")
-   - tags
-   - last updated time
-3) Customer creates a new conversation (subject + initial message)
-4) Customer opens a conversation thread to:
-   - read all messages
-   - send a reply
-   - upload attachments
+If you think any of the above is "needed", stop and propose a simpler demo-mode alternative.
 
-### Admin workflow
-1) Admin logs in
-2) Admin sees an inbox of all conversations across customers
-3) Admin can:
-   - filter by status
-   - filter by tags
-   - search across subjects and message bodies
-4) Admin opens a conversation thread to:
-   - read all messages
-   - reply
-   - update status
-   - add/remove tags
-   - view attachments
+## What we ARE building
+A polished product experience that is believable and coherent, using seeded data.
 
-## Tech stack
-- Frontend: React + Vite
-- UI: shadcn/ui + Tailwind CSS
-- State: Jotai (UI state: filters, selected conversation, drafts, view preferences)
-- Backend: Supabase (Postgres + Auth + Storage)
-- Hosting: Vercel (static hosting for the frontend)
+The app should have:
+- A login screen that accepts the demo credentials
+- A post-login home/dashboard that has meaningful content immediately
+- Core workflows that feel complete (no dead-end screens)
+- Realistic empty/error states where appropriate
+- A simple way to reset the demo data (optional but strongly recommended)
 
-The frontend talks directly to Supabase using the anon key. Security is enforced by Supabase Row Level Security (RLS) and Storage policies.
+## Data model principle
+All data belongs to the demo user, even if the UI shows other people.
 
-## Data model
-Keep the schema minimal and predictable. Ideas for the data model below. Change as needed.
+How to represent "other people":
+- Use "Actors" as plain data fields (e.g., `fromName`, `assigneeName`, `contactName`, `avatarUrl`)
+- These actors are not users, cannot log in, and have no permissions
+- Do not create an "accounts" table or "users" table for these fictional people unless it is purely static reference data (and even then, prefer a simple `actors` lookup table with no auth semantics)
 
-### `customers`
-Represents a customer organization.
-- `id` uuid pk
-- `name` text
-- `created_at` timestamp
+### Ownership rule
+Avoid multi-tenant patterns.
 
-### `profiles`
-One row per authenticated user.
-- `id` uuid pk, equals auth.users.id
-- `role` text: "admin" | "customer"
-- `customer_id` uuid nullable fk -> customers.id (null for admins)
-- `created_at` timestamp
+- Do NOT add `org_id`, `workspace_id`, `member_id`, etc.
+- If you include an `owner_id`, it should be a single constant value for the demo user.
+- Do NOT build queries that filter by a variable user id coming from auth, unless absolutely required by your stack. Prefer constant demo scoping.
 
-### `conversations`
-A conversation belongs to a customer.
-- `id` uuid pk
-- `customer_id` uuid fk -> customers.id
-- `subject` text
-- `status` text: "open" | "pending" | "closed"
-- `tags` text[] (or json array)
-- `created_by` uuid (auth user id)
-- `created_at` timestamp
-- `updated_at` timestamp
+## Seeding and "first run" experience
+The app must feel populated right after login.
 
-### `messages`
-Messages belong to a conversation.
-- `id` uuid pk
-- `conversation_id` uuid fk -> conversations.id
-- `author_id` uuid (auth user id)
-- `author_role` text: "admin" | "customer"
-- `body` text
-- `created_at` timestamp
+Preferred approaches (pick one, simplest wins):
+1. Seed script runs automatically on first run (or first login) and inserts demo data.
+2. Seed data ships as a local JSON fixture and the app reads it (for a fully frontend demo).
+3. If using a DB, ensure the DB is already seeded in dev, and provide a one-command reset.
 
-### `attachments`
-Attachment metadata for a message. File bytes live in Supabase Storage.
-- `id` uuid pk
-- `message_id` uuid fk -> messages.id
-- `customer_id` uuid fk -> customers.id (denormalized for simpler RLS)
-- `file_path` text (path in Storage bucket)
-- `file_name` text
-- `file_type` text
-- `file_size` int
-- `created_at` timestamp
+Requirements:
+- Seeded data should be deterministic. Same login, same experience.
+- Data should cover the primary screens and flows.
+- Include realistic variation: different statuses, timestamps, categories, priorities, etc.
 
-## Storage
-Supabase Storage bucket: `attachments`
+Optional but nice:
+- Add a "Reset demo" button in settings to restore the original dataset.
 
-Path convention:
-`{customerId}/{conversationId}/{messageId}/{uuid}-{filename}`
+## Auth and session (keep it boring)
+This is a demo. Treat auth as a front door, not a security product.
 
-## Security (non-negotiable)
-RLS must be enabled and enforced on every table:
-- customers
-- profiles
-- conversations
-- messages
-- attachments
+- Provide exactly one set of demo credentials (store in env or a config file).
+- Login success creates a session flag (cookie or localStorage) and routes to the app.
+- Logout clears the flag and returns to login.
+- No registration, no email verification, no password reset.
 
-Storage policies must be enabled and enforced on the `attachments` bucket.
+If using an auth provider, it still must behave like a single demo account with no user lifecycle features.
 
-The database must enforce access control. Do not rely on client-side checks for security.
+## UI language rules (avoid confusing users and avoid confusing the AI)
+UI should not imply a real multi-user platform.
 
-### Required RLS behavior
+Avoid:
+- "Invite teammates"
+- "Manage users"
+- "Roles and permissions"
+- "Workspace settings"
+- "Organization"
 
-Profiles:
-- Users can read their own profile row.
-- Admin users may read all profiles only if required by the UI.
+Prefer:
+- "Settings"
+- "Profile" (only for the demo user, minimal)
+- "Preferences"
+- "About this demo" (optional small footer or info)
 
-Customers:
-- Customer users can read only their own customer row (matching profiles.customer_id).
-- Admin users can read all customers.
+If the UI shows other names, it should be in context (senders, contacts, assignees), not as system users.
 
-Conversations:
-- Customer users can read/write only rows where conversations.customer_id = profiles.customer_id.
-- Admin users can read/write all rows.
+## Implementation constraints (anti-overengineering guardrails)
+- Keep architecture single-tenant and demo-first.
+- Avoid complicated policies, permission systems, and multi-user abstractions.
+- Prefer well-known libraries for UI and routing, but do not introduce infra complexity just because it exists.
+- If using a DB with RLS by default, do NOT build complex policies. Either:
+  - disable RLS for demo tables (acceptable for a portfolio demo), or
+  - use the simplest possible single-user policy with a constant demo identity
+- Do not build "future-proof" scaffolding for multi-user. That is explicitly out of scope.
 
-Messages:
-- Customer users can read/write only messages in conversations that belong to their customer.
-- Admin users can read/write all rows.
+Decision rule:
+- When uncertain, choose the simplest approach that improves the demo experience.
 
-Attachments:
-- Customer users can read/write only rows where attachments.customer_id = profiles.customer_id.
-- Admin users can read/write all rows.
+## Acceptance checklist (Definition of Done)
+- [ ] Demo credentials are documented in one place (README or login hint)
+- [ ] Login works reliably and routes to the home screen immediately
+- [ ] Post-login screens are populated with seeded data (no blank product)
+- [ ] Primary flows are navigable and coherent end-to-end
+- [ ] Empty and error states exist where meaningful
+- [ ] No multi-user features exist (invites, orgs, RBAC, user management)
+- [ ] No RLS complexity is introduced that assumes multiple users
+- [ ] The app feels like a believable product demo, not a half-built admin console
 
-Storage:
-- Customer users can read and upload on
+## Notes for any coding agent
+If you find yourself adding:
+- an `organizations` table
+- a `memberships` table
+- a `roles` table
+- a permissions system
+- invite flows
+- multiple user accounts
+
+Stop. You are building the wrong thing. Re-read "The Golden Rule" and simplify.
