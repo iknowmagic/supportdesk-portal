@@ -4,28 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import { Spinner } from '@/components/ui/spinner';
-import { useAuth } from '@/lib/AuthProvider';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
-import { useNavigate, useSearch } from '@tanstack/react-router';
+import { useSearch } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function VerifyOtpPage() {
-  const { session, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
+  const { authLoading, navigate } = useAuthRedirect();
   const search = useSearch({ strict: false });
   const email = (search as { email?: string }).email;
 
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (!authLoading && session) {
-      navigate({ to: '/' });
-    }
-  }, [authLoading, session, navigate]);
 
   // Redirect back to login if no email provided
   useEffect(() => {

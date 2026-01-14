@@ -51,7 +51,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Verify seeded data is deterministic and covers primary screens
 
 ### Auth & Session
-- [ ] Update login form to accept DEMO_USER credentials from .env
+- [x] Update login form to accept DEMO_USER credentials from .env
 - [ ] Implement session management (localStorage flag or cookie)
 - [ ] Add logout functionality (clear session, return to login)
 - [ ] Add route protection (redirect to /login if not authenticated)

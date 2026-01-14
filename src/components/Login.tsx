@@ -4,27 +4,20 @@ import { Button } from '@/components/ui/button';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
 import { Spinner } from '@/components/ui/spinner';
-import { useAuth } from '@/lib/AuthProvider';
+import { useAuthRedirect } from '@/hooks/useAuthRedirect';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
-import { useNavigate } from '@tanstack/react-router';
 import { Inbox } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
 
 export default function LoginPage() {
-  const { session, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const { authLoading, navigate } = useAuthRedirect();
+  const demoEmail = import.meta.env.VITE_DEMO_USER_EMAIL ?? 'demo@example.com';
+  const demoPassword = import.meta.env.VITE_DEMO_USER_PASSWORD ?? '(see .env)';
+  const [email, setEmail] = useState(() => import.meta.env.VITE_DEMO_USER_EMAIL ?? '');
+  const [password, setPassword] = useState(() => import.meta.env.VITE_DEMO_USER_PASSWORD ?? '');
   const [isLoading, setIsLoading] = useState(false);
-
-  // Redirect if already logged in
-  useEffect(() => {
-    if (!authLoading && session) {
-      navigate({ to: '/' });
-    }
-  }, [authLoading, session, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,6 +71,7 @@ export default function LoginPage() {
                   id="email"
                   type="email"
                   placeholder="demo@example.com"
+                  data-testid="login-email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -92,6 +86,7 @@ export default function LoginPage() {
                   id="password"
                   type="password"
                   placeholder="••••••••"
+                  data-testid="login-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
@@ -117,9 +112,9 @@ export default function LoginPage() {
           <FieldDescription className="dark:text-muted-foreground bg-muted/50 dark:bg-muted/20 rounded-md p-3 text-center text-xs">
             <strong>Demo Credentials:</strong>
             <br />
-            Email: demo@example.com
+            Email: {demoEmail}
             <br />
-            Password: {import.meta.env.VITE_DEMO_USER_PASSWORD || '(see .env)'}
+            Password: {demoPassword}
           </FieldDescription>
         </div>
       </div>

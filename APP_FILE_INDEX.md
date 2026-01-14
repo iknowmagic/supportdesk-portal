@@ -3,6 +3,8 @@
 ```text
 ./src
 ├── components
+│   ├── __tests__
+│   │   └── Login.test.tsx
 │   ├── Combobox.tsx
 │   ├── ConfirmDialog.tsx
 │   ├── LayoutHeader.tsx
@@ -19,6 +21,7 @@
 ├── constants
 │   └── durationOptions.ts
 ├── hooks
+│   ├── useAuthRedirect.ts
 │   ├── use-mobile.ts
 │   ├── useMediaQuery.ts
 │   └── useSupabaseLogout.ts
