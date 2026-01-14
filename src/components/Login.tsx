@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/AuthProvider';
 import { supabase } from '@/lib/supabase';
 import { cn } from '@/lib/utils';
 import { useNavigate } from '@tanstack/react-router';
+import { Inbox } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -15,68 +16,37 @@ export default function LoginPage() {
   const { session, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  // Redirect if already logged in (belt and suspenders with router guard)
+  // Redirect if already logged in
   useEffect(() => {
     if (!authLoading && session) {
       navigate({ to: '/' });
     }
   }, [authLoading, session, navigate]);
 
-  // Handle auth errors from URL params (e.g., expired magic links)
-  useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    const error = params.get('error');
-    const errorDescription = params.get('error_description');
-
-    if (error) {
-      toast.error('Authentication failed', {
-        description: errorDescription?.replace(/\+/g, ' ') || 'Invalid or expired link',
-      });
-      // Clean URL after showing error
-      window.history.replaceState({}, '', '/login');
-    }
-  }, []);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      // Send OTP code + magic link to email
-      const { error } = await supabase.auth.signInWithOtp({
+      const { error } = await supabase.auth.signInWithPassword({
         email,
-        options: {
-          emailRedirectTo: window.location.origin, // Redirect to "/" after magic link click
-          shouldCreateUser: true,
-        },
+        password,
       });
 
       if (error) throw error;
 
-      // Navigate to verification page
-      navigate({
-        to: '/login/verify',
-        search: { email },
-      });
-
-      toast.success('Check your email', {
-        description: `We've sent a magic link and 6-digit code to ${email}`,
-      });
+      toast.success('Welcome back!');
+      navigate({ to: '/' });
     } catch (error) {
-      toast.error('Failed to send code', {
-        description: error instanceof Error ? error.message : 'Please try again.',
+      toast.error('Login failed', {
+        description: error instanceof Error ? error.message : 'Please check your credentials.',
       });
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleOAuthPlaceholder = (provider: string) => {
-    toast.info(`${provider} sign-in coming soon`, {
-      description: 'OAuth providers will be available in a future update.',
-    });
   };
 
   // Show loading spinner while checking auth
@@ -86,13 +56,20 @@ export default function LoginPage() {
 
   return (
     <PageTransition>
-      <div className="flex min-h-screen items-center justify-center p-4 bg-background dark:bg-background text-foreground dark:text-foreground">
+      <div className="bg-background dark:bg-background text-foreground dark:text-foreground flex min-h-screen items-center justify-center p-4">
         <div className={cn('flex w-full max-w-sm flex-col gap-6')}>
           <form onSubmit={handleSubmit}>
             <FieldGroup>
-              <div className="flex flex-col items-center gap-2 text-center">
-                <h1 className="text-2xl font-bold text-foreground dark:text-foreground">Sign in to Noctare</h1>
-                <FieldDescription className="dark:text-muted-foreground">Enter your email to continue</FieldDescription>
+              <div className="flex flex-col items-center gap-4 text-center">
+                <div className="bg-primary/10 dark:bg-primary/20 flex size-12 items-center justify-center rounded-lg">
+                  <Inbox className="text-primary dark:text-primary size-7" />
+                </div>
+                <div className="space-y-1">
+                  <h1 className="text-foreground dark:text-foreground text-2xl font-bold">InboxHQ Demo</h1>
+                  <FieldDescription className="dark:text-muted-foreground">
+                    Sign in with demo credentials
+                  </FieldDescription>
+                </div>
               </div>
 
               <Field>
@@ -100,7 +77,7 @@ export default function LoginPage() {
                 <Input
                   id="email"
                   type="email"
-                  placeholder="you@example.com"
+                  placeholder="demo@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -110,64 +87,39 @@ export default function LoginPage() {
               </Field>
 
               <Field>
+                <FieldLabel htmlFor="password">Password</FieldLabel>
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                />
+              </Field>
+
+              <Field>
                 <Button type="submit" disabled={isLoading} className="w-full">
                   {isLoading ? (
                     <>
                       <Spinner className="mr-2" />
-                      Sending code...
+                      Signing in...
                     </>
                   ) : (
-                    'Send code'
+                    'Sign in'
                   )}
-                </Button>
-              </Field>
-
-              <div className="relative">
-                <div className="absolute inset-0 flex items-center">
-                  <span className="w-full border-t border-border dark:border-border" />
-                </div>
-                <div className="relative flex justify-center text-xs uppercase">
-                  <span className="bg-background dark:bg-background text-muted-foreground dark:text-muted-foreground px-2">Or continue with</span>
-                </div>
-              </div>
-
-              <Field className="grid gap-4 sm:grid-cols-2">
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() => handleOAuthPlaceholder('Apple')}
-                  disabled={isLoading}
-                  className="dark:text-foreground dark:border-border"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.559-1.701"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Apple
-                </Button>
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={() => handleOAuthPlaceholder('Google')}
-                  disabled={isLoading}
-                  className="dark:text-foreground dark:border-border"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path
-                      d="M12.48 10.92v3.28h7.84c-.24 1.84-.853 3.187-1.787 4.133-1.147 1.147-2.933 2.4-6.053 2.4-4.827 0-8.6-3.893-8.6-8.72s3.773-8.72 8.6-8.72c2.6 0 4.507 1.027 5.907 2.347l2.307-2.307C18.747 1.44 16.133 0 12.48 0 5.867 0 .307 5.387.307 12s5.56 12 12.173 12c3.573 0 6.267-1.173 8.373-3.36 2.16-2.16 2.84-5.213 2.84-7.667 0-.76-.053-1.467-.173-2.053H12.48z"
-                      fill="currentColor"
-                    />
-                  </svg>
-                  Google
                 </Button>
               </Field>
             </FieldGroup>
           </form>
 
-          <FieldDescription className="text-center text-xs dark:text-muted-foreground">
-            By continuing, you agree to our Terms of Service and Privacy Policy.
+          <FieldDescription className="dark:text-muted-foreground bg-muted/50 dark:bg-muted/20 rounded-md p-3 text-center text-xs">
+            <strong>Demo Credentials:</strong>
+            <br />
+            Email: demo@example.com
+            <br />
+            Password: {import.meta.env.DEMO_USER_PASSWORD || '(see .env)'}
           </FieldDescription>
         </div>
       </div>

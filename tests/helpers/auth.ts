@@ -13,7 +13,6 @@ const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY as string;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
 const DEMO_USER_EMAIL = process.env.DEMO_USER_EMAIL as string;
 const DEMO_USER_PASSWORD = process.env.DEMO_USER_PASSWORD as string;
-const DEFAULT_TIME_ZONE = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 if (!SUPABASE_URL || !ANON_KEY || !SERVICE_ROLE_KEY) {
   throw new Error('Missing Supabase configuration for test helpers');
