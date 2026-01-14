@@ -4,11 +4,18 @@ import ComponentsShowcasePage from '@/pages/ComponentsShowcase';
 import DashboardPage from '@/pages/Dashboard';
 import InboxPage from '@/pages/Inbox';
 import type { Session } from '@supabase/supabase-js';
-import { Outlet, createRootRoute, createRoute, createRouter } from '@tanstack/react-router';
+import { Outlet, createRootRouteWithContext, createRoute, createRouter } from '@tanstack/react-router';
 import LoginPage from './components/Login.tsx';
 import VerifyOtpPage from './components/VerifyOtp.tsx';
 
-const rootRoute = createRootRoute({
+type RouterContext = {
+  auth: {
+    session: Session | null;
+    loading: boolean;
+  };
+};
+
+const rootRoute = createRootRouteWithContext<RouterContext>()({
   component: () => (
     <PageTransition>
       <Outlet />
