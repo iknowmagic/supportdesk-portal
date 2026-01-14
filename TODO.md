@@ -39,3 +39,103 @@ ALL TASKS BELOW THIS POINT
 
 IMPORTANT: Refer APP.md for background information regarding this app. Read it at least once!
 ---
+
+## Phase 1: Foundation & Auth
+
+### Database Setup
+- [ ] Create base migration for demo user profile table (single row for demo user)
+- [ ] Create migration for `actors` reference table (fictional people shown in UI: names, avatars)
+- [ ] Create migration for `tickets` table (support tickets with fromName, assigneeName, status, priority, subject, body, createdAt, updatedAt)
+- [ ] Create migration for `comments` table (replies on tickets, with actorName and body)
+- [ ] Add seed script to populate demo data (realistic tickets, comments, actors)
+- [ ] Verify seeded data is deterministic and covers primary screens
+
+### Auth & Session
+- [ ] Update login form to accept DEMO_USER credentials from .env
+- [ ] Implement session management (localStorage flag or cookie)
+- [ ] Add logout functionality (clear session, return to login)
+- [ ] Add route protection (redirect to /login if not authenticated)
+- [ ] Test login/logout flow end-to-end
+
+## Phase 2: Core UI Structure
+
+### Layout & Navigation
+- [ ] Create app shell layout (header, sidebar/nav, main content area)
+- [ ] Build header component (app logo/name, demo user indicator, logout button)
+- [ ] Build navigation component (links to Inbox, Settings)
+- [ ] Add route definitions for main screens (/inbox, /tickets/:id, /settings)
+- [ ] Implement PageTransition animations for route changes
+
+### Inbox/Dashboard
+- [ ] Create inbox/dashboard page that lists all tickets
+- [ ] Display ticket cards/rows with: subject, fromName, status, priority, timestamp
+- [ ] Add filtering UI (status dropdown: all/open/pending/closed)
+- [ ] Add search input (filter by subject or body text)
+- [ ] Implement empty state for no tickets
+- [ ] Add "New Ticket" button (opens modal or form)
+
+## Phase 3: Ticket Management
+
+### Ticket Detail View
+- [ ] Create ticket detail page (/tickets/:id)
+- [ ] Display full ticket info: subject, fromName, assigneeName, status, priority, body, createdAt
+- [ ] Show comment thread below ticket body
+- [ ] Display comment author (actorName), body, timestamp
+- [ ] Add reply/comment form at bottom
+- [ ] Implement "Add Comment" functionality (insert into comments table)
+- [ ] Add status update controls (dropdown to change status)
+- [ ] Add assignee selector (dropdown of actors)
+- [ ] Test ticket detail and comment posting
+
+### Ticket Creation
+- [ ] Build "New Ticket" modal/form
+- [ ] Add form fields: subject, description/body, priority, from actor
+- [ ] Implement form validation (required fields)
+- [ ] Create ticket in DB on submit
+- [ ] Redirect to new ticket detail page after creation
+- [ ] Show success toast notification
+- [ ] Test ticket creation flow end-to-end
+
+## Phase 4: Polish & Demo Features
+
+### Settings & Profile
+- [ ] Create settings page with minimal demo user profile display
+- [ ] Add "Reset Demo" button to restore original seeded data
+- [ ] Implement reset functionality (truncate tables, re-run seed script)
+- [ ] Add confirmation dialog before reset
+- [ ] Test reset demo functionality
+
+### Error & Empty States
+- [ ] Add error boundary component for unexpected errors
+- [ ] Design and implement empty state for inbox (no tickets)
+- [ ] Design and implement empty state for ticket with no comments
+- [ ] Add loading states for data fetching (skeleton screens)
+- [ ] Add error state for failed API requests (retry option)
+
+### Final Testing & QA
+- [ ] Run full lint check (`pnpm lint`) and fix all issues
+- [ ] Run full test suite (`pnpm test`) and ensure all pass
+- [ ] Manual QA: test login → inbox → create ticket → view ticket → add comment → logout
+- [ ] Manual QA: test filtering and search
+- [ ] Manual QA: test reset demo
+- [ ] Verify no multi-user features exist (no invites, orgs, roles UI)
+- [ ] Update DB_STRUCTURE.md with final schema
+- [ ] Update APP_FILE_INDEX.md with all new components/pages
+- [ ] Update CHANGELOG.md with summary of work
+
+## Phase 5: Documentation & Deployment
+
+### Documentation
+- [ ] Document demo credentials clearly in README.md
+- [ ] Add "First Run" instructions to README
+- [ ] Document seed data reset process
+- [ ] Add screenshots or demo GIF to README (optional)
+
+### Deployment Prep
+- [ ] Verify all env vars are documented
+- [ ] Test build process (`pnpm build`)
+- [ ] Verify production build works (`pnpm preview`)
+- [ ] Prepare deployment configuration for Vercel
+- [ ] Add deployment instructions to README
+
+---
