@@ -11,15 +11,17 @@ loadEnv({ path: resolve(process.cwd(), '.env') });
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL as string;
 const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY as string;
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY as string;
-const DEMO_USER_EMAIL = process.env.DEMO_USER_EMAIL as string;
-const DEMO_USER_PASSWORD = process.env.DEMO_USER_PASSWORD as string;
+const VITE_DEMO_USER_EMAIL = process.env.VITE_DEMO_USER_EMAIL as string;
+const VITE_DEMO_USER_PASSWORD = process.env.VITE_DEMO_USER_PASSWORD as string;
 
 if (!SUPABASE_URL || !ANON_KEY || !SERVICE_ROLE_KEY) {
   throw new Error('Missing Supabase configuration for test helpers');
 }
 
-if (!DEMO_USER_EMAIL || !DEMO_USER_PASSWORD) {
-  throw new Error('DEMO_USER_EMAIL and DEMO_USER_PASSWORD must be defined in the environment for integration tests');
+if (!VITE_DEMO_USER_EMAIL || !VITE_DEMO_USER_PASSWORD) {
+  throw new Error(
+    'VITE_DEMO_USER_EMAIL and VITE_DEMO_USER_PASSWORD must be defined in the environment for integration tests'
+  );
 }
 
 const adminClient = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
@@ -32,8 +34,8 @@ const anonClient = createClient(SUPABASE_URL, ANON_KEY, {
 
 async function signInTestUser() {
   const result = await anonClient.auth.signInWithPassword({
-    email: DEMO_USER_EMAIL,
-    password: DEMO_USER_PASSWORD,
+    email: VITE_DEMO_USER_EMAIL,
+    password: VITE_DEMO_USER_PASSWORD,
   });
   if (result.error) {
     throw result.error;
@@ -49,8 +51,8 @@ async function ensureUserExists() {
   let signInError: AuthError | null = null;
 
   const attempt = await anonClient.auth.signInWithPassword({
-    email: DEMO_USER_EMAIL,
-    password: DEMO_USER_PASSWORD,
+    email: VITE_DEMO_USER_EMAIL,
+    password: VITE_DEMO_USER_PASSWORD,
   });
   if (!attempt.error && attempt.data.user && attempt.data.session) {
     return attempt.data;
@@ -61,8 +63,8 @@ async function ensureUserExists() {
 
   if (shouldCreate) {
     const { error: createError } = await adminClient.auth.admin.createUser({
-      email: DEMO_USER_EMAIL,
-      password: DEMO_USER_PASSWORD,
+      email: VITE_DEMO_USER_EMAIL,
+      password: VITE_DEMO_USER_PASSWORD,
       email_confirm: true,
     });
     if (createError && !/already/i.test(createError.message)) {

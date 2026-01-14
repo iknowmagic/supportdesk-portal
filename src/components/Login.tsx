@@ -119,7 +119,7 @@ export default function LoginPage() {
             <br />
             Email: demo@example.com
             <br />
-            Password: {import.meta.env.DEMO_USER_PASSWORD || '(see .env)'}
+            Password: {import.meta.env.VITE_DEMO_USER_PASSWORD || '(see .env)'}
           </FieldDescription>
         </div>
       </div>

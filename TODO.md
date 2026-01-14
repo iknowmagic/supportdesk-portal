@@ -43,12 +43,12 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 ## Phase 1: Foundation & Auth
 
 ### Database Setup
-- [ ] Create base migration for demo user profile table (single row for demo user)
-- [ ] Create migration for `actors` reference table (fictional people shown in UI: names, avatars)
-- [ ] Create migration for `tickets` table (support tickets with fromName, assigneeName, status, priority, subject, body, createdAt, updatedAt)
-- [ ] Create migration for `comments` table (replies on tickets, with actorName and body)
-- [ ] Add seed script to populate demo data (realistic tickets, comments, actors)
-- [ ] Verify seeded data is deterministic and covers primary screens
+- [x] Create base migration for demo user profile table (single row for demo user)
+- [x] Create migration for `actors` reference table (fictional people shown in UI: names, avatars)
+- [x] Create migration for `tickets` table (support tickets with fromName, assigneeName, status, priority, subject, body, createdAt, updatedAt)
+- [x] Create migration for `comments` table (replies on tickets, with actorName and body)
+- [x] Add seed script to populate demo data (realistic tickets, comments, actors)
+- [x] Verify seeded data is deterministic and covers primary screens
 
 ### Auth & Session
 - [ ] Update login form to accept DEMO_USER credentials from .env

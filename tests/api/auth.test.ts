@@ -11,14 +11,14 @@ loadEnv({ path: resolve(process.cwd(), '.env') });
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL as string;
 const ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY as string;
-const DEMO_USER_EMAIL = process.env.DEMO_USER_EMAIL as string;
-const DEMO_USER_PASSWORD = process.env.DEMO_USER_PASSWORD as string;
+const VITE_DEMO_USER_EMAIL = process.env.VITE_DEMO_USER_EMAIL as string;
+const VITE_DEMO_USER_PASSWORD = process.env.VITE_DEMO_USER_PASSWORD as string;
 
 if (!SUPABASE_URL || !ANON_KEY) {
   throw new Error('Missing Supabase configuration for auth tests');
 }
 
-if (!DEMO_USER_EMAIL || !DEMO_USER_PASSWORD) {
+if (!VITE_DEMO_USER_EMAIL || !VITE_DEMO_USER_PASSWORD) {
   throw new Error('Missing DEMO_USER credentials in .env');
 }
 
@@ -73,14 +73,14 @@ describe('Authentication', () => {
       });
 
       const { data, error } = await client.auth.signInWithPassword({
-        email: DEMO_USER_EMAIL,
-        password: DEMO_USER_PASSWORD,
+        email: VITE_DEMO_USER_EMAIL,
+        password: VITE_DEMO_USER_PASSWORD,
       });
 
       expect(error).toBeNull();
       expect(data.user).toBeDefined();
       expect(data.session).toBeDefined();
-      expect(data.user?.email).toBe(DEMO_USER_EMAIL);
+      expect(data.user?.email).toBe(VITE_DEMO_USER_EMAIL);
       expect(data.session?.access_token).toBeTruthy();
     });
 
@@ -90,8 +90,8 @@ describe('Authentication', () => {
       });
 
       const signIn = await client.auth.signInWithPassword({
-        email: DEMO_USER_EMAIL,
-        password: DEMO_USER_PASSWORD,
+        email: VITE_DEMO_USER_EMAIL,
+        password: VITE_DEMO_USER_PASSWORD,
       });
 
       expect(signIn.error).toBeNull();
@@ -106,7 +106,7 @@ describe('Authentication', () => {
       expect(error).toBeNull();
       expect(user).toBeDefined();
       expect(user?.id).toBe(signIn.data.user?.id);
-      expect(user?.email).toBe(DEMO_USER_EMAIL);
+      expect(user?.email).toBe(VITE_DEMO_USER_EMAIL);
     });
   });
 });
