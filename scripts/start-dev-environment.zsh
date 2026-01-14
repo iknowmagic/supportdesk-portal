@@ -53,7 +53,7 @@ if pgrep -f "supabase functions serve" > /dev/null; then
 fi
 
 # Start Supabase if not running
-if lsof -ti:54321 > /dev/null 2>&1; then
+if lsof -ti:55321 > /dev/null 2>&1; then
     echo "${GREEN}✓ Supabase is already running${NC}"
 else
     echo "${BLUE}📦 Starting Supabase local instance...${NC}"
@@ -62,7 +62,7 @@ else
 fi
 
 # Install concurrently if not already installed
-if ! command -v pnpx concurrently &> /dev/null; then
+if ! command -v pnpx &> /dev/null || ! command -v concurrently &> /dev/null; then
     echo "${BLUE}📦 Installing concurrently...${NC}"
     pnpm add -D concurrently
     echo "${GREEN}✓ Concurrently installed${NC}\n"
@@ -82,4 +82,4 @@ pnpx concurrently \
   --kill-others-on-fail \
   --raw \
   "vercel dev --listen 3001 2>&1 | tee ./tmp/vercel.log" \
-  "pnpx supabase functions serve auto-scheduler --no-verify-jwt 2>&1 | tee ./tmp/supabase-functions.log"
+  "pnpx supabase functions serve --no-verify-jwt 2>&1 | tee ./tmp/supabase-functions.log"
