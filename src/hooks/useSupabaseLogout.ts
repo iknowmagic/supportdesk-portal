@@ -9,8 +9,25 @@ export function useSupabaseLogout() {
   const logout = useCallback(async () => {
     setIsLoggingOut(true);
     try {
+      const { data } = await supabase.auth.getSession();
+      if (!data.session?.access_token) {
+        toast.success('Logged out successfully');
+        return true;
+      }
+
       const { error } = await supabase.auth.signOut({ scope: 'local' });
-      if (error) throw error;
+      if (error) {
+        const status = typeof error === 'object' && error && 'status' in error ? Number(error.status) : undefined;
+        const message = error instanceof Error ? error.message : String(error);
+
+        if (status === 403 || /invalid jwt|no session|not authenticated/i.test(message)) {
+          toast.success('Logged out successfully');
+          return true;
+        }
+
+        throw error;
+      }
+
       toast.success('Logged out successfully');
       return true;
     } catch (error) {

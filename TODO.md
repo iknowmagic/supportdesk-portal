@@ -49,6 +49,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Create migration for `comments` table (replies on tickets, with actorName and body)
 - [x] Add seed script to populate demo data (realistic tickets, comments, actors)
 - [x] Verify seeded data is deterministic and covers primary screens
+- [x] Update reset functions to generate dense deterministic demo data after wipe
 
 ### Auth & Session
 - [x] Update login form to accept DEMO_USER credentials from .env

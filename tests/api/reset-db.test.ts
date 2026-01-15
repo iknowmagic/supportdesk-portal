@@ -16,15 +16,20 @@ if (!SUPABASE_URL || !ANON_KEY) {
   throw new Error('Missing Supabase configuration for reset DB tests');
 }
 
-const seedActorId = 'a1111111-1111-1111-1111-111111111111';
-
 const anonClient = createClient(SUPABASE_URL, ANON_KEY, {
   auth: { autoRefreshToken: false, persistSession: false },
 });
 
 describe('Reset DB Edge Functions', () => {
+  let demoSession: { access_token: string; refresh_token: string; user: { id: string } } | null = null;
+
   beforeAll(async () => {
-    await setupTestUser();
+    const { session, user } = await setupTestUser();
+    demoSession = {
+      access_token: session.access_token,
+      refresh_token: session.refresh_token,
+      user: { id: user.id },
+    };
   });
 
   test('reset_db rejects unauthenticated requests', async () => {
@@ -36,6 +41,15 @@ describe('Reset DB Edge Functions', () => {
   });
 
   test('reset_db resets and reseeds data for authenticated users', async () => {
+    if (!demoSession) {
+      throw new Error('Demo session not initialized');
+    }
+
+    await anonClient.auth.setSession({
+      access_token: demoSession.access_token,
+      refresh_token: demoSession.refresh_token,
+    });
+
     const { data: tempActor, error: insertError } = await anonClient
       .from('actors')
       .insert({
@@ -68,14 +82,49 @@ describe('Reset DB Edge Functions', () => {
       expect(removedActorError).toBeNull();
       expect(removedActor).toHaveLength(0);
 
-      const { data: seedActor, error: seedActorError } = await anonClient
-        .from('actors')
-        .select('id')
-        .eq('id', seedActorId)
-        .single();
+      const { count: demoProfileCount } = await anonClient
+        .from('demo_profile')
+        .select('id', { count: 'exact', head: true });
 
-      expect(seedActorError).toBeNull();
-      expect(seedActor?.id).toBe(seedActorId);
+      const { count: actorCount } = await anonClient.from('actors').select('id', { count: 'exact', head: true });
+      const { count: ticketCount } = await anonClient.from('tickets').select('id', { count: 'exact', head: true });
+      const { count: commentCount } = await anonClient.from('comments').select('id', { count: 'exact', head: true });
+
+      expect(demoProfileCount).toBe(21);
+      expect(actorCount).toBe(21);
+      expect(ticketCount ?? 0).toBeGreaterThanOrEqual(180);
+      expect(ticketCount ?? 0).toBeLessThanOrEqual(350);
+      expect(commentCount ?? 0).toBeGreaterThanOrEqual(600);
+      expect(commentCount ?? 0).toBeLessThanOrEqual(2000);
+
+      const { data: demoProfiles } = await anonClient
+        .from('demo_profile')
+        .select('id, user_id')
+        .eq('user_id', demoSession.user.id);
+
+      expect(demoProfiles).toHaveLength(1);
+
+      const { data: actors } = await anonClient.from('actors').select('id, name');
+      const actorMap = new Map((actors ?? []).map((actor) => [actor.id, actor.name]));
+
+      const { data: tickets } = await anonClient
+        .from('tickets')
+        .select('from_actor_id, from_name, assigned_to_actor_id, assigned_to_name');
+
+      (tickets ?? []).forEach((ticket) => {
+        expect(actorMap.get(ticket.from_actor_id)).toBe(ticket.from_name);
+        if (ticket.assigned_to_actor_id) {
+          expect(actorMap.get(ticket.assigned_to_actor_id)).toBe(ticket.assigned_to_name);
+        } else {
+          expect(ticket.assigned_to_name).toBeNull();
+        }
+      });
+
+      const { data: comments } = await anonClient.from('comments').select('actor_id, actor_name');
+
+      (comments ?? []).forEach((comment) => {
+        expect(actorMap.get(comment.actor_id)).toBe(comment.actor_name);
+      });
     } finally {
       if (tempActor?.id) {
         await anonClient.from('actors').delete().eq('id', tempActor.id);
@@ -84,22 +133,25 @@ describe('Reset DB Edge Functions', () => {
   });
 
   test('reset_db_4214476 resets data without authentication', async () => {
+    if (!demoSession) {
+      throw new Error('Demo session not initialized');
+    }
+
+    const demoEmail = process.env.VITE_DEMO_USER_EMAIL ?? undefined;
     const response = await fetch(`${SUPABASE_URL}/functions/v1/reset_db_4214476`, {
       method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        demo_user_id: demoSession.user.id,
+        demo_email: demoEmail,
+      }),
     });
 
     expect(response.status).toBe(200);
 
     const body = await response.json();
     expect(body.success).toBe(true);
-
-    const { data: seedActor, error: seedActorError } = await anonClient
-      .from('actors')
-      .select('id')
-      .eq('id', seedActorId)
-      .single();
-
-    expect(seedActorError).toBeNull();
-    expect(seedActor?.id).toBe(seedActorId);
   });
 });

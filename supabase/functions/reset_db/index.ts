@@ -5,6 +5,7 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2';
 import { populateDatabase, wipeDatabase } from '../_shared/db-operations.ts';
+import { DEMO_EMAIL } from '../_shared/seed-data.ts';
 
 Deno.serve(async (req) => {
   // Only allow POST requests
@@ -24,18 +25,6 @@ Deno.serve(async (req) => {
         headers: { 'Content-Type': 'application/json' },
       });
     }
-
-    // Create Supabase client with service role to bypass RLS
-    const supabaseAdmin = createClient(
-      Deno.env.get('SUPABASE_URL') ?? '',
-      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
-      {
-        auth: {
-          autoRefreshToken: false,
-          persistSession: false,
-        },
-      }
-    );
 
     const supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
       global: {
@@ -61,11 +50,13 @@ Deno.serve(async (req) => {
       });
     }
 
+    const demoEmail = user.email ?? Deno.env.get('VITE_DEMO_USER_EMAIL') ?? DEMO_EMAIL;
+
     // Wipe the database
-    await wipeDatabase(supabaseAdmin);
+    await wipeDatabase(supabaseClient);
 
     // Populate with fresh seed data
-    await populateDatabase(supabaseAdmin);
+    await populateDatabase(supabaseClient, { demoUserId: user.id, demoEmail });
 
     return new Response(
       JSON.stringify({

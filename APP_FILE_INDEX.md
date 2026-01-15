@@ -24,6 +24,8 @@
 ├── constants
 │   └── durationOptions.ts
 ├── hooks
+│   ├── __tests__
+│   │   └── useSupabaseLogout.test.tsx
 │   ├── useAuthRedirect.ts
 │   ├── use-mobile.ts
 │   ├── useMediaQuery.ts
