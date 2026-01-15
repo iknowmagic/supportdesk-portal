@@ -1,29 +1,38 @@
 import { useEffect, useState } from 'react';
 
-const MS_PER_MINUTE = 60_000;
+const MS_PER_SECOND = 1000;
 
-const getMinutesUntilNextHour = () => {
+const getTimeRemaining = () => {
   const now = new Date();
   const nextHour = new Date(now);
   nextHour.setHours(now.getHours() + 1, 0, 0, 0);
   const diffMs = nextHour.getTime() - now.getTime();
-  return Math.max(0, Math.floor(diffMs / MS_PER_MINUTE));
+  const totalSeconds = Math.max(0, Math.ceil(diffMs / MS_PER_SECOND));
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
+  return { minutes, seconds };
 };
 
-export function ResetCountdown() {
-  const [minutesLeft, setMinutesLeft] = useState(getMinutesUntilNextHour);
+type ResetCountdownProps = {
+  seconds?: boolean;
+};
+
+export function ResetCountdown({ seconds = true }: ResetCountdownProps) {
+  const [timeLeft, setTimeLeft] = useState(getTimeRemaining);
 
   useEffect(() => {
     const interval = window.setInterval(() => {
-      setMinutesLeft(getMinutesUntilNextHour());
+      setTimeLeft(getTimeRemaining());
     }, 1000);
 
     return () => window.clearInterval(interval);
   }, []);
 
+  const displayValue = seconds ? `${timeLeft.minutes}:${String(timeLeft.seconds).padStart(2, '0')}` : timeLeft.minutes;
+
   return (
     <span data-testid="reset-countdown" aria-live="polite">
-      {minutesLeft}
+      {displayValue}
     </span>
   );
 }

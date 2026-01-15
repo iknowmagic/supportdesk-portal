@@ -14,6 +14,6 @@ describe('ResetCountdown', () => {
     render(<ResetCountdown />);
 
     const value = screen.getByTestId('reset-countdown');
-    expect(value.textContent).toBe('29');
+    expect(value.textContent).toBe('29:45');
   });
 });

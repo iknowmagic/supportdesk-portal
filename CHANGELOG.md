@@ -12,6 +12,7 @@
 - Added an AppShell layout with header/sidebar structure and wrapped the primary pages.
 - Added demo auto-login persistence so sessions only end after explicit logout.
 - Replaced the login demo credentials hint with an hourly reset countdown message.
+- Added a seconds toggle to the reset countdown display.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

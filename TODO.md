@@ -60,6 +60,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Add route protection (redirect to /login if not authenticated)
 - [x] Test login/logout flow end-to-end
 - [x] Replace login demo credentials hint with hourly reset countdown
+- [x] Add seconds toggle to reset countdown display
 
 ## Phase 2: Core UI Structure
 

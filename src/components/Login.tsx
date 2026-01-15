@@ -112,7 +112,7 @@ export default function LoginPage() {
             className="dark:text-muted-foreground bg-muted/50 dark:bg-muted/20 rounded-md p-3 text-center text-xs"
             data-testid="login-reset-message"
           >
-            The system will reset in <ResetCountdown /> min.
+            The system will reset in <ResetCountdown seconds={true} /> min.
           </FieldDescription>
         </div>
       </div>
