@@ -50,7 +50,17 @@ Deno.serve(async (req) => {
     .order('updated_at', { ascending: false });
 
   if (error) {
-    return new Response(JSON.stringify({ error: 'Failed to load tickets', details: error.message }), {
+    const message = error.message?.toLowerCase() ?? '';
+    const code = typeof error.code === 'string' ? error.code : '';
+
+    if (code === '42501' || message.includes('permission denied') || message.includes('insufficient_privilege')) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    return new Response(JSON.stringify({ error: 'Failed to load tickets' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

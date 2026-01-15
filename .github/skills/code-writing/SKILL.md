@@ -17,6 +17,8 @@ Ensure that you read what this project intends to do in APP.md. Revise DB_STRUCT
 
 The logic goes to the backend, not the frontend. Aim to create a dumb frontend. I should be able to change frontend implementations without losing logic. AGAIN, VERY IMPORTANT: KEEP THE LOGIN IN THE BACKEND AS MUCH AS POSSIBLE. Do not opt for "cheap", quick solutions that favor frontend logic when the backend can and should carry the logic of the app.
 
+All app data access must go through Edge functions. Do not call Supabase REST, GraphQL, RPC, or `supabase.from(...)` directly from frontend code.
+
 ## Stage 2: Ensure a clean environment before starting
 
 Run `pnpm lint:file` and revise the resulting file  ./tmp/lint-errors.txt. Solve ALL lint errors to ensure you start with a clean environment.

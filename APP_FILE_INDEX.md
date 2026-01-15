@@ -40,14 +40,11 @@
 │   ├── api
 │   │   └── resetDemo.ts
 │   │   └── tickets.ts
-│   ├── graphql
-│   │   └── events.ts
 │   ├── AuthProvider.tsx
 │   ├── authGuard.ts
 │   ├── clearSupabaseStorage.ts
 │   ├── colorUtils.ts
 │   ├── devLogger.ts
-│   ├── graphqlClient.ts
 │   ├── networkCapture.ts
 │   ├── noctare.ts
 │   ├── queryClient.ts
