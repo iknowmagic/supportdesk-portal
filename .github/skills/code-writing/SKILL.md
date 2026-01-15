@@ -19,6 +19,8 @@ The logic goes to the backend, not the frontend. Aim to create a dumb frontend. 
 
 All app data access must go through Edge functions. Do not call Supabase REST, GraphQL, RPC, or `supabase.from(...)` directly from frontend code.
 
+When creating migration files, pause and wait for the user to apply them before continuing.
+
 ## Stage 2: Ensure a clean environment before starting
 
 Run `pnpm lint:file` and revise the resulting file  ./tmp/lint-errors.txt. Solve ALL lint errors to ensure you start with a clean environment.

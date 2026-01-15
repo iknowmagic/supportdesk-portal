@@ -17,49 +17,104 @@ Deno.serve(async (req) => {
   }
 
   try {
-    let payload: { demo_email?: string; demo_password?: string } = {};
+    const supabaseUrl = Deno.env.get('SUPABASE_URL') ?? '';
+    const anonKey = Deno.env.get('SUPABASE_ANON_KEY') ?? '';
+    const authHeader = req.headers.get('Authorization');
+    let demoUserId: string | null = null;
+    let demoEmail = Deno.env.get('VITE_DEMO_USER_EMAIL') ?? DEMO_EMAIL;
+    let accessToken = authHeader?.replace(/^Bearer\s+/i, '') ?? null;
 
-    if (req.headers.get('content-type')?.includes('application/json')) {
-      payload = (await req.json().catch(() => ({}))) as { demo_email?: string; demo_password?: string };
-    }
-
-    const demoPassword = payload.demo_password ?? Deno.env.get('VITE_DEMO_USER_PASSWORD');
-    const demoEmail = payload.demo_email ?? Deno.env.get('VITE_DEMO_USER_EMAIL') ?? DEMO_EMAIL;
-    const supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
-      auth: {
-        autoRefreshToken: false,
-        persistSession: false,
-      },
-    });
-    if (!demoPassword) {
-      return new Response(JSON.stringify({ error: 'Demo password not configured' }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json' },
+    if (authHeader) {
+      const supabaseClient = createClient(supabaseUrl, anonKey, {
+        global: {
+          headers: {
+            Authorization: authHeader,
+          },
+        },
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
       });
+
+      const {
+        data: { user },
+        error: authError,
+      } = await supabaseClient.auth.getUser();
+
+      if (authError || !user) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      demoUserId = user.id;
+      demoEmail = user.email ?? demoEmail;
+    } else {
+      let payload: { demo_email?: string; demo_password?: string } = {};
+
+      if (req.headers.get('content-type')?.includes('application/json')) {
+        payload = (await req.json().catch(() => ({}))) as { demo_email?: string; demo_password?: string };
+      }
+
+      const demoPassword = payload.demo_password ?? Deno.env.get('VITE_DEMO_USER_PASSWORD');
+      demoEmail = payload.demo_email ?? demoEmail;
+
+      if (!demoPassword) {
+        return new Response(JSON.stringify({ error: 'Demo password not configured' }), {
+          status: 500,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      const supabaseClient = createClient(supabaseUrl, anonKey, {
+        auth: {
+          autoRefreshToken: false,
+          persistSession: false,
+        },
+      });
+
+      const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
+        email: demoEmail,
+        password: demoPassword,
+      });
+
+      if (signInError || !signInData.user || !signInData.session) {
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      demoUserId = signInData.user.id;
+      accessToken = signInData.session.access_token;
     }
 
-    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
-      email: demoEmail,
-      password: demoPassword,
-    });
-
-    if (signInError || !signInData.user || !signInData.session) {
-      return new Response(JSON.stringify({ error: 'Demo user sign-in failed' }), {
+    if (!demoUserId || !accessToken) {
+      return new Response(JSON.stringify({ error: 'Unauthorized' }), {
         status: 401,
         headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    await supabaseClient.auth.setSession({
-      access_token: signInData.session.access_token,
-      refresh_token: signInData.session.refresh_token,
+    const supabaseClient = createClient(supabaseUrl, anonKey, {
+      global: {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      },
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
     });
 
     // Wipe the database
     await wipeDatabase(supabaseClient);
 
     // Populate with fresh seed data
-    await populateDatabase(supabaseClient, { demoUserId: signInData.user.id, demoEmail });
+    await populateDatabase(supabaseClient, { demoUserId, demoEmail });
 
     return new Response(
       JSON.stringify({
@@ -72,11 +127,10 @@ Deno.serve(async (req) => {
         headers: { 'Content-Type': 'application/json' },
       }
     );
-  } catch (error) {
+  } catch (_error) {
     return new Response(
       JSON.stringify({
         error: 'Internal server error',
-        details: error instanceof Error ? error.message : 'Unknown error',
       }),
       {
         status: 500,

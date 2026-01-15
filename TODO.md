@@ -63,7 +63,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 ## Phase 2: Core UI Structure
 
 ### Layout & Navigation
-- [ ] Create app shell layout (header, sidebar/nav, main content area)
+- [x] Create app shell layout (header, sidebar/nav, main content area)
 - [ ] Build header component (app logo/name, demo user indicator, logout button)
 - [ ] Build navigation component (links to Inbox, Settings)
 - [ ] Add route definitions for main screens (/inbox, /tickets/:id, /settings)

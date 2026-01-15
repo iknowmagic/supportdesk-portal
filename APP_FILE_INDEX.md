@@ -4,9 +4,11 @@
 ./src
 ├── components
 │   ├── __tests__
+│   │   ├── AppShell.test.tsx
 │   │   ├── Login.test.tsx
 │   │   ├── ResetDemoButton.test.tsx
 │   │   └── UserMenu.test.tsx
+│   ├── AppShell.tsx
 │   ├── Combobox.tsx
 │   ├── ConfirmDialog.tsx
 │   ├── LayoutHeader.tsx
@@ -17,6 +19,7 @@
 │   ├── ResetDemoButton.tsx
 │   ├── RouterApp.tsx
 │   ├── SectionCard.tsx
+│   ├── SidebarNav.tsx
 │   ├── Tabs.tsx
 │   ├── ThemeWatcher.tsx
 │   ├── UserMenu.tsx
