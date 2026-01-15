@@ -39,6 +39,7 @@
 │   │   └── authGuard.test.ts
 │   ├── api
 │   │   └── resetDemo.ts
+│   │   └── tickets.ts
 │   ├── graphql
 │   │   └── events.ts
 │   ├── AuthProvider.tsx
@@ -86,13 +87,16 @@
     │   └── seed-data.ts
     ├── reset_db
     │   └── index.ts
-    └── reset_db_4214476
+    ├── reset_db_4214476
+    │   └── index.ts
+    └── tickets_list
         └── index.ts
 ./tests
 ├── api
 │   ├── authz-rest.test.ts
 │   ├── auth.test.ts
-│   └── reset-db.test.ts
+│   ├── reset-db.test.ts
+│   └── tickets-list.test.ts
 ├── helpers
 │   └── auth.ts
 └── lib

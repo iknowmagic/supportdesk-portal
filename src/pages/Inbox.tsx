@@ -6,52 +6,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
-import { supabase } from '@/lib/supabase';
+import { listTickets, type TicketSummary } from '@/lib/api/tickets';
+import { queryKeys } from '@/lib/queryKeys';
+import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { formatDistanceToNow } from 'date-fns';
 import { Inbox, Plus, Search } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'sonner';
-
-type Ticket = {
-  id: string;
-  subject: string;
-  body: string;
-  status: string;
-  priority: string;
-  from_name: string;
-  assigned_to_name: string | null;
-  created_at: string;
-  updated_at: string;
-};
 
 export default function InboxPage() {
   const navigate = useNavigate();
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
-    loadTickets();
-  }, []);
-
-  async function loadTickets() {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase.from('tickets').select('*').order('updated_at', { ascending: false });
-
-      if (error) throw error;
-
-      setTickets(data || []);
-    } catch (error) {
+  const { data: tickets = [], isLoading } = useQuery<TicketSummary[]>({
+    queryKey: queryKeys.tickets,
+    queryFn: listTickets,
+    retry: false,
+    onError: (error) => {
       toast.error('Failed to load tickets', {
         description: error instanceof Error ? error.message : 'Please try again',
       });
-    } finally {
-      setLoading(false);
-    }
-  }
+    },
+  });
 
   const filteredTickets = tickets.filter((ticket) => {
     const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
@@ -144,7 +122,7 @@ export default function InboxPage() {
 
             {/* Tickets List */}
             <div className="space-y-3">
-              {loading ? (
+              {isLoading ? (
                 // Loading skeletons
                 Array.from({ length: 5 }).map((_, i) => (
                   <Card key={i}>

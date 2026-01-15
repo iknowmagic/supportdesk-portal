@@ -6,6 +6,7 @@
 - Expanded reset API tests to validate counts and denormalized field consistency.
 - Treated missing-session logout as success and added logout toast coverage tests.
 - Enabled RLS policies to require authentication on demo tables and added REST auth coverage tests.
+- Routed ticket listing through an authenticated Edge function and added auth tests for the endpoint.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

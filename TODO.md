@@ -75,6 +75,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [ ] Add search input (filter by subject or body text)
 - [ ] Implement empty state for no tickets
 - [ ] Add "New Ticket" button (opens modal or form)
+- [x] Route ticket list through authenticated Edge function (no direct REST calls)
 
 ## Phase 3: Ticket Management
 
