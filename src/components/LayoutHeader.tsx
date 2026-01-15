@@ -1,5 +1,6 @@
 import noctareLogo from '@/assets/noctare-light.png';
 import { Button } from '@/components/ui/button';
+import { ResetCountdown } from '@/components/ResetCountdown';
 import { ResetDemoButton } from '@/components/ResetDemoButton';
 import { UserMenu } from '@/components/UserMenu';
 import React from 'react';
@@ -19,6 +20,13 @@ export function LayoutHeader({ children }: LayoutHeaderProps) {
       </div>
       <div className="flex items-center gap-2">
         <div id="header-right-slot" className="flex items-center gap-2">
+          <div
+            className="text-muted-foreground hidden items-center gap-1 text-xs font-medium tabular-nums sm:flex"
+            data-testid="header-reset-countdown"
+          >
+            <span>Reset in</span>
+            <ResetCountdown />
+          </div>
           <ResetDemoButton />
         </div>
         <UserMenu align="end" side="bottom" />

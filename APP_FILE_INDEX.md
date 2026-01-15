@@ -5,6 +5,7 @@
 ├── components
 │   ├── __tests__
 │   │   ├── AppShell.test.tsx
+│   │   ├── LayoutHeader.test.tsx
 │   │   ├── Login.test.tsx
 │   │   ├── ResetCountdown.test.tsx
 │   │   ├── ResetDemoButton.test.tsx
