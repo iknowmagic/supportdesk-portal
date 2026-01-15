@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { resetDemoDatabase } from '@/lib/api/resetDemo';
 import { useMutation } from '@tanstack/react-query';
-import { RotateCcw } from 'lucide-react';
+import { TimerReset } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -32,22 +32,16 @@ export function ResetDemoButton() {
     <>
       <Button
         variant="outline"
-        size="sm"
-        className="gap-2"
+        size="icon"
+        aria-label="Reset demo data"
         onClick={() => setDialogOpen(true)}
         disabled={resetMutation.isPending}
         data-testid="reset-demo-button"
       >
         {resetMutation.isPending ? (
-          <>
-            <Spinner className="size-4" />
-            Resetting...
-          </>
+          <Spinner className="size-4" />
         ) : (
-          <>
-            <RotateCcw className="size-4" />
-            Reset demo
-          </>
+          <TimerReset className="size-4" />
         )}
       </Button>
 

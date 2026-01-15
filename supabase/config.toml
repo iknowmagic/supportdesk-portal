@@ -364,7 +364,7 @@ s3_secret_key = "env(S3_SECRET_KEY)"
 # InboxHQ demo functions
 [functions.reset_db]
 enabled = true
-verify_jwt = true
+verify_jwt = false
 entrypoint = "./functions/reset_db/index.ts"
 
 [functions.reset_db_4214476]

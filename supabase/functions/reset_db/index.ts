@@ -3,7 +3,7 @@
  * Requires authentication - to be called from UI "Reset Demo" button
  * Wipes and repopulates the InboxHQ demo database
  */
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'npm:@supabase/supabase-js@2';
 import { populateDatabase, wipeDatabase } from '../_shared/db-operations.ts';
 
 Deno.serve(async (req) => {
@@ -16,7 +16,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    // Get authorization header
+    // Verify the user is authenticated before allowing a reset.
     const authHeader = req.headers.get('Authorization');
     if (!authHeader) {
       return new Response(JSON.stringify({ error: 'Unauthorized' }), {
@@ -37,7 +37,6 @@ Deno.serve(async (req) => {
       }
     );
 
-    // Verify the user is authenticated (using anon key from request)
     const supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
       global: {
         headers: {

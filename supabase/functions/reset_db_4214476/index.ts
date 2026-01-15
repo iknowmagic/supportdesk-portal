@@ -3,7 +3,7 @@
  * No authentication required - for hourly cron job
  * Wipes and repopulates the InboxHQ demo database
  */
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from 'npm:@supabase/supabase-js@2';
 import { populateDatabase, wipeDatabase } from '../_shared/db-operations.ts';
 
 Deno.serve(async (req) => {
