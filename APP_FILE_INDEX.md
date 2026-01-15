@@ -6,6 +6,7 @@
 │   ├── __tests__
 │   │   ├── AppShell.test.tsx
 │   │   ├── Login.test.tsx
+│   │   ├── ResetCountdown.test.tsx
 │   │   ├── ResetDemoButton.test.tsx
 │   │   └── UserMenu.test.tsx
 │   ├── AppShell.tsx
@@ -16,6 +17,7 @@
 │   ├── ModalShell.tsx
 │   ├── PageLoader.tsx
 │   ├── PageTransition.tsx
+│   ├── ResetCountdown.tsx
 │   ├── ResetDemoButton.tsx
 │   ├── RouterApp.tsx
 │   ├── SectionCard.tsx
@@ -39,11 +41,13 @@
 │       └── root-provider.tsx
 ├── lib
 │   ├── __tests__
+│   │   ├── AuthProvider.test.tsx
 │   │   └── authGuard.test.ts
 │   ├── api
-│   │   └── resetDemo.ts
+│   │   ├── resetDemo.ts
 │   │   └── tickets.ts
 │   ├── AuthProvider.tsx
+│   ├── authStorage.ts
 │   ├── authGuard.ts
 │   ├── clearSupabaseStorage.ts
 │   ├── colorUtils.ts

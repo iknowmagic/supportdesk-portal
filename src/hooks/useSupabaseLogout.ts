@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import { setDemoAutoLoginEnabled } from '@/lib/authStorage';
 import { supabase } from '@/lib/supabase';
 import { noctare } from '@/lib/noctare';
 import { toast } from 'sonner';
@@ -11,6 +12,7 @@ export function useSupabaseLogout() {
     try {
       const { data } = await supabase.auth.getSession();
       if (!data.session?.access_token) {
+        setDemoAutoLoginEnabled(false);
         toast.success('Logged out successfully');
         return true;
       }
@@ -21,6 +23,7 @@ export function useSupabaseLogout() {
         const message = error instanceof Error ? error.message : String(error);
 
         if (status === 403 || /invalid jwt|no session|not authenticated/i.test(message)) {
+          setDemoAutoLoginEnabled(false);
           toast.success('Logged out successfully');
           return true;
         }
@@ -28,6 +31,7 @@ export function useSupabaseLogout() {
         throw error;
       }
 
+      setDemoAutoLoginEnabled(false);
       toast.success('Logged out successfully');
       return true;
     } catch (error) {

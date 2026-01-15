@@ -1,6 +1,7 @@
 import type { Session, User } from '@supabase/supabase-js';
 import { noctare } from './devLogger';
 import { createContext, useContext, useEffect, useState } from 'react';
+import { getDemoAutoLoginEnabled, setDemoAutoLoginEnabled } from './authStorage';
 import { supabase } from './supabase';
 
 interface AuthContextType {
@@ -29,11 +30,49 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Get initial session from Supabase
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setLoading(false);
-    });
+    let isActive = true;
+
+    const loadSession = async () => {
+      try {
+        // Get initial session from Supabase
+        const { data } = await supabase.auth.getSession();
+        if (!isActive) return;
+
+        if (data.session) {
+          setSession(data.session);
+          setDemoAutoLoginEnabled(true);
+          setLoading(false);
+          return;
+        }
+
+        const shouldAutoLogin = getDemoAutoLoginEnabled();
+        const demoEmail = import.meta.env.VITE_DEMO_USER_EMAIL;
+        const demoPassword = import.meta.env.VITE_DEMO_USER_PASSWORD;
+
+        if (shouldAutoLogin && demoEmail && demoPassword) {
+          const { data: signInData, error } = await supabase.auth.signInWithPassword({
+            email: demoEmail,
+            password: demoPassword,
+          });
+
+          if (!isActive) return;
+
+          if (error) {
+            noctare.log('[Auth] Auto-login failed', error);
+          } else {
+            setSession(signInData.session);
+          }
+        }
+      } catch (error) {
+        noctare.log('[Auth] Session check failed', error);
+      } finally {
+        if (isActive) {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadSession();
 
     // Listen for auth state changes
     // Best practice: Use onAuthStateChange to handle all session updates
@@ -44,13 +83,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (event === 'INITIAL_SESSION') {
         // Handle initial session loaded from storage
         setSession(session);
+        if (session) {
+          setDemoAutoLoginEnabled(true);
+        }
       } else if (event === 'SIGNED_IN') {
         noctare.log('[Auth] User signed in', {
           details: session?.user?.email,
         });
+        setDemoAutoLoginEnabled(true);
         setSession(session);
       } else if (event === 'SIGNED_OUT') {
         noctare.log('[Auth] User signed out');
+        setDemoAutoLoginEnabled(false);
         setSession(null);
 
         // Supabase's signOut() should handle clearing the current project's token
@@ -68,7 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isActive = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   // Show loading screen while checking auth status

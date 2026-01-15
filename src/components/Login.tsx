@@ -1,5 +1,6 @@
 import { PageLoader } from '@/components/PageLoader';
 import { PageTransition } from '@/components/PageTransition';
+import { ResetCountdown } from '@/components/ResetCountdown';
 import { Button } from '@/components/ui/button';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Input } from '@/components/ui/input';
@@ -13,8 +14,6 @@ import { toast } from 'sonner';
 
 export default function LoginPage() {
   const { authLoading, navigate } = useAuthRedirect();
-  const demoEmail = import.meta.env.VITE_DEMO_USER_EMAIL ?? 'demo@example.com';
-  const demoPassword = import.meta.env.VITE_DEMO_USER_PASSWORD ?? '(see .env)';
   const [email, setEmail] = useState(() => import.meta.env.VITE_DEMO_USER_EMAIL ?? '');
   const [password, setPassword] = useState(() => import.meta.env.VITE_DEMO_USER_PASSWORD ?? '');
   const [isLoading, setIsLoading] = useState(false);
@@ -109,12 +108,11 @@ export default function LoginPage() {
             </FieldGroup>
           </form>
 
-          <FieldDescription className="dark:text-muted-foreground bg-muted/50 dark:bg-muted/20 rounded-md p-3 text-center text-xs">
-            <strong>Demo Credentials:</strong>
-            <br />
-            Email: {demoEmail}
-            <br />
-            Password: {demoPassword}
+          <FieldDescription
+            className="dark:text-muted-foreground bg-muted/50 dark:bg-muted/20 rounded-md p-3 text-center text-xs"
+            data-testid="login-reset-message"
+          >
+            The system will reset in <ResetCountdown /> min.
           </FieldDescription>
         </div>
       </div>

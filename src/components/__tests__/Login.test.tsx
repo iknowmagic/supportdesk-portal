@@ -16,6 +16,7 @@ vi.mock('@tanstack/react-router', () => ({
 describe('LoginPage', () => {
   afterEach(() => {
     vi.unstubAllEnvs();
+    vi.useRealTimers();
   });
 
   it('prefills demo credentials from VITE env vars', () => {
@@ -42,5 +43,18 @@ describe('LoginPage', () => {
 
     expect(emailInput.value).toBe('');
     expect(passwordInput.value).toBe('');
+  });
+
+  it('shows an hourly reset countdown message', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date(2026, 0, 1, 10, 45, 0));
+
+    render(<LoginPage />);
+
+    const message = screen.getByTestId('login-reset-message');
+    const countdown = screen.getByTestId('reset-countdown');
+
+    expect(message.textContent).toContain('reset in');
+    expect(countdown.textContent).toBe('15');
   });
 });

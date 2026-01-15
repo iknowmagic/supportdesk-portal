@@ -4,6 +4,7 @@ import { config as loadEnv } from 'dotenv';
 import { resolve } from 'path';
 import { afterAll, afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { toast } from 'sonner';
+import { DEMO_AUTO_LOGIN_KEY } from '@/lib/authStorage';
 
 loadEnv({ path: resolve(process.cwd(), '.env') });
 
@@ -34,6 +35,7 @@ describe('useSupabaseLogout', () => {
 
   afterEach(() => {
     vi.unstubAllEnvs();
+    localStorage.removeItem(DEMO_AUTO_LOGIN_KEY);
   });
 
   afterAll(async () => {
@@ -69,6 +71,8 @@ describe('useSupabaseLogout', () => {
     const successSpy = vi.spyOn(toast, 'success');
     const user = userEvent.setup();
 
+    localStorage.setItem(DEMO_AUTO_LOGIN_KEY, 'true');
+
     const LogoutButton = () => {
       const { logout, isLoggingOut } = useSupabaseLogout();
       return (
@@ -85,6 +89,8 @@ describe('useSupabaseLogout', () => {
     await waitFor(() => {
       expect(successSpy).toHaveBeenCalledWith('Logged out successfully');
     });
+
+    expect(localStorage.getItem(DEMO_AUTO_LOGIN_KEY)).toBe('false');
   });
 
   it('shows a success toast even when no session exists', async () => {
@@ -100,6 +106,8 @@ describe('useSupabaseLogout', () => {
     const successSpy = vi.spyOn(toast, 'success');
     const errorSpy = vi.spyOn(toast, 'error');
     const user = userEvent.setup();
+
+    localStorage.setItem(DEMO_AUTO_LOGIN_KEY, 'true');
 
     const LogoutButton = () => {
       const { logout, isLoggingOut } = useSupabaseLogout();
@@ -119,5 +127,6 @@ describe('useSupabaseLogout', () => {
     });
 
     expect(errorSpy).not.toHaveBeenCalled();
+    expect(localStorage.getItem(DEMO_AUTO_LOGIN_KEY)).toBe('false');
   });
 });
