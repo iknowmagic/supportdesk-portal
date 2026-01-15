@@ -90,6 +90,7 @@
         └── index.ts
 ./tests
 ├── api
+│   ├── authz-rest.test.ts
 │   ├── auth.test.ts
 │   └── reset-db.test.ts
 ├── helpers

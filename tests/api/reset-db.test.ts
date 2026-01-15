@@ -133,19 +133,21 @@ describe('Reset DB Edge Functions', () => {
   });
 
   test('reset_db_4214476 resets data without authentication', async () => {
-    if (!demoSession) {
-      throw new Error('Demo session not initialized');
+    const demoEmail = process.env.VITE_DEMO_USER_EMAIL;
+    const demoPassword = process.env.VITE_DEMO_USER_PASSWORD;
+
+    if (!demoEmail || !demoPassword) {
+      throw new Error('Missing demo credentials for reset_db_4214476 test');
     }
 
-    const demoEmail = process.env.VITE_DEMO_USER_EMAIL ?? undefined;
     const response = await fetch(`${SUPABASE_URL}/functions/v1/reset_db_4214476`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        demo_user_id: demoSession.user.id,
         demo_email: demoEmail,
+        demo_password: demoPassword,
       }),
     });
 

@@ -17,13 +17,13 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const demoPassword = Deno.env.get('VITE_DEMO_USER_PASSWORD');
-    let payload: { demo_user_id?: string; demo_email?: string } = {};
+    let payload: { demo_email?: string; demo_password?: string } = {};
 
     if (req.headers.get('content-type')?.includes('application/json')) {
-      payload = (await req.json().catch(() => ({}))) as { demo_user_id?: string; demo_email?: string };
+      payload = (await req.json().catch(() => ({}))) as { demo_email?: string; demo_password?: string };
     }
 
+    const demoPassword = payload.demo_password ?? Deno.env.get('VITE_DEMO_USER_PASSWORD');
     const demoEmail = payload.demo_email ?? Deno.env.get('VITE_DEMO_USER_EMAIL') ?? DEMO_EMAIL;
     const supabaseClient = createClient(Deno.env.get('SUPABASE_URL') ?? '', Deno.env.get('SUPABASE_ANON_KEY') ?? '', {
       auth: {
@@ -31,45 +31,35 @@ Deno.serve(async (req) => {
         persistSession: false,
       },
     });
-
-    let demoUserId = payload.demo_user_id ?? null;
-
-    if (!demoUserId) {
-      if (!demoPassword) {
-        return new Response(
-          JSON.stringify({ error: 'Demo credentials missing. Provide demo_user_id or configure demo password.' }),
-          {
-            status: 500,
-            headers: { 'Content-Type': 'application/json' },
-          }
-        );
-      }
-
-      const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
-        email: demoEmail,
-        password: demoPassword,
+    if (!demoPassword) {
+      return new Response(JSON.stringify({ error: 'Demo password not configured' }), {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
       });
-
-      if (signInError || !signInData.user || !signInData.session) {
-        return new Response(JSON.stringify({ error: 'Demo user sign-in failed' }), {
-          status: 401,
-          headers: { 'Content-Type': 'application/json' },
-        });
-      }
-
-      await supabaseClient.auth.setSession({
-        access_token: signInData.session.access_token,
-        refresh_token: signInData.session.refresh_token,
-      });
-
-      demoUserId = signInData.user.id;
     }
+
+    const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
+      email: demoEmail,
+      password: demoPassword,
+    });
+
+    if (signInError || !signInData.user || !signInData.session) {
+      return new Response(JSON.stringify({ error: 'Demo user sign-in failed' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    await supabaseClient.auth.setSession({
+      access_token: signInData.session.access_token,
+      refresh_token: signInData.session.refresh_token,
+    });
 
     // Wipe the database
     await wipeDatabase(supabaseClient);
 
     // Populate with fresh seed data
-    await populateDatabase(supabaseClient, { demoUserId, demoEmail });
+    await populateDatabase(supabaseClient, { demoUserId: signInData.user.id, demoEmail });
 
     return new Response(
       JSON.stringify({
