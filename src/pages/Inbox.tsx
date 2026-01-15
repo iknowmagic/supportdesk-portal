@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { formatDistanceToNow } from 'date-fns';
 import { Inbox, Plus, Search } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function InboxPage() {
@@ -20,16 +20,20 @@ export default function InboxPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const { data: tickets = [], isLoading } = useQuery<TicketSummary[]>({
+  const { data, isLoading, error } = useQuery<TicketSummary[]>({
     queryKey: queryKeys.tickets,
     queryFn: listTickets,
     retry: false,
-    onError: (error) => {
-      toast.error('Failed to load tickets', {
-        description: error instanceof Error ? error.message : 'Please try again',
-      });
-    },
   });
+
+  useEffect(() => {
+    if (!error) return;
+    toast.error('Failed to load tickets', {
+      description: error instanceof Error ? error.message : 'Please try again',
+    });
+  }, [error]);
+
+  const tickets = data ?? [];
 
   const filteredTickets = tickets.filter((ticket) => {
     const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;

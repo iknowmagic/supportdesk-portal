@@ -7,7 +7,7 @@ The core goal is: a user logs in with the provided demo credentials and immediat
 
 This is a make-believe scenario. The app may display other "people" in the UI (names, avatars, assignees, senders), but they are fictional actors inside seeded data, not real accounts.
 
-RLS is enabled on demo tables to ensure only authenticated sessions can access data. Anonymous REST access is blocked.
+RLS is enabled on demo tables to ensure only authenticated sessions can access data. Anonymous REST access is blocked (anon role revoked).
 
 ## The Golden Rule: Demo Mode, Single User
 There is exactly one real logged-in account: the demo user.

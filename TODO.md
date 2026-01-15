@@ -50,6 +50,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Add seed script to populate demo data (realistic tickets, comments, actors)
 - [x] Verify seeded data is deterministic and covers primary screens
 - [x] Require authentication for REST access to demo tables (RLS + policies)
+- [x] Revoke anon role privileges on demo tables
 - [x] Update reset functions to generate dense deterministic demo data after wipe
 
 ### Auth & Session
