@@ -76,6 +76,9 @@ Requirements:
 
 Optional but nice:
 - Add a "Reset demo" button in settings to restore the original dataset.
+- Reset functions:
+  - `reset_db` requires an authenticated user session.
+  - `reset_db_4214476` is public and intended for third-party cron jobs.
 
 ## Auth and session (keep it boring)
 This is a demo. Treat auth as a front door, not a security product.

@@ -5,6 +5,7 @@
 ├── components
 │   ├── __tests__
 │   │   ├── Login.test.tsx
+│   │   ├── ResetDemoButton.test.tsx
 │   │   └── UserMenu.test.tsx
 │   ├── Combobox.tsx
 │   ├── ConfirmDialog.tsx
@@ -13,6 +14,7 @@
 │   ├── ModalShell.tsx
 │   ├── PageLoader.tsx
 │   ├── PageTransition.tsx
+│   ├── ResetDemoButton.tsx
 │   ├── RouterApp.tsx
 │   ├── SectionCard.tsx
 │   ├── Tabs.tsx
@@ -33,6 +35,8 @@
 ├── lib
 │   ├── __tests__
 │   │   └── authGuard.test.ts
+│   ├── api
+│   │   └── resetDemo.ts
 │   ├── graphql
 │   │   └── events.ts
 │   ├── AuthProvider.tsx

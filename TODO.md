@@ -100,10 +100,10 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 
 ### Settings & Profile
 - [ ] Create settings page with minimal demo user profile display
-- [ ] Add "Reset Demo" button to restore original seeded data
-- [ ] Implement reset functionality (truncate tables, re-run seed script)
-- [ ] Add confirmation dialog before reset
-- [ ] Test reset demo functionality
+- [x] Add "Reset Demo" button to restore original seeded data
+- [x] Implement reset functionality (truncate tables, re-run seed script)
+- [x] Add confirmation dialog before reset
+- [x] Test reset demo functionality
 
 ### Error & Empty States
 - [ ] Add error boundary component for unexpected errors

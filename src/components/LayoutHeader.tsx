@@ -1,5 +1,6 @@
 import noctareLogo from '@/assets/noctare-light.png';
 import { Button } from '@/components/ui/button';
+import { ResetDemoButton } from '@/components/ResetDemoButton';
 import { UserMenu } from '@/components/UserMenu';
 import React from 'react';
 
@@ -17,7 +18,9 @@ export function LayoutHeader({ children }: LayoutHeaderProps) {
         <div className="text-foreground dark:text-foreground text-lg font-semibold">{children}</div>
       </div>
       <div className="flex items-center gap-2">
-        <div id="header-right-slot" className="flex items-center gap-2" />
+        <div id="header-right-slot" className="flex items-center gap-2">
+          <ResetDemoButton />
+        </div>
         <UserMenu align="end" side="bottom" />
       </div>
     </header>
