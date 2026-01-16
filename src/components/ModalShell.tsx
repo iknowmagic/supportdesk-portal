@@ -8,6 +8,10 @@ import type { ComponentProps, ReactNode } from 'react';
 
 type CloseComponent = typeof DialogClose | typeof DrawerClose;
 
+type SaveButtonProps = ComponentProps<typeof Button> & {
+  "data-testid"?: string;
+};
+
 interface ModalShellProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -24,7 +28,7 @@ interface ModalShellProps {
   cancelLabel?: string;
   saveLabel?: string;
   isSaving?: boolean;
-  saveButtonProps?: ComponentProps<typeof Button>;
+  saveButtonProps?: SaveButtonProps;
 }
 
 export function ModalShell({

@@ -38,6 +38,7 @@ export default defineConfig({
     },
     environment: "jsdom",
     exclude: ["**/node_modules/**", "**/dist/**"],
+    fileParallelism: false,
     globals: true,
     include: [
       "src/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}",

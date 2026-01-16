@@ -9,6 +9,7 @@
 │   │   ├── AppShell.test.tsx
 │   │   ├── LayoutHeader.test.tsx
 │   │   ├── Login.test.tsx
+│   │   ├── NewTicketModal.test.tsx
 │   │   ├── PageTransition.test.tsx
 │   │   ├── ResetCountdown.test.tsx
 │   │   ├── ResetDemoButton.test.tsx
@@ -30,6 +31,10 @@
 │   ├── SidebarNav.tsx
 │   ├── Tabs.tsx
 │   ├── ThemeWatcher.tsx
+│   ├── ticketCreation
+│   │   └── NewTicketModal.tsx
+│   ├── ui
+│   │   └── textarea.tsx
 │   ├── UserMenu.tsx
 │   └── VerifyOtp.tsx
 ├── constants
@@ -85,6 +90,9 @@
 │   │   ├── atoms.ts
 │   │   ├── hooks.ts
 │   │   └── types.ts
+│   ├── ticketCreation
+│   │   ├── atoms.ts
+│   │   └── hooks.ts
 │   └── utils
 │       └── safeLocalStorage.ts
 ├── tests

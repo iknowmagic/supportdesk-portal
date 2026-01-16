@@ -108,13 +108,13 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Add API helper + TanStack Query mutation for ticket creation (invalidate inbox list on success)
 
 #### UI + Wiring
-- [ ] Build "New Ticket" modal/form shell (launch from Inbox button; reuse existing modal primitives)
-- [ ] Form fields: subject, body, priority (default normal), from actor (customer), optional assignee (agent), optional status (default open)
-- [ ] Load actor options from actor lookup (customers for "from", agents for "assignee"); handle loading state
-- [ ] Wire submit to mutation; invalidate inbox list; route to new ticket detail
-- [ ] UX: disable submit while saving, show success/error toasts, close modal on success
-- [ ] Add toast assertions for ticket creation success/failure
-- [ ] Test ticket creation flow end-to-end (UI + API)
+- [x] Build "New Ticket" modal/form shell (launch from Inbox button; reuse existing modal primitives)
+- [x] Form fields: subject, body, priority (default normal), from actor (customer), optional assignee (agent), optional status (default open)
+- [x] Load actor options from actor lookup (customers for "from", agents for "assignee"); handle loading state
+- [x] Wire submit to mutation; invalidate inbox list; route to new ticket detail
+- [x] UX: disable submit while saving, show success/error toasts, close modal on success
+- [x] Add toast assertions for ticket creation success/failure
+- [x] Test ticket creation flow end-to-end (UI + API)
 
 ### Ticket Detail Actions (backend → UI)
 #### Backend

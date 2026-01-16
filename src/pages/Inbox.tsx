@@ -1,4 +1,5 @@
 import { AppShell } from '@/components/AppShell';
+import { NewTicketModal } from '@/components/ticketCreation/NewTicketModal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { listTickets, type TicketSummary } from '@/lib/api/tickets';
 import { queryKeys } from '@/lib/queryKeys';
+import { useNewTicketModal } from '@/store/ticketCreation/hooks';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { formatDistanceToNow } from 'date-fns';
@@ -16,6 +18,7 @@ import { toast } from 'sonner';
 
 export default function InboxPage() {
   const navigate = useNavigate();
+  const { setOpen: setNewTicketModalOpen } = useNewTicketModal();
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -66,6 +69,7 @@ export default function InboxPage() {
   return (
     <AppShell>
       <div className="mx-auto max-w-6xl space-y-6">
+        <NewTicketModal />
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
@@ -74,7 +78,7 @@ export default function InboxPage() {
               {tickets.length} {tickets.length === 1 ? 'ticket' : 'tickets'}
             </p>
           </div>
-          <Button onClick={() => navigate({ to: '/tickets/new' })}>
+          <Button onClick={() => setNewTicketModalOpen(true)} data-testid="new-ticket-button">
             <Plus className="mr-2 size-4" />
             New Ticket
           </Button>
@@ -131,7 +135,7 @@ export default function InboxPage() {
                     : 'Create your first ticket to get started'}
                 </p>
                 {trimmedSearchQuery === '' && statusFilter === 'all' && (
-                  <Button onClick={() => navigate({ to: '/tickets/new' })} className="mt-4">
+                  <Button onClick={() => setNewTicketModalOpen(true)} className="mt-4">
                     <Plus className="mr-2 size-4" />
                     New Ticket
                   </Button>
