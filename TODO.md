@@ -69,7 +69,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Create app shell layout (header, sidebar/nav, main content area)
 - [x] Show hourly reset countdown in the header
 - [x] Build header component (app logo/name, demo user indicator, logout button)
-- [ ] Build navigation component (links to Inbox; Settings may be added later if needed)
+- [x] Build navigation component (links to Inbox; Settings may be added later if needed)
 - [x] Add route definitions for main screens (/inbox, /tickets/:id) (Settings may be added later if needed)
 - [ ] Implement PageTransition animations for route changes
 
@@ -78,8 +78,10 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [ ] Display ticket cards/rows with: subject, fromName, status, priority, timestamp
 - [ ] Add filtering UI (status dropdown: all/open/pending/closed)
 - [ ] Add search input (filter by subject or body text)
+- [ ] Upgrade search to autocomplete (filter + direct ticket selection)
 - [ ] Implement empty state for no tickets
 - [ ] Add "New Ticket" button (opens modal or form)
+- [ ] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
 - [x] Route ticket list through authenticated Edge function (no direct REST calls)
 
 ## Phase 3: Ticket Management

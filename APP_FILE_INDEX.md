@@ -11,6 +11,7 @@
 │   │   ├── Login.test.tsx
 │   │   ├── ResetCountdown.test.tsx
 │   │   ├── ResetDemoButton.test.tsx
+│   │   ├── SidebarNav.test.tsx
 │   │   └── UserMenu.test.tsx
 │   ├── AppShell.tsx
 │   ├── Combobox.tsx
