@@ -50,6 +50,7 @@
 │   │   ├── AuthProvider.test.tsx
 │   │   └── authGuard.test.ts
 │   ├── api
+│   │   ├── auth.ts
 │   │   ├── resetDemo.ts
 │   │   └── tickets.ts
 │   ├── AuthProvider.tsx

@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react';
 import { setDemoAutoLoginEnabled } from '@/lib/authStorage';
+import { clearSupabaseStorage } from '@/lib/clearSupabaseStorage';
 import { supabase } from '@/lib/supabase';
 import { noctare } from '@/lib/noctare';
 import { toast } from 'sonner';
@@ -11,7 +12,12 @@ export function useSupabaseLogout() {
     setIsLoggingOut(true);
     try {
       const { data } = await supabase.auth.getSession();
-      if (!data.session?.access_token) {
+      const session = data.session;
+      const sessionExpiresAt = session?.expires_at ? session.expires_at * 1000 : null;
+      const isExpired = sessionExpiresAt !== null && sessionExpiresAt <= Date.now();
+
+      if (!session?.access_token || isExpired) {
+        clearSupabaseStorage();
         setDemoAutoLoginEnabled(false);
         toast.success('Logged out successfully');
         return true;

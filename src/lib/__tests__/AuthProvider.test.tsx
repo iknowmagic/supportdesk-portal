@@ -5,6 +5,7 @@ import { DEMO_AUTO_LOGIN_KEY } from '../authStorage';
 const signInWithPassword = vi.fn();
 const getSession = vi.fn();
 const refreshSession = vi.fn();
+const getUser = vi.fn();
 const onAuthStateChange = vi.fn();
 
 vi.mock('@/lib/supabase', () => ({
@@ -12,6 +13,7 @@ vi.mock('@/lib/supabase', () => ({
     auth: {
       getSession,
       refreshSession,
+      getUser,
       signInWithPassword,
       onAuthStateChange,
     },
@@ -24,6 +26,7 @@ describe('AuthProvider', () => {
     vi.clearAllMocks();
     getSession.mockResolvedValue({ data: { session: null } });
     refreshSession.mockResolvedValue({ data: { session: null }, error: null });
+    getUser.mockResolvedValue({ data: { user: { id: 'demo', email: 'demo@example.com' } }, error: null });
     signInWithPassword.mockResolvedValue({
       data: { session: { user: { id: 'demo', email: 'demo@example.com' } } },
       error: null,
@@ -79,6 +82,29 @@ describe('AuthProvider', () => {
     });
 
     expect(signInWithPassword).not.toHaveBeenCalled();
+  });
+
+  it('auto signs in when the stored session is invalid', async () => {
+    localStorage.setItem(DEMO_AUTO_LOGIN_KEY, 'true');
+    vi.stubEnv('VITE_DEMO_USER_EMAIL', 'demo@example.com');
+    vi.stubEnv('VITE_DEMO_USER_PASSWORD', 'password');
+    getSession.mockResolvedValue({ data: { session: { expires_at: Date.now() / 1000 + 3600 } } });
+    getUser.mockResolvedValue({ data: { user: null }, error: new Error('invalid session') });
+
+    const { AuthProvider } = await import('../AuthProvider');
+
+    render(
+      <AuthProvider>
+        <div />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(signInWithPassword).toHaveBeenCalledWith({
+        email: 'demo@example.com',
+        password: 'password',
+      });
+    });
   });
 
   it('skips auto-login when preference is disabled', async () => {

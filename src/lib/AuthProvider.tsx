@@ -2,6 +2,7 @@ import type { Session, User } from '@supabase/supabase-js';
 import { noctare } from './devLogger';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { getDemoAutoLoginEnabled, setDemoAutoLoginEnabled } from './authStorage';
+import { clearSupabaseStorage } from './clearSupabaseStorage';
 import { supabase } from './supabase';
 
 interface AuthContextType {
@@ -34,6 +35,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const loadSession = async () => {
       try {
+        const validateStoredSession = async () => {
+          const { data: userData, error: userError } = await supabase.auth.getUser();
+          if (userError || !userData?.user) {
+            clearSupabaseStorage();
+            return false;
+          }
+          return true;
+        };
+
         // Get initial session from Supabase
         const { data } = await supabase.auth.getSession();
         if (!isActive) return;
@@ -43,10 +53,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const isExpired = sessionExpiresAt !== null && sessionExpiresAt <= Date.now();
 
         if (session && !isExpired) {
-          setSession(session);
-          setDemoAutoLoginEnabled(true);
-          setLoading(false);
-          return;
+          const isValid = await validateStoredSession();
+          if (isValid) {
+            setSession(session);
+            setDemoAutoLoginEnabled(true);
+            setLoading(false);
+            return;
+          }
         }
 
         if (session && isExpired) {
@@ -57,10 +70,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           if (refreshError) {
             noctare.log('[Auth] Session refresh failed', refreshError);
           } else if (refreshedData.session) {
-            setSession(refreshedData.session);
-            setDemoAutoLoginEnabled(true);
-            setLoading(false);
-            return;
+            const isValid = await validateStoredSession();
+            if (isValid) {
+              setSession(refreshedData.session);
+              setDemoAutoLoginEnabled(true);
+              setLoading(false);
+              return;
+            }
           }
         }
 
@@ -114,7 +130,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setSession(session);
       } else if (event === 'SIGNED_OUT') {
         noctare.log('[Auth] User signed out');
-        setDemoAutoLoginEnabled(false);
         setSession(null);
 
         // Supabase's signOut() should handle clearing the current project's token

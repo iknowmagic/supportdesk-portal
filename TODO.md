@@ -62,6 +62,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Replace login demo credentials hint with hourly reset countdown
 - [x] Add seconds toggle to reset countdown display
 - [x] Ensure demo sessions persist until explicit logout
+- [x] Validate stored sessions with Supabase before treating users as authenticated (avoid stale-token 401s); logout must be idempotent
 
 ## Phase 2: Core UI Structure
 

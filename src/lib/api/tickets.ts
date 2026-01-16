@@ -1,3 +1,4 @@
+import { getAccessToken } from '@/lib/api/auth';
 import { supabase } from '@/lib/supabase';
 
 export type TicketSummary = {
@@ -30,20 +31,8 @@ type TicketsListResponse = {
 
 type TicketDetailResponse = TicketDetail;
 
-const getAccessToken = async () => {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  if (!session?.access_token) {
-    throw new Error('You must be logged in to view tickets.');
-  }
-
-  return session.access_token;
-};
-
 export async function listTickets(): Promise<TicketSummary[]> {
-  const accessToken = await getAccessToken();
+  const accessToken = await getAccessToken('You must be logged in to view tickets.');
 
   const { data, error } = await supabase.functions.invoke<TicketsListResponse>('tickets_list', {
     method: 'GET',
@@ -68,7 +57,7 @@ export async function getTicketDetail(ticketId: string): Promise<TicketDetail> {
     throw new Error('Missing ticket id.');
   }
 
-  const accessToken = await getAccessToken();
+  const accessToken = await getAccessToken('You must be logged in to view tickets.');
 
   const { data, error } = await supabase.functions.invoke<TicketDetailResponse>('ticket_detail', {
     method: 'POST',
