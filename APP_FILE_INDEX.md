@@ -83,6 +83,7 @@
 │   ├── TicketDetail.tsx
 │   ├── __tests__
 │   │   ├── InboxErrorState.test.tsx
+│   │   ├── InboxSearchAutocomplete.test.tsx
 │   │   └── TicketDetailErrorState.test.tsx
 │   └── ticketDetail
 │       ├── TicketActionsPanel.tsx

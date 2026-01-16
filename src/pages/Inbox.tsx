@@ -3,7 +3,16 @@ import { NewTicketModal } from '@/components/ticketCreation/NewTicketModal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+} from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { listTickets, type TicketSummary } from '@/lib/api/tickets';
@@ -21,6 +30,7 @@ export default function InboxPage() {
   const { setOpen: setNewTicketModalOpen } = useNewTicketModal();
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [searchOpen, setSearchOpen] = useState(false);
 
   const trimmedSearchQuery = searchQuery.trim();
   const { data, isLoading, error, refetch } = useQuery<TicketSummary[]>({
@@ -37,6 +47,8 @@ export default function InboxPage() {
   }, [error]);
 
   const tickets = data ?? [];
+  const suggestionTickets = tickets.slice(0, 6);
+  const showSuggestions = searchOpen && trimmedSearchQuery.length > 0 && !error;
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -66,6 +78,24 @@ export default function InboxPage() {
     }
   };
 
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    if (value.trim().length > 0) {
+      setSearchOpen(true);
+    } else {
+      setSearchOpen(false);
+    }
+  };
+
+  const handleFilterResults = () => {
+    setSearchOpen(false);
+  };
+
+  const handleSelectTicket = (ticketId: string) => {
+    setSearchOpen(false);
+    navigate({ to: `/tickets/${ticketId}` });
+  };
+
   return (
     <AppShell>
       <div className="mx-auto max-w-6xl space-y-6">
@@ -86,15 +116,63 @@ export default function InboxPage() {
 
         {/* Filters */}
         <div className="flex flex-col gap-4 sm:flex-row">
-          <div className="relative flex-1">
-            <Search className="text-muted-foreground dark:text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-            <Input
-              placeholder="Search tickets..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
-            />
-          </div>
+          <Popover open={showSuggestions} onOpenChange={setSearchOpen}>
+            <PopoverTrigger asChild>
+              <div className="relative flex-1">
+                <Search className="text-muted-foreground dark:text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+                <Input
+                  placeholder="Search tickets..."
+                  value={searchQuery}
+                  onChange={(event) => handleSearchChange(event.target.value)}
+                  onFocus={() => setSearchOpen(true)}
+                  className="pl-9"
+                  data-testid="ticket-search-input"
+                />
+              </div>
+            </PopoverTrigger>
+            <PopoverContent
+              className="w-[--radix-popover-trigger-width] p-0"
+              align="start"
+              data-testid="ticket-search-suggestions"
+            >
+              <Command shouldFilter={false}>
+                <CommandList>
+                  <CommandGroup heading="Actions">
+                    <CommandItem
+                      onSelect={handleFilterResults}
+                      data-testid="ticket-search-filter"
+                    >
+                      Show results for "{trimmedSearchQuery}"
+                    </CommandItem>
+                  </CommandGroup>
+                  <CommandSeparator />
+                  {isLoading ? (
+                    <CommandGroup heading="Tickets">
+                      <CommandItem disabled>Loading tickets...</CommandItem>
+                    </CommandGroup>
+                  ) : suggestionTickets.length === 0 ? (
+                    <CommandEmpty>No tickets found.</CommandEmpty>
+                  ) : (
+                    <CommandGroup heading="Tickets">
+                      {suggestionTickets.map((ticket) => (
+                        <CommandItem
+                          key={ticket.id}
+                          value={ticket.subject}
+                          onSelect={() => handleSelectTicket(ticket.id)}
+                          data-testid={`ticket-search-item-${ticket.id}`}
+                        >
+                          <div className="flex flex-col">
+                            <span className="text-sm font-medium">{ticket.subject}</span>
+                            <span className="text-muted-foreground text-xs">{ticket.from_name}</span>
+                          </div>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  )}
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full sm:w-45">
               <SelectValue placeholder="Filter by status" />
