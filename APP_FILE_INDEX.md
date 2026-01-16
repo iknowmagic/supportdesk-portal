@@ -100,6 +100,8 @@
 │   └── seed-data.ts
 ├── actors_list
 │   └── index.ts
+├── ticket_create
+│   └── index.ts
 ├── reset_db
 │   └── index.ts
     ├── reset_db_4214476
@@ -114,6 +116,7 @@
 │   ├── authz-rest.test.ts
 │   ├── auth.test.ts
 │   ├── reset-db.test.ts
+│   ├── ticket-create.test.ts
 │   ├── ticket-detail.test.ts
 │   └── tickets-list.test.ts
 ├── helpers

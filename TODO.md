@@ -102,10 +102,10 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 
 ### Ticket Creation (backend → UI)
 #### Backend
-- [ ] Add ticket creation Edge function (POST, auth required) that validates payload, derives defaults, and returns new ticket id + summary
-- [ ] Register ticket creation Edge function in `supabase/config.toml`
-- [ ] Add API tests: unauthenticated rejected; authenticated creates ticket; server sets status/priority defaults; denormalized fields consistent
-- [ ] Add API helper + TanStack Query mutation for ticket creation (invalidate inbox list on success)
+- [x] Add ticket creation Edge function (POST, auth required) that validates payload, derives defaults, and returns new ticket id + summary
+- [x] Register ticket creation Edge function in `supabase/config.toml`
+- [x] Add API tests: unauthenticated rejected; authenticated creates ticket; server sets status/priority defaults; denormalized fields consistent
+- [x] Add API helper + TanStack Query mutation for ticket creation (invalidate inbox list on success)
 
 #### UI + Wiring
 - [ ] Build "New Ticket" modal/form shell (launch from Inbox button; reuse existing modal primitives)
