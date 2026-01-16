@@ -84,6 +84,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 ## Phase 3: Ticket Management
 
 ### Ticket Detail View
+Note: Conversation replies/comments are in scope for this view (reply form + posting).
 - [x] Create ticket detail page (/tickets/:id)
 - [x] Display full ticket info: subject, fromName, assigneeName, status, priority, body, createdAt
 - [x] Show comment thread below ticket body
