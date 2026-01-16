@@ -61,7 +61,9 @@ Deno.serve(async (req) => {
 
   const { data: ticket, error: ticketError } = await supabaseClient
     .from('tickets')
-    .select('id, subject, body, status, priority, from_name, assigned_to_name, created_at, updated_at')
+    .select(
+      'id, subject, body, status, priority, from_actor_id, from_name, assigned_to_actor_id, assigned_to_name, created_at, updated_at'
+    )
     .eq('id', ticketId)
     .maybeSingle();
 

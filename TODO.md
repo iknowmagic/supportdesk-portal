@@ -126,11 +126,11 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Add API helpers + TanStack Query mutations for comment/status/assignee (refresh ticket detail on success)
 
 #### UI + Wiring
-- [ ] Add reply/comment form at bottom (wired to mutation)
-- [ ] Add status update controls (dropdown to change status)
-- [ ] Add assignee selector (dropdown of actors)
-- [ ] Add toast assertions for comment/status/assignee success/failure
-- [ ] Test ticket detail actions end-to-end (UI + API)
+- [x] Add reply/comment form at bottom (wired to mutation)
+- [x] Add status update controls (dropdown to change status)
+- [x] Add assignee selector (dropdown of actors)
+- [x] Add toast assertions for comment/status/assignee success/failure
+- [x] Test ticket detail actions end-to-end (UI + API)
 
 ## Phase 4: Polish & Demo Features
 

@@ -57,6 +57,7 @@ describe('ticket_detail Edge Function', () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(body.ticket?.id).toBe(ticketId);
+    expect(body.ticket).toHaveProperty('assigned_to_actor_id');
     expect(Array.isArray(body.comments)).toBe(true);
   });
 });

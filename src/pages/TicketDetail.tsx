@@ -8,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
 import { getTicketDetail, type TicketComment, type TicketSummary } from '@/lib/api/tickets';
 import { queryKeys } from '@/lib/queryKeys';
+import { TicketActionsPanel, TicketReplyForm } from '@/pages/ticketDetail/TicketActionsPanel';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { format } from 'date-fns';
@@ -132,9 +133,17 @@ export default function TicketDetailPage() {
                 )}
               </CardContent>
             </Card>
+
+            <TicketReplyForm ticketId={ticket?.id ?? ticketId} />
           </div>
 
           <div className="space-y-6">
+            <TicketActionsPanel
+              ticketId={ticket?.id ?? ticketId}
+              status={ticket?.status ?? 'open'}
+              assignedToActorId={ticket?.assigned_to_actor_id ?? null}
+            />
+
             <Card>
               <CardHeader>
                 <CardTitle>Ticket details</CardTitle>

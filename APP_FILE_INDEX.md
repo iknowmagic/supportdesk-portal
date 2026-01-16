@@ -78,7 +78,11 @@
 │   ├── ComponentsShowcase.tsx
 │   ├── Dashboard.tsx
 │   ├── Inbox.tsx
-│   └── TicketDetail.tsx
+│   ├── TicketDetail.tsx
+│   └── ticketDetail
+│       ├── TicketActionsPanel.tsx
+│       └── __tests__
+│           └── TicketActionsPanel.test.tsx
 ├── store
 │   ├── demo
 │   │   └── atoms.ts

@@ -7,7 +7,9 @@ export type TicketSummary = {
   body: string;
   status: string;
   priority: string;
+  from_actor_id?: string | null;
   from_name: string;
+  assigned_to_actor_id?: string | null;
   assigned_to_name: string | null;
   created_at: string;
   updated_at: string;
@@ -84,6 +86,28 @@ type TicketAssigneeUpdateResponse = {
   };
 };
 
+const invokeTicketFunction = async <TResponse>(
+  functionName: string,
+  accessMessage: string,
+  body: Record<string, unknown>
+): Promise<TResponse | null> => {
+  const accessToken = await getAccessToken(accessMessage);
+
+  const { data, error } = await supabase.functions.invoke<TResponse>(functionName, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data ?? null;
+};
+
 export async function listTickets(filters: TicketsListFilters = {}): Promise<TicketSummary[]> {
   const accessToken = await getAccessToken('You must be logged in to view tickets.');
 
@@ -145,19 +169,11 @@ export async function createTicket(payload: TicketCreateInput): Promise<TicketSu
     throw new Error('Missing required fields.');
   }
 
-  const accessToken = await getAccessToken('You must be logged in to create tickets.');
-
-  const { data, error } = await supabase.functions.invoke<TicketCreateResponse>('ticket_create', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: payload,
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const data = await invokeTicketFunction<TicketCreateResponse>(
+    'ticket_create',
+    'You must be logged in to create tickets.',
+    payload
+  );
 
   if (!data?.ticket) {
     throw new Error('No ticket returned from server.');
@@ -171,19 +187,11 @@ export async function createTicketComment(payload: TicketCommentCreateInput): Pr
     throw new Error('Missing required fields.');
   }
 
-  const accessToken = await getAccessToken('You must be logged in to add comments.');
-
-  const { data, error } = await supabase.functions.invoke<TicketCommentCreateResponse>('ticket_comment_create', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: payload,
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const data = await invokeTicketFunction<TicketCommentCreateResponse>(
+    'ticket_comment_create',
+    'You must be logged in to add comments.',
+    payload
+  );
 
   if (!data?.comment) {
     throw new Error('No comment returned from server.');
@@ -197,19 +205,11 @@ export async function updateTicketStatus(payload: TicketStatusUpdateInput) {
     throw new Error('Missing required fields.');
   }
 
-  const accessToken = await getAccessToken('You must be logged in to update ticket status.');
-
-  const { data, error } = await supabase.functions.invoke<TicketStatusUpdateResponse>('ticket_status_update', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: payload,
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const data = await invokeTicketFunction<TicketStatusUpdateResponse>(
+    'ticket_status_update',
+    'You must be logged in to update ticket status.',
+    payload
+  );
 
   if (!data?.ticket) {
     throw new Error('No ticket returned from server.');
@@ -223,19 +223,11 @@ export async function updateTicketAssignee(payload: TicketAssigneeUpdateInput) {
     throw new Error('Missing required fields.');
   }
 
-  const accessToken = await getAccessToken('You must be logged in to update ticket assignee.');
-
-  const { data, error } = await supabase.functions.invoke<TicketAssigneeUpdateResponse>('ticket_assignee_update', {
-    method: 'POST',
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-    body: payload,
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
+  const data = await invokeTicketFunction<TicketAssigneeUpdateResponse>(
+    'ticket_assignee_update',
+    'You must be logged in to update ticket assignee.',
+    payload
+  );
 
   if (!data?.ticket) {
     throw new Error('No ticket returned from server.');
