@@ -82,6 +82,7 @@
 │   └── ticketDetail
 │       ├── TicketActionsPanel.tsx
 │       └── __tests__
+│           ├── TicketActionsLoading.test.tsx
 │           └── TicketActionsPanel.test.tsx
 ├── store
 │   ├── demo

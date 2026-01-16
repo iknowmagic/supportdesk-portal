@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Field, FieldContent, FieldGroup, FieldLabel } from '@/components/ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import {
   useCreateTicketCommentMutation,
@@ -26,6 +27,7 @@ type TicketActionsPanelProps = {
   ticketId: string;
   status: string;
   assignedToActorId: string | null;
+  isLoading?: boolean;
 };
 
 const ASSIGNEE_UNASSIGNED = 'unassigned';
@@ -37,9 +39,26 @@ const resolveStatus = (value?: string | null): TicketStatus => {
 
 const resolveAssigneeValue = (value?: string | null) => value ?? ASSIGNEE_UNASSIGNED;
 
-export function TicketReplyForm({ ticketId }: { ticketId: string }) {
+export function TicketReplyForm({ ticketId, isLoading = false }: { ticketId: string; isLoading?: boolean }) {
   const [body, setBody] = useState('');
   const commentMutation = useCreateTicketCommentMutation();
+
+  if (isLoading) {
+    return (
+      <Card data-testid="ticket-reply-loading">
+        <CardHeader>
+          <CardTitle>Reply</CardTitle>
+          <CardDescription>Share the next update with the requester.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Skeleton className="h-24 w-full" />
+          <div className="flex justify-end">
+            <Skeleton className="h-9 w-28" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const canSubmit = body.trim().length > 0 && !commentMutation.isPending;
 
@@ -97,7 +116,7 @@ export function TicketReplyForm({ ticketId }: { ticketId: string }) {
   );
 }
 
-export function TicketActionsPanel({ ticketId, status, assignedToActorId }: TicketActionsPanelProps) {
+export function TicketActionsPanel({ ticketId, status, assignedToActorId, isLoading = false }: TicketActionsPanelProps) {
   const normalizedStatus = useMemo(() => resolveStatus(status), [status]);
   const normalizedAssignee = useMemo(() => resolveAssigneeValue(assignedToActorId), [assignedToActorId]);
 
@@ -118,6 +137,7 @@ export function TicketActionsPanel({ ticketId, status, assignedToActorId }: Tick
   const actorsQuery = useQuery({
     queryKey: queryKeys.actorsList,
     queryFn: listActors,
+    enabled: !isLoading,
     retry: false,
   });
 
@@ -130,6 +150,27 @@ export function TicketActionsPanel({ ticketId, status, assignedToActorId }: Tick
 
   const statusDirty = statusValue !== normalizedStatus;
   const assigneeDirty = assigneeValue !== normalizedAssignee;
+
+  if (isLoading) {
+    return (
+      <Card data-testid="ticket-actions-loading">
+        <CardHeader>
+          <CardTitle>Ticket actions</CardTitle>
+          <CardDescription>Update the workflow and ownership.</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Skeleton className="h-10 w-full" />
+          <div className="flex justify-end">
+            <Skeleton className="h-9 w-32" />
+          </div>
+          <Skeleton className="h-10 w-full" />
+          <div className="flex justify-end">
+            <Skeleton className="h-9 w-32" />
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
 
   const handleStatusUpdate = () => {
     if (!statusDirty || statusMutation.isPending) return;

@@ -134,7 +134,7 @@ export default function TicketDetailPage() {
               </CardContent>
             </Card>
 
-            <TicketReplyForm ticketId={ticket?.id ?? ticketId} />
+            <TicketReplyForm ticketId={ticket?.id ?? ticketId} isLoading={isLoading} />
           </div>
 
           <div className="space-y-6">
@@ -142,6 +142,7 @@ export default function TicketDetailPage() {
               ticketId={ticket?.id ?? ticketId}
               status={ticket?.status ?? 'open'}
               assignedToActorId={ticket?.assigned_to_actor_id ?? null}
+              isLoading={isLoading}
             />
 
             <Card>
