@@ -376,3 +376,8 @@ entrypoint = "./functions/reset_db_4214476/index.ts"
 enabled = true
 verify_jwt = true
 entrypoint = "./functions/tickets_list/index.ts"
+
+[functions.ticket_detail]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/ticket_detail/index.ts"

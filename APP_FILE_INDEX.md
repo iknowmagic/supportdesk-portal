@@ -97,6 +97,8 @@
     │   └── index.ts
     ├── reset_db_4214476
     │   └── index.ts
+    ├── ticket_detail
+    │   └── index.ts
     └── tickets_list
         └── index.ts
 ./tests
@@ -104,6 +106,7 @@
 │   ├── authz-rest.test.ts
 │   ├── auth.test.ts
 │   ├── reset-db.test.ts
+│   ├── ticket-detail.test.ts
 │   └── tickets-list.test.ts
 ├── helpers
 │   └── auth.ts

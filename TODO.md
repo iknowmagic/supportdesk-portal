@@ -84,10 +84,10 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 ## Phase 3: Ticket Management
 
 ### Ticket Detail View
-- [ ] Create ticket detail page (/tickets/:id)
-- [ ] Display full ticket info: subject, fromName, assigneeName, status, priority, body, createdAt
-- [ ] Show comment thread below ticket body
-- [ ] Display comment author (actorName), body, timestamp
+- [x] Create ticket detail page (/tickets/:id)
+- [x] Display full ticket info: subject, fromName, assigneeName, status, priority, body, createdAt
+- [x] Show comment thread below ticket body
+- [x] Display comment author (actorName), body, timestamp
 - [ ] Add reply/comment form at bottom
 - [ ] Implement "Add Comment" functionality (insert into comments table)
 - [ ] Add status update controls (dropdown to change status)
