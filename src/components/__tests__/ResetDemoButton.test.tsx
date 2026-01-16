@@ -9,15 +9,7 @@ import { toast } from 'sonner';
 
 loadEnv({ path: resolve(process.cwd(), '.env') });
 
-const createWrapper = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      mutations: {
-        retry: false,
-      },
-    },
-  });
-
+const createWrapper = (queryClient: QueryClient) => {
   return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
@@ -79,7 +71,16 @@ describe('ResetDemoButton', () => {
         throw error;
       }
 
-      render(<ResetDemoButton />, { wrapper: createWrapper() });
+      const queryClient = new QueryClient({
+        defaultOptions: {
+          mutations: {
+            retry: false,
+          },
+        },
+      });
+      const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+
+      render(<ResetDemoButton />, { wrapper: createWrapper(queryClient) });
 
       await user.click(screen.getByTestId('reset-demo-button'));
       await user.click(await screen.findByTestId('reset-demo-confirm'));
@@ -87,6 +88,12 @@ describe('ResetDemoButton', () => {
       await waitFor(() => {
         expect(successSpy).toHaveBeenCalledWith('Demo data reset');
       });
+
+      const invalidatedRoots = invalidateSpy.mock.calls
+        .map((call) => call[0]?.queryKey?.[0])
+        .filter(Boolean);
+      expect(invalidatedRoots).toContain('tickets');
+      expect(invalidatedRoots).toContain('actors');
     },
     20000
   );
@@ -112,7 +119,15 @@ describe('ResetDemoButton', () => {
     const errorSpy = vi.spyOn(toast, 'error');
     const user = userEvent.setup();
 
-    render(<ResetDemoButton />, { wrapper: createWrapper() });
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        mutations: {
+          retry: false,
+        },
+      },
+    });
+
+    render(<ResetDemoButton />, { wrapper: createWrapper(queryClient) });
 
     await user.click(screen.getByTestId('reset-demo-button'));
     await user.click(await screen.findByTestId('reset-demo-confirm'));

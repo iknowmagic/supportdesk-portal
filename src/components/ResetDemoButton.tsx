@@ -2,17 +2,22 @@ import { ConfirmDialog } from '@/components/ConfirmDialog';
 import { Button } from '@/components/ui/button';
 import { Spinner } from '@/components/ui/spinner';
 import { resetDemoDatabase } from '@/lib/api/resetDemo';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { TimerReset } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
 export function ResetDemoButton() {
   const [dialogOpen, setDialogOpen] = useState(false);
+  const queryClient = useQueryClient();
 
   const resetMutation = useMutation({
     mutationFn: resetDemoDatabase,
-    onSuccess: () => {
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ['tickets'] }),
+        queryClient.invalidateQueries({ queryKey: ['actors'] }),
+      ]);
       toast.success('Demo data reset');
       setDialogOpen(false);
     },
