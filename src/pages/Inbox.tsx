@@ -19,9 +19,10 @@ export default function InboxPage() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const trimmedSearchQuery = searchQuery.trim();
   const { data, isLoading, error } = useQuery<TicketSummary[]>({
-    queryKey: queryKeys.tickets,
-    queryFn: listTickets,
+    queryKey: queryKeys.ticketsList({ status: statusFilter, query: trimmedSearchQuery }),
+    queryFn: () => listTickets({ status: statusFilter, query: trimmedSearchQuery }),
     retry: false,
   });
 
@@ -33,17 +34,6 @@ export default function InboxPage() {
   }, [error]);
 
   const tickets = data ?? [];
-
-  const filteredTickets = tickets.filter((ticket) => {
-    const matchesStatus = statusFilter === 'all' || ticket.status === statusFilter;
-    const matchesSearch =
-      searchQuery === '' ||
-      ticket.subject.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.body.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      ticket.from_name.toLowerCase().includes(searchQuery.toLowerCase());
-
-    return matchesStatus && matchesSearch;
-  });
 
   const getPriorityColor = (priority: string) => {
     switch (priority) {
@@ -81,7 +71,7 @@ export default function InboxPage() {
           <div>
             <h2 className="text-foreground dark:text-foreground text-3xl font-bold">Inbox</h2>
             <p className="text-muted-foreground dark:text-muted-foreground">
-              {filteredTickets.length} {filteredTickets.length === 1 ? 'ticket' : 'tickets'}
+              {tickets.length} {tickets.length === 1 ? 'ticket' : 'tickets'}
             </p>
           </div>
           <Button onClick={() => navigate({ to: '/tickets/new' })}>
@@ -129,18 +119,18 @@ export default function InboxPage() {
                 </CardContent>
               </Card>
             ))
-          ) : filteredTickets.length === 0 ? (
+          ) : tickets.length === 0 ? (
             // Empty state
             <Card>
               <CardContent className="flex flex-col items-center justify-center py-12">
                 <Inbox className="text-muted-foreground dark:text-muted-foreground mb-4 size-12" />
                 <h3 className="text-foreground dark:text-foreground text-lg font-semibold">No tickets found</h3>
                 <p className="text-muted-foreground dark:text-muted-foreground mt-1 text-center">
-                  {searchQuery || statusFilter !== 'all'
+                  {trimmedSearchQuery || statusFilter !== 'all'
                     ? 'Try adjusting your filters'
                     : 'Create your first ticket to get started'}
                 </p>
-                {searchQuery === '' && statusFilter === 'all' && (
+                {trimmedSearchQuery === '' && statusFilter === 'all' && (
                   <Button onClick={() => navigate({ to: '/tickets/new' })} className="mt-4">
                     <Plus className="mr-2 size-4" />
                     New Ticket
@@ -150,7 +140,7 @@ export default function InboxPage() {
             </Card>
           ) : (
             // Tickets
-            filteredTickets.map((ticket) => (
+            tickets.map((ticket) => (
               <Card
                 key={ticket.id}
                 className="hover:bg-muted/50 dark:hover:bg-muted/20 cursor-pointer transition-colors"

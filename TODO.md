@@ -75,12 +75,12 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Implement PageTransition animations for route changes
 
 ### Inbox/Dashboard
-- [ ] Create inbox/dashboard page that lists all tickets
-- [ ] Display ticket cards/rows with: subject, fromName, status, priority, timestamp
-- [ ] Add filtering UI (status dropdown: all/open/pending/closed)
-- [ ] Add search input (filter by subject or body text)
+- [x] Create inbox/dashboard page that lists all tickets
+- [x] Display ticket cards/rows with: subject, fromName, status, priority, timestamp
+- [x] Add filtering UI (status dropdown: all/open/pending/closed)
+- [x] Add search input (filter by subject or body text)
 - [ ] Upgrade search to autocomplete (filter + direct ticket selection)
-- [ ] Implement empty state for no tickets
+- [x] Implement empty state for no tickets
 - [ ] Add "New Ticket" button (opens modal or form)
 - [ ] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
 - [x] Route ticket list through authenticated Edge function (no direct REST calls)

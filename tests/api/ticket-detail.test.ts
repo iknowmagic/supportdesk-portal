@@ -32,8 +32,9 @@ describe('ticket_detail Edge Function', () => {
   test('returns ticket detail for authenticated requests', async () => {
     const headers = await getTestAuthHeaders();
     const listResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
-      method: 'GET',
+      method: 'POST',
       headers,
+      body: JSON.stringify({}),
     });
 
     expect(listResponse.status).toBe(200);

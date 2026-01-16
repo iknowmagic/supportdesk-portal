@@ -5,7 +5,7 @@
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
 Deno.serve(async (req) => {
-  if (req.method !== 'GET') {
+  if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
       headers: { 'Content-Type': 'application/json' },
@@ -44,10 +44,38 @@ Deno.serve(async (req) => {
     });
   }
 
-  const { data, error } = await supabaseClient
+  let payload: { status?: string; query?: string } = {};
+  try {
+    payload = (await req.json()) as { status?: string; query?: string };
+  } catch (_) {
+    payload = {};
+  }
+
+  const status = typeof payload.status === 'string' ? payload.status.trim() : '';
+  const query = typeof payload.query === 'string' ? payload.query.trim() : '';
+  const allowedStatuses = new Set(['open', 'pending', 'closed', 'all', '']);
+
+  if (!allowedStatuses.has(status)) {
+    return new Response(JSON.stringify({ error: 'Invalid status filter' }), {
+      status: 400,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  let ticketsQuery = supabaseClient
     .from('tickets')
     .select('id, subject, body, status, priority, from_name, assigned_to_name, created_at, updated_at')
     .order('updated_at', { ascending: false });
+
+  if (status && status !== 'all') {
+    ticketsQuery = ticketsQuery.eq('status', status);
+  }
+
+  if (query) {
+    ticketsQuery = ticketsQuery.or(`subject.ilike.%${query}%,body.ilike.%${query}%,from_name.ilike.%${query}%`);
+  }
+
+  const { data, error } = await ticketsQuery;
 
   if (error) {
     const message = error.message?.toLowerCase() ?? '';

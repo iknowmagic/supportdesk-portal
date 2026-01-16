@@ -25,19 +25,28 @@ export type TicketDetail = {
   comments: TicketComment[];
 };
 
+export type TicketsListFilters = {
+  status?: string;
+  query?: string;
+};
+
 type TicketsListResponse = {
   tickets: TicketSummary[];
 };
 
 type TicketDetailResponse = TicketDetail;
 
-export async function listTickets(): Promise<TicketSummary[]> {
+export async function listTickets(filters: TicketsListFilters = {}): Promise<TicketSummary[]> {
   const accessToken = await getAccessToken('You must be logged in to view tickets.');
 
   const { data, error } = await supabase.functions.invoke<TicketsListResponse>('tickets_list', {
-    method: 'GET',
+    method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,
+    },
+    body: {
+      status: filters.status,
+      query: filters.query,
     },
   });
 
