@@ -33,6 +33,8 @@
 │   ├── SidebarNav.tsx
 │   ├── Tabs.tsx
 │   ├── ThemeWatcher.tsx
+│   ├── inbox
+│   │   └── InboxSearch.tsx
 │   ├── ticketCreation
 │   │   └── NewTicketModal.tsx
 │   ├── ui
@@ -83,7 +85,7 @@
 │   ├── TicketDetail.tsx
 │   ├── __tests__
 │   │   ├── InboxErrorState.test.tsx
-│   │   ├── InboxSearchAutocomplete.test.tsx
+│   │   ├── InboxSearchHistory.test.tsx
 │   │   └── TicketDetailErrorState.test.tsx
 │   └── ticketDetail
 │       ├── TicketActionsPanel.tsx
@@ -94,6 +96,9 @@
 │   ├── demo
 │   │   └── atoms.ts
 │   ├── devTools
+│   │   ├── atoms.ts
+│   │   └── hooks.ts
+│   ├── inbox
 │   │   ├── atoms.ts
 │   │   └── hooks.ts
 │   ├── networkMonitor

@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { config as loadEnv } from 'dotenv';
 import { resolve } from 'path';
@@ -34,7 +34,7 @@ const createWrapper = () => {
   );
 };
 
-describe('Inbox search autocomplete', () => {
+describe('Inbox search history', () => {
   beforeAll(async () => {
     await setupTestUser();
 
@@ -89,44 +89,79 @@ describe('Inbox search autocomplete', () => {
     vi.unstubAllEnvs();
   });
 
-  it('lets users pick a ticket from autocomplete results', async () => {
-    const [ticket] = await listTickets();
-    if (!ticket) {
-      throw new Error('No tickets available for autocomplete tests');
+  it('applies search only on submit and stores history', async () => {
+    const allTickets = await listTickets();
+    const target = allTickets[0];
+
+    if (!target) {
+      throw new Error('No tickets available for search tests');
     }
 
-    const query = ticket.subject.slice(0, 6);
+    const filtered = await listTickets({ query: target.subject });
+    const filteredIds = new Set(filtered.map((ticket) => ticket.id));
+    const nonMatch = allTickets.find((ticket) => !filteredIds.has(ticket.id));
+
+    if (!nonMatch) {
+      throw new Error('Unable to find a non-matching ticket for search tests');
+    }
+
+    const user = userEvent.setup();
+
+    render(<InboxPage />, { wrapper: createWrapper() });
+
+    await screen.findByTestId(`ticket-card-${nonMatch.id}`);
+
+    const input = screen.getByTestId('ticket-search-input');
+    await user.type(input, target.subject);
+
+    expect(screen.getByTestId(`ticket-card-${nonMatch.id}`)).toBeTruthy();
+
+    await user.click(screen.getByTestId('ticket-search-submit'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId(`ticket-card-${nonMatch.id}`)).toBeNull();
+    });
+
+    await user.click(input);
+
+    const historyList = await screen.findByTestId('ticket-search-history');
+    const historyItem = within(historyList).getByTestId('ticket-search-history-item-0');
+    expect(historyItem.textContent).toContain(target.subject);
+  });
+
+  it('allows removing previous searches', async () => {
+    const [ticket] = await listTickets();
+    if (!ticket) {
+      throw new Error('No tickets available for search tests');
+    }
+
     const user = userEvent.setup();
 
     render(<InboxPage />, { wrapper: createWrapper() });
 
     const input = screen.getByTestId('ticket-search-input');
-    await user.type(input, query);
+    await user.type(input, ticket.subject);
+    await user.click(screen.getByTestId('ticket-search-submit'));
 
-    const suggestion = await screen.findByTestId(`ticket-search-item-${ticket.id}`);
-    await user.click(suggestion);
+    await user.click(input);
 
-    expect(mockNavigate).toHaveBeenCalledWith({ to: `/tickets/${ticket.id}` });
-  });
+    const historyList = await screen.findByTestId('ticket-search-history');
+    const historyItem = within(historyList).getByTestId('ticket-search-history-item-0');
+    expect(historyItem.textContent).toContain(ticket.subject);
 
-  it('keeps the query as a filter when choosing the filter action', async () => {
-    const [ticket] = await listTickets();
-    if (!ticket) {
-      throw new Error('No tickets available for autocomplete tests');
-    }
+    const removeButton = within(historyList).getByTestId('ticket-search-history-remove-0');
+    await user.click(removeButton);
 
-    const query = ticket.subject.slice(0, 6);
-    const user = userEvent.setup();
+    await waitFor(() => {
+      const updatedList = screen.queryByTestId('ticket-search-history');
+      if (!updatedList) {
+        expect(updatedList).toBeNull();
+        return;
+      }
 
-    render(<InboxPage />, { wrapper: createWrapper() });
-
-    const input = screen.getByTestId('ticket-search-input') as HTMLInputElement;
-    await user.type(input, query);
-
-    const filterAction = await screen.findByTestId('ticket-search-filter');
-    await user.click(filterAction);
-
-    expect(screen.queryByTestId('ticket-search-suggestions')).toBeNull();
-    expect(mockNavigate).not.toHaveBeenCalled();
+      const historyItems = within(updatedList).queryAllByTestId(/ticket-search-history-item-/);
+      const hasSubject = historyItems.some((item) => item.textContent?.includes(ticket.subject));
+      expect(hasSubject).toBe(false);
+    });
   });
 });

@@ -39,7 +39,8 @@
 - Added loading skeletons for ticket detail actions and reply panels while ticket data loads.
 - Added retryable error states for inbox and ticket detail API failures with UI coverage tests.
 - Added a global error boundary with a reset action to catch unexpected UI failures.
-- Added inbox search autocomplete suggestions with quick ticket navigation and filter action.
+- Added inbox search history suggestions with submit-to-search behavior.
+- Updated inbox search history tests to allow the history dropdown to close when empty.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.
