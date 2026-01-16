@@ -79,7 +79,7 @@ export default function InboxPage() {
             </p>
           </div>
           <Button onClick={() => setNewTicketModalOpen(true)} data-testid="new-ticket-button">
-            <Plus className="mr-2 size-4" />
+            <Plus className="size-4" />
             New Ticket
           </Button>
         </div>
@@ -128,18 +128,12 @@ export default function InboxPage() {
               <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
                 <Inbox className="text-muted-foreground dark:text-muted-foreground size-10" />
                 <div className="space-y-1">
-                  <h3 className="text-foreground dark:text-foreground text-lg font-semibold">
-                    Unable to load tickets
-                  </h3>
+                  <h3 className="text-foreground dark:text-foreground text-lg font-semibold">Unable to load tickets</h3>
                   <p className="text-muted-foreground dark:text-muted-foreground text-sm">
                     Please try again in a moment.
                   </p>
                 </div>
-                <Button
-                  variant="secondary"
-                  onClick={() => refetch()}
-                  data-testid="inbox-error-retry"
-                >
+                <Button variant="secondary" onClick={() => refetch()} data-testid="inbox-error-retry">
                   Try again
                 </Button>
               </CardContent>
@@ -157,7 +151,7 @@ export default function InboxPage() {
                 </p>
                 {trimmedSearchQuery === '' && statusFilter === 'all' && (
                   <Button onClick={() => setNewTicketModalOpen(true)} className="mt-4">
-                    <Plus className="mr-2 size-4" />
+                    <Plus className="size-4" />
                     New Ticket
                   </Button>
                 )}
@@ -174,9 +168,7 @@ export default function InboxPage() {
                 <CardHeader>
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">
-                      <CardTitle className="text-foreground dark:text-foreground truncate">
-                        {ticket.subject}
-                      </CardTitle>
+                      <CardTitle className="text-foreground dark:text-foreground truncate">{ticket.subject}</CardTitle>
                       <CardDescription className="mt-1">
                         From {ticket.from_name} •{' '}
                         {formatDistanceToNow(new Date(ticket.updated_at), { addSuffix: true })}
@@ -189,9 +181,7 @@ export default function InboxPage() {
                   </div>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-muted-foreground dark:text-muted-foreground line-clamp-2 text-sm">
-                    {ticket.body}
-                  </p>
+                  <p className="text-muted-foreground dark:text-muted-foreground line-clamp-2 text-sm">{ticket.body}</p>
                   {ticket.assigned_to_name && (
                     <p className="text-muted-foreground dark:text-muted-foreground mt-2 text-xs">
                       Assigned to {ticket.assigned_to_name}
