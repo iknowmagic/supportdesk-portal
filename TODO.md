@@ -61,6 +61,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Test login/logout flow end-to-end
 - [x] Replace login demo credentials hint with hourly reset countdown
 - [x] Add seconds toggle to reset countdown display
+- [x] Ensure demo sessions persist until explicit logout
 
 ## Phase 2: Core UI Structure
 
@@ -89,6 +90,8 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Display full ticket info: subject, fromName, assigneeName, status, priority, body, createdAt
 - [x] Show comment thread below ticket body
 - [x] Display comment author (actorName), body, timestamp
+- [x] Add ticket detail Edge function + API helper for ticket detail data
+- [x] Add API tests for ticket detail Edge function
 - [ ] Add reply/comment form at bottom
 - [ ] Implement "Add Comment" functionality (insert into comments table)
 - [ ] Add status update controls (dropdown to change status)
