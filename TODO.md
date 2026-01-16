@@ -118,12 +118,12 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 
 ### Ticket Detail Actions (backend → UI)
 #### Backend
-- [ ] Add comment creation Edge function (POST, auth required)
-- [ ] Add status update Edge function (POST/PATCH, auth required)
-- [ ] Add assignee update Edge function (POST/PATCH, auth required)
-- [ ] Register ticket detail action Edge functions in `supabase/config.toml`
-- [ ] Add API tests: unauthenticated rejected; authenticated creates comment/updates status/assignee
-- [ ] Add API helpers + TanStack Query mutations for comment/status/assignee (refresh ticket detail on success)
+- [x] Add comment creation Edge function (POST, auth required)
+- [x] Add status update Edge function (POST/PATCH, auth required)
+- [x] Add assignee update Edge function (POST/PATCH, auth required)
+- [x] Register ticket detail action Edge functions in `supabase/config.toml`
+- [x] Add API tests: unauthenticated rejected; authenticated creates comment/updates status/assignee
+- [x] Add API helpers + TanStack Query mutations for comment/status/assignee (refresh ticket detail on success)
 
 #### UI + Wiring
 - [ ] Add reply/comment form at bottom (wired to mutation)

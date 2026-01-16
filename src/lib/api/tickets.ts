@@ -15,6 +15,8 @@ export type TicketSummary = {
 
 export type TicketComment = {
   id: string;
+  ticket_id?: string;
+  actor_id?: string;
   actor_name: string;
   body: string;
   created_at: string;
@@ -34,6 +36,22 @@ export type TicketCreateInput = {
   priority?: string;
 };
 
+export type TicketCommentCreateInput = {
+  ticket_id: string;
+  body: string;
+  actor_id?: string | null;
+};
+
+export type TicketStatusUpdateInput = {
+  ticket_id: string;
+  status: 'open' | 'pending' | 'closed';
+};
+
+export type TicketAssigneeUpdateInput = {
+  ticket_id: string;
+  assigned_to_actor_id?: string | null;
+};
+
 export type TicketsListFilters = {
   status?: string;
   query?: string;
@@ -46,6 +64,24 @@ type TicketsListResponse = {
 type TicketDetailResponse = TicketDetail;
 type TicketCreateResponse = {
   ticket: TicketSummary;
+};
+type TicketCommentCreateResponse = {
+  comment: TicketComment;
+};
+type TicketStatusUpdateResponse = {
+  ticket: {
+    id: string;
+    status: string;
+    updated_at: string;
+  };
+};
+type TicketAssigneeUpdateResponse = {
+  ticket: {
+    id: string;
+    assigned_to_actor_id: string | null;
+    assigned_to_name: string | null;
+    updated_at: string;
+  };
 };
 
 export async function listTickets(filters: TicketsListFilters = {}): Promise<TicketSummary[]> {
@@ -112,6 +148,84 @@ export async function createTicket(payload: TicketCreateInput): Promise<TicketSu
   const accessToken = await getAccessToken('You must be logged in to create tickets.');
 
   const { data, error } = await supabase.functions.invoke<TicketCreateResponse>('ticket_create', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: payload,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data?.ticket) {
+    throw new Error('No ticket returned from server.');
+  }
+
+  return data.ticket;
+}
+
+export async function createTicketComment(payload: TicketCommentCreateInput): Promise<TicketComment> {
+  if (!payload.ticket_id?.trim() || !payload.body?.trim()) {
+    throw new Error('Missing required fields.');
+  }
+
+  const accessToken = await getAccessToken('You must be logged in to add comments.');
+
+  const { data, error } = await supabase.functions.invoke<TicketCommentCreateResponse>('ticket_comment_create', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: payload,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data?.comment) {
+    throw new Error('No comment returned from server.');
+  }
+
+  return data.comment;
+}
+
+export async function updateTicketStatus(payload: TicketStatusUpdateInput) {
+  if (!payload.ticket_id?.trim() || !payload.status) {
+    throw new Error('Missing required fields.');
+  }
+
+  const accessToken = await getAccessToken('You must be logged in to update ticket status.');
+
+  const { data, error } = await supabase.functions.invoke<TicketStatusUpdateResponse>('ticket_status_update', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+    body: payload,
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  if (!data?.ticket) {
+    throw new Error('No ticket returned from server.');
+  }
+
+  return data.ticket;
+}
+
+export async function updateTicketAssignee(payload: TicketAssigneeUpdateInput) {
+  if (!payload.ticket_id?.trim()) {
+    throw new Error('Missing required fields.');
+  }
+
+  const accessToken = await getAccessToken('You must be logged in to update ticket assignee.');
+
+  const { data, error } = await supabase.functions.invoke<TicketAssigneeUpdateResponse>('ticket_assignee_update', {
     method: 'POST',
     headers: {
       Authorization: `Bearer ${accessToken}`,

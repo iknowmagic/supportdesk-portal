@@ -31,6 +31,10 @@
 - Stabilized New Ticket modal tests by seeding actor cache and stubbing scrollIntoView for Radix Select.
 - Serialized Vitest file execution and added pointer capture stubs to keep reset-dependent tests stable.
 - Kept the "From" actor select controlled and aligned test interactions with userEvent keyboard input.
+- Added ticket comment creation Edge function with auth coverage for adding replies.
+- Added ticket status update Edge function with auth coverage for status changes.
+- Added ticket assignee update Edge function with auth coverage for assignee changes.
+- Added ticket action API helpers and mutation hooks that refresh ticket detail after updates.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

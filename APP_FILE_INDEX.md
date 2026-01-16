@@ -41,10 +41,12 @@
 │   └── durationOptions.ts
 ├── hooks
 │   ├── __tests__
-│   │   └── useSupabaseLogout.test.tsx
+│   │   ├── useSupabaseLogout.test.tsx
+│   │   └── useTicketActions.test.tsx
 │   ├── useAuthRedirect.ts
 │   ├── use-mobile.ts
 │   ├── useMediaQuery.ts
+│   ├── useTicketActions.ts
 │   └── useSupabaseLogout.ts
 ├── integrations
 │   └── tanstack-query
@@ -116,6 +118,12 @@
     │   └── index.ts
 ├── ticket_detail
 │   └── index.ts
+├── ticket_comment_create
+│   └── index.ts
+├── ticket_status_update
+│   └── index.ts
+├── ticket_assignee_update
+│   └── index.ts
 └── tickets_list
     └── index.ts
 ./tests
@@ -124,6 +132,7 @@
 │   ├── authz-rest.test.ts
 │   ├── auth.test.ts
 │   ├── reset-db.test.ts
+│   ├── ticket-actions.test.ts
 │   ├── ticket-create.test.ts
 │   ├── ticket-detail.test.ts
 │   └── tickets-list.test.ts

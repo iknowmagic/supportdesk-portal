@@ -391,3 +391,18 @@ entrypoint = "./functions/ticket_create/index.ts"
 enabled = true
 verify_jwt = true
 entrypoint = "./functions/ticket_detail/index.ts"
+
+[functions.ticket_comment_create]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/ticket_comment_create/index.ts"
+
+[functions.ticket_status_update]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/ticket_status_update/index.ts"
+
+[functions.ticket_assignee_update]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/ticket_assignee_update/index.ts"
