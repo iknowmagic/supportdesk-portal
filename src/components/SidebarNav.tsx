@@ -5,7 +5,7 @@ import { Beaker, Inbox, LayoutDashboard } from 'lucide-react';
 type NavItem = {
   id: string;
   label: string;
-  to: '/' | '/dashboard' | '/components';
+  to: '/inbox' | '/dashboard' | '/components';
   icon: typeof Inbox;
   isActive: (path: string) => boolean;
 };
@@ -14,9 +14,9 @@ const NAV_ITEMS: NavItem[] = [
   {
     id: 'inbox',
     label: 'Inbox',
-    to: '/',
+    to: '/inbox',
     icon: Inbox,
-    isActive: (path) => path === '/',
+    isActive: (path) => path === '/inbox' || path === '/',
   },
   {
     id: 'dashboard',

@@ -38,8 +38,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const { data } = await supabase.auth.getSession();
         if (!isActive) return;
 
-        if (data.session) {
-          setSession(data.session);
+        const session = data.session;
+        const sessionExpiresAt = session?.expires_at ? session.expires_at * 1000 : null;
+        const isExpired = sessionExpiresAt !== null && sessionExpiresAt <= Date.now();
+
+        if (session && !isExpired) {
+          setSession(session);
           setDemoAutoLoginEnabled(true);
           setLoading(false);
           return;

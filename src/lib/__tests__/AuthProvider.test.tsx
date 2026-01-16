@@ -53,6 +53,28 @@ describe('AuthProvider', () => {
     });
   });
 
+  it('auto signs in when the stored session is expired', async () => {
+    localStorage.setItem(DEMO_AUTO_LOGIN_KEY, 'true');
+    vi.stubEnv('VITE_DEMO_USER_EMAIL', 'demo@example.com');
+    vi.stubEnv('VITE_DEMO_USER_PASSWORD', 'password');
+    getSession.mockResolvedValue({ data: { session: { expires_at: 1 } } });
+
+    const { AuthProvider } = await import('../AuthProvider');
+
+    render(
+      <AuthProvider>
+        <div />
+      </AuthProvider>
+    );
+
+    await waitFor(() => {
+      expect(signInWithPassword).toHaveBeenCalledWith({
+        email: 'demo@example.com',
+        password: 'password',
+      });
+    });
+  });
+
   it('skips auto-login when preference is disabled', async () => {
     localStorage.setItem(DEMO_AUTO_LOGIN_KEY, 'false');
     vi.stubEnv('VITE_DEMO_USER_EMAIL', 'demo@example.com');

@@ -31,6 +31,21 @@ describe('authGuard', () => {
     ).not.toThrow();
   });
 
+  it('redirects when session is expired', () => {
+    const session = { expires_at: 1 } as Session;
+
+    expect(() =>
+      requireAuth({
+        context: {
+          auth: {
+            session,
+            loading: false,
+          },
+        },
+      })
+    ).toThrow();
+  });
+
   it('redirects to home when session exists for guest routes', () => {
     const session = {} as Session;
 

@@ -12,10 +12,15 @@ type AuthGuardOptions = {
   };
 };
 
+const isSessionExpired = (session: Session | null) => {
+  if (!session?.expires_at) return false;
+  return session.expires_at * 1000 <= Date.now();
+};
+
 export function requireAuth({ context }: AuthGuardOptions) {
   if (context.auth.loading) return;
 
-  if (!context.auth.session) {
+  if (!context.auth.session || isSessionExpired(context.auth.session)) {
     throw redirect({ to: '/login' });
   }
 }
@@ -24,6 +29,6 @@ export function redirectIfAuthenticated({ context }: AuthGuardOptions) {
   if (context.auth.loading) return;
 
   if (context.auth.session) {
-    throw redirect({ to: '/' });
+    throw redirect({ to: '/inbox' });
   }
 }

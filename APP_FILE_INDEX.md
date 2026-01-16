@@ -2,6 +2,8 @@
 
 ```text
 ./src
+├── __tests__
+│   └── routes.test.ts
 ├── components
 │   ├── __tests__
 │   │   ├── AppShell.test.tsx
@@ -63,7 +65,8 @@
 ├── pages
 │   ├── ComponentsShowcase.tsx
 │   ├── Dashboard.tsx
-│   └── Inbox.tsx
+│   ├── Inbox.tsx
+│   └── TicketDetail.tsx
 ├── store
 │   ├── demo
 │   │   └── atoms.ts

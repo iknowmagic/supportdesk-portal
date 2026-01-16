@@ -8,7 +8,7 @@ export function useAuthRedirect() {
 
   useEffect(() => {
     if (!authLoading && session) {
-      navigate({ to: '/' });
+      navigate({ to: '/inbox' });
     }
   }, [authLoading, session, navigate]);
 

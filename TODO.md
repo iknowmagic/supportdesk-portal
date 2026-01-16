@@ -68,8 +68,8 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Create app shell layout (header, sidebar/nav, main content area)
 - [x] Show hourly reset countdown in the header
 - [x] Build header component (app logo/name, demo user indicator, logout button)
-- [ ] Build navigation component (links to Inbox, Settings)
-- [ ] Add route definitions for main screens (/inbox, /tickets/:id, /settings)
+- [ ] Build navigation component (links to Inbox; Settings may be added later if needed)
+- [x] Add route definitions for main screens (/inbox, /tickets/:id) (Settings may be added later if needed)
 - [ ] Implement PageTransition animations for route changes
 
 ### Inbox/Dashboard

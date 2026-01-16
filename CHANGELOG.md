@@ -14,6 +14,8 @@
 - Replaced the login demo credentials hint with an hourly reset countdown message.
 - Added a seconds toggle to the reset countdown display.
 - Added the reset countdown indicator to the app header.
+- Treated expired sessions as unauthenticated to ensure home redirects to login.
+- Added inbox and ticket detail routes, with / redirecting to /inbox.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

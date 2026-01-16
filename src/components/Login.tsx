@@ -31,7 +31,7 @@ export default function LoginPage() {
       if (error) throw error;
 
       toast.success('Welcome back!');
-      navigate({ to: '/' });
+      navigate({ to: '/inbox' });
     } catch (error) {
       toast.error('Login failed', {
         description: error instanceof Error ? error.message : 'Please check your credentials.',
@@ -112,7 +112,7 @@ export default function LoginPage() {
             className="dark:text-muted-foreground bg-muted/50 dark:bg-muted/20 rounded-md p-3 text-center text-xs"
             data-testid="login-reset-message"
           >
-            The system will reset in <ResetCountdown seconds={true} /> min.
+            The system will reset in <ResetCountdown seconds={false} /> min.
           </FieldDescription>
         </div>
       </div>
