@@ -71,7 +71,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Build header component (app logo/name, demo user indicator, logout button)
 - [x] Build navigation component (links to Inbox; Settings may be added later if needed)
 - [x] Add route definitions for main screens (/inbox, /tickets/:id) (Settings may be added later if needed)
-- [ ] Implement PageTransition animations for route changes
+- [x] Implement PageTransition animations for route changes
 
 ### Inbox/Dashboard
 - [ ] Create inbox/dashboard page that lists all tickets

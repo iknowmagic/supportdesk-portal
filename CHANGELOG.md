@@ -20,6 +20,7 @@
 - Added a ticket detail Edge function plus a richer ticket detail page layout.
 - Added session refresh handling and increased JWT expiry to keep demo sessions alive longer.
 - Added SidebarNav tests to cover route highlighting and navigation.
+- Added route transition animations with PageTransition and coverage for transition keys.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

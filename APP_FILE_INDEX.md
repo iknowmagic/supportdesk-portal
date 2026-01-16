@@ -9,6 +9,7 @@
 │   │   ├── AppShell.test.tsx
 │   │   ├── LayoutHeader.test.tsx
 │   │   ├── Login.test.tsx
+│   │   ├── PageTransition.test.tsx
 │   │   ├── ResetCountdown.test.tsx
 │   │   ├── ResetDemoButton.test.tsx
 │   │   ├── SidebarNav.test.tsx
@@ -23,6 +24,7 @@
 │   ├── PageTransition.tsx
 │   ├── ResetCountdown.tsx
 │   ├── ResetDemoButton.tsx
+│   ├── RootLayout.tsx
 │   ├── RouterApp.tsx
 │   ├── SectionCard.tsx
 │   ├── SidebarNav.tsx

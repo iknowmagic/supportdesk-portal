@@ -1,11 +1,16 @@
-import { PageTransition } from '@/components/PageTransition';
+import { RootLayout } from '@/components/RootLayout';
 import { redirectIfAuthenticated, requireAuth } from '@/lib/authGuard';
 import ComponentsShowcasePage from '@/pages/ComponentsShowcase';
 import DashboardPage from '@/pages/Dashboard';
 import InboxPage from '@/pages/Inbox';
 import TicketDetailPage from '@/pages/TicketDetail';
 import type { Session } from '@supabase/supabase-js';
-import { Outlet, createRootRouteWithContext, createRoute, createRouter, redirect } from '@tanstack/react-router';
+import {
+  createRootRouteWithContext,
+  createRoute,
+  createRouter,
+  redirect,
+} from '@tanstack/react-router';
 import LoginPage from './components/Login.tsx';
 import VerifyOtpPage from './components/VerifyOtp.tsx';
 
@@ -17,11 +22,7 @@ type RouterContext = {
 };
 
 const rootRoute = createRootRouteWithContext<RouterContext>()({
-  component: () => (
-    <PageTransition>
-      <Outlet />
-    </PageTransition>
-  ),
+  component: RootLayout,
 });
 
 const homeRoute = createRoute({
