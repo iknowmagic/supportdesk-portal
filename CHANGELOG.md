@@ -25,6 +25,7 @@
 - Centralized access token retrieval with refresh handling for Edge function calls.
 - Treated expired sessions as a no-op logout while preserving explicit logout behavior.
 - Moved ticket list filtering/search to the Edge function and added coverage for status/query filters.
+- Added an actors list Edge function plus API helper and auth coverage for actor lookups.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

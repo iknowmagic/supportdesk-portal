@@ -50,6 +50,7 @@
 │   │   ├── AuthProvider.test.tsx
 │   │   └── authGuard.test.ts
 │   ├── api
+│   │   ├── actors.ts
 │   │   ├── auth.ts
 │   │   ├── resetDemo.ts
 │   │   └── tickets.ts
@@ -94,19 +95,22 @@
 └── routes.tsx
 ./supabase
 └── functions
-    ├── _shared
-    │   ├── db-operations.ts
-    │   └── seed-data.ts
-    ├── reset_db
-    │   └── index.ts
+├── _shared
+│   ├── db-operations.ts
+│   └── seed-data.ts
+├── actors_list
+│   └── index.ts
+├── reset_db
+│   └── index.ts
     ├── reset_db_4214476
     │   └── index.ts
-    ├── ticket_detail
-    │   └── index.ts
-    └── tickets_list
-        └── index.ts
+├── ticket_detail
+│   └── index.ts
+└── tickets_list
+    └── index.ts
 ./tests
 ├── api
+│   ├── actors-list.test.ts
 │   ├── authz-rest.test.ts
 │   ├── auth.test.ts
 │   ├── reset-db.test.ts

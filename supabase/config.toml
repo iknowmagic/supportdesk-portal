@@ -377,6 +377,11 @@ enabled = true
 verify_jwt = true
 entrypoint = "./functions/tickets_list/index.ts"
 
+[functions.actors_list]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/actors_list/index.ts"
+
 [functions.ticket_detail]
 enabled = true
 verify_jwt = true

@@ -95,10 +95,10 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Add API tests for ticket detail Edge function
 
 ### Shared Ticket Data (actors)
-- [ ] Add actor lookup Edge function (customers + agents) for ticket creation/detail selectors
-- [ ] Register actor lookup Edge function in `supabase/config.toml`
-- [ ] Add API tests for actor lookup (auth required, returns expected role groups)
-- [ ] Add API helper + TanStack Query query for actor options
+- [x] Add actor lookup Edge function (customers + agents) for ticket creation/detail selectors
+- [x] Register actor lookup Edge function in `supabase/config.toml`
+- [x] Add API tests for actor lookup (auth required, returns expected role groups)
+- [x] Add API helper + TanStack Query query for actor options
 
 ### Ticket Creation (backend → UI)
 #### Backend
