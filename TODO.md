@@ -132,6 +132,10 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Add toast assertions for comment/status/assignee success/failure
 - [x] Test ticket detail actions end-to-end (UI + API)
 
+## Polish
+- [ ] Upgrade search to autocomplete (filter + direct ticket selection)
+- [ ] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
+
 ## Phase 4: Polish & Demo Features
 
 ### Error & Empty States
@@ -139,10 +143,9 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Add error state for failed API requests (retry option)
 - [x] Add error boundary component for unexpected errors
 - [x] Design and implement empty state for inbox (no tickets)
-- [ ] Design and implement empty state for ticket with no comments
+- [x] Design and implement empty state for ticket with no comments (Conversation card “No replies yet” state)
 
 ### Settings & Profile
-- [ ] Create settings page with minimal demo user profile display
 - [x] Add "Reset Demo" button to restore original seeded data
 - [x] Implement reset functionality (truncate tables, re-run seed script)
 - [x] Add confirmation dialog before reset
@@ -175,8 +178,6 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [ ] Prepare deployment configuration for Vercel
 - [ ] Add deployment instructions to README
 
-## Deferred polish (cosmetic/later)
-- [ ] Upgrade search to autocomplete (filter + direct ticket selection)
-- [ ] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
+
 
 ---
