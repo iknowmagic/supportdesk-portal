@@ -7,6 +7,7 @@
 ├── components
 │   ├── __tests__
 │   │   ├── AppShell.test.tsx
+│   │   ├── ErrorBoundary.test.tsx
 │   │   ├── LayoutHeader.test.tsx
 │   │   ├── Login.test.tsx
 │   │   ├── NewTicketModal.test.tsx
@@ -18,6 +19,7 @@
 │   ├── AppShell.tsx
 │   ├── Combobox.tsx
 │   ├── ConfirmDialog.tsx
+│   ├── ErrorBoundary.tsx
 │   ├── LayoutHeader.tsx
 │   ├── Login.tsx
 │   ├── ModalShell.tsx

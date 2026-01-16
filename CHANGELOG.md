@@ -38,6 +38,7 @@
 - Added ticket detail action UI with reply form, status updates, assignee updates, and toast coverage tests.
 - Added loading skeletons for ticket detail actions and reply panels while ticket data loads.
 - Added retryable error states for inbox and ticket detail API failures with UI coverage tests.
+- Added a global error boundary with a reset action to catch unexpected UI failures.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.
