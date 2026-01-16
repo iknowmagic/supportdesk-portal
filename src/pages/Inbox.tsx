@@ -23,7 +23,7 @@ export default function InboxPage() {
   const [searchQuery, setSearchQuery] = useState('');
 
   const trimmedSearchQuery = searchQuery.trim();
-  const { data, isLoading, error } = useQuery<TicketSummary[]>({
+  const { data, isLoading, error, refetch } = useQuery<TicketSummary[]>({
     queryKey: queryKeys.ticketsList({ status: statusFilter, query: trimmedSearchQuery }),
     queryFn: () => listTickets({ status: statusFilter, query: trimmedSearchQuery }),
     retry: false,
@@ -123,6 +123,27 @@ export default function InboxPage() {
                 </CardContent>
               </Card>
             ))
+          ) : error ? (
+            <Card data-testid="inbox-error-state">
+              <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+                <Inbox className="text-muted-foreground dark:text-muted-foreground size-10" />
+                <div className="space-y-1">
+                  <h3 className="text-foreground dark:text-foreground text-lg font-semibold">
+                    Unable to load tickets
+                  </h3>
+                  <p className="text-muted-foreground dark:text-muted-foreground text-sm">
+                    Please try again in a moment.
+                  </p>
+                </div>
+                <Button
+                  variant="secondary"
+                  onClick={() => refetch()}
+                  data-testid="inbox-error-retry"
+                >
+                  Try again
+                </Button>
+              </CardContent>
+            </Card>
           ) : tickets.length === 0 ? (
             // Empty state
             <Card>

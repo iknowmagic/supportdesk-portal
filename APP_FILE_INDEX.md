@@ -79,6 +79,9 @@
 │   ├── Dashboard.tsx
 │   ├── Inbox.tsx
 │   ├── TicketDetail.tsx
+│   ├── __tests__
+│   │   ├── InboxErrorState.test.tsx
+│   │   └── TicketDetailErrorState.test.tsx
 │   └── ticketDetail
 │       ├── TicketActionsPanel.tsx
 │       └── __tests__

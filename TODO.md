@@ -136,7 +136,7 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 
 ### Error & Empty States
 - [x] Add loading states for data fetching (skeleton screens)
-- [ ] Add error state for failed API requests (retry option)
+- [x] Add error state for failed API requests (retry option)
 - [ ] Add error boundary component for unexpected errors
 - [x] Design and implement empty state for inbox (no tickets)
 - [ ] Design and implement empty state for ticket with no comments

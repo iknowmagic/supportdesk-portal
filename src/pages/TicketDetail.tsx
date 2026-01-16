@@ -21,7 +21,7 @@ export default function TicketDetailPage() {
   const { ticketId } = useParams({ from: '/tickets/$ticketId' });
   const navigate = useNavigate();
 
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error, refetch } = useQuery({
     queryKey: queryKeys.ticketDetail(ticketId),
     queryFn: () => getTicketDetail(ticketId),
     retry: false,
@@ -78,135 +78,158 @@ export default function TicketDetailPage() {
           </div>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
-          <div className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Overview</CardTitle>
-                <CardDescription>Request summary and latest context.</CardDescription>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-4 w-full" />
-                    <Skeleton className="h-4 w-11/12" />
-                    <Skeleton className="h-4 w-10/12" />
-                  </div>
-                ) : (
-                  <p className="text-foreground text-sm leading-relaxed">{ticket?.body}</p>
-                )}
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <div className="flex items-center justify-between">
-                  <div>
-                    <CardTitle>Conversation</CardTitle>
-                    <CardDescription>All messages on this ticket.</CardDescription>
-                  </div>
-                  <div className="text-muted-foreground flex items-center gap-2 text-xs">
-                    <MessageSquareText className="size-4" />
-                    {isLoading ? <Skeleton className="h-4 w-10" /> : `${comments.length} replies`}
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                {isLoading ? (
-                  <div className="space-y-4">
-                    <Skeleton className="h-14 w-full" />
-                    <Skeleton className="h-14 w-11/12" />
-                    <Skeleton className="h-14 w-10/12" />
-                  </div>
-                ) : comments.length === 0 ? (
-                  <div className="text-muted-foreground rounded-lg border border-dashed p-6 text-sm">
-                    No replies yet. This conversation is ready for the first response.
-                  </div>
-                ) : (
-                  <ScrollArea className="h-[360px] pr-4">
-                    <div className="space-y-4">
-                      {comments.map((comment) => (
-                        <CommentRow key={comment.id} comment={comment} />
-                      ))}
+        {error ? (
+          <Card data-testid="ticket-detail-error-state">
+            <CardContent className="flex flex-col items-center justify-center gap-3 py-16 text-center">
+              <MessageSquareText className="text-muted-foreground dark:text-muted-foreground size-10" />
+              <div className="space-y-1">
+                <h3 className="text-foreground dark:text-foreground text-lg font-semibold">
+                  Unable to load ticket
+                </h3>
+                <p className="text-muted-foreground dark:text-muted-foreground text-sm">
+                  Please try again in a moment.
+                </p>
+              </div>
+              <Button
+                variant="secondary"
+                onClick={() => refetch()}
+                data-testid="ticket-detail-retry"
+              >
+                Try again
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-6 lg:grid-cols-[1.4fr_0.9fr]">
+            <div className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Overview</CardTitle>
+                  <CardDescription>Request summary and latest context.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-full" />
+                      <Skeleton className="h-4 w-11/12" />
+                      <Skeleton className="h-4 w-10/12" />
                     </div>
-                  </ScrollArea>
-                )}
-              </CardContent>
-            </Card>
+                  ) : (
+                    <p className="text-foreground text-sm leading-relaxed">{ticket?.body}</p>
+                  )}
+                </CardContent>
+              </Card>
 
-            <TicketReplyForm ticketId={ticket?.id ?? ticketId} isLoading={isLoading} />
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle>Conversation</CardTitle>
+                      <CardDescription>All messages on this ticket.</CardDescription>
+                    </div>
+                    <div className="text-muted-foreground flex items-center gap-2 text-xs">
+                      <MessageSquareText className="size-4" />
+                      {isLoading ? <Skeleton className="h-4 w-10" /> : `${comments.length} replies`}
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  {isLoading ? (
+                    <div className="space-y-4">
+                      <Skeleton className="h-14 w-full" />
+                      <Skeleton className="h-14 w-11/12" />
+                      <Skeleton className="h-14 w-10/12" />
+                    </div>
+                  ) : comments.length === 0 ? (
+                    <div className="text-muted-foreground rounded-lg border border-dashed p-6 text-sm">
+                      No replies yet. This conversation is ready for the first response.
+                    </div>
+                  ) : (
+                    <ScrollArea className="h-[360px] pr-4">
+                      <div className="space-y-4">
+                        {comments.map((comment) => (
+                          <CommentRow key={comment.id} comment={comment} />
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  )}
+                </CardContent>
+              </Card>
+
+              <TicketReplyForm ticketId={ticket?.id ?? ticketId} isLoading={isLoading} />
+            </div>
+
+            <div className="space-y-6">
+              <TicketActionsPanel
+                ticketId={ticket?.id ?? ticketId}
+                status={ticket?.status ?? 'open'}
+                assignedToActorId={ticket?.assigned_to_actor_id ?? null}
+                isLoading={isLoading}
+              />
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Ticket details</CardTitle>
+                  <CardDescription>Assignment and timestamps.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm">
+                  <DetailRow
+                    label="Requester"
+                    value={ticket?.from_name ?? (isLoading ? null : 'Unknown')}
+                    icon={<UserRound className="size-4" />}
+                    loading={isLoading}
+                  />
+                  <DetailRow
+                    label="Assignee"
+                    value={ticket?.assigned_to_name ?? (isLoading ? null : 'Unassigned')}
+                    icon={<BadgeCheck className="size-4" />}
+                    loading={isLoading}
+                  />
+                  <Separator />
+                  <DetailRow
+                    label="Created"
+                    value={ticket?.created_at ? formatTimestamp(ticket.created_at) : null}
+                    icon={<CalendarClock className="size-4" />}
+                    loading={isLoading}
+                  />
+                  <DetailRow
+                    label="Last updated"
+                    value={ticket?.updated_at ? formatTimestamp(ticket.updated_at) : null}
+                    icon={<CalendarClock className="size-4" />}
+                    loading={isLoading}
+                  />
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Activity highlights</CardTitle>
+                  <CardDescription>Quick context for this thread.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4 text-sm">
+                  <DetailRow
+                    label="Replies"
+                    value={isLoading ? null : `${comments.length}`}
+                    icon={<MessageSquareText className="size-4" />}
+                    loading={isLoading}
+                  />
+                  <DetailRow
+                    label="Last reply"
+                    value={lastReply?.created_at ? formatTimestamp(lastReply.created_at) : 'No replies yet'}
+                    icon={<CalendarClock className="size-4" />}
+                    loading={isLoading}
+                  />
+                  <DetailRow
+                    label="Last responder"
+                    value={lastReply?.actor_name ?? '—'}
+                    icon={<UserRound className="size-4" />}
+                    loading={isLoading}
+                  />
+                </CardContent>
+              </Card>
+            </div>
           </div>
-
-          <div className="space-y-6">
-            <TicketActionsPanel
-              ticketId={ticket?.id ?? ticketId}
-              status={ticket?.status ?? 'open'}
-              assignedToActorId={ticket?.assigned_to_actor_id ?? null}
-              isLoading={isLoading}
-            />
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Ticket details</CardTitle>
-                <CardDescription>Assignment and timestamps.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                <DetailRow
-                  label="Requester"
-                  value={ticket?.from_name ?? (isLoading ? null : 'Unknown')}
-                  icon={<UserRound className="size-4" />}
-                  loading={isLoading}
-                />
-                <DetailRow
-                  label="Assignee"
-                  value={ticket?.assigned_to_name ?? (isLoading ? null : 'Unassigned')}
-                  icon={<BadgeCheck className="size-4" />}
-                  loading={isLoading}
-                />
-                <Separator />
-                <DetailRow
-                  label="Created"
-                  value={ticket?.created_at ? formatTimestamp(ticket.created_at) : null}
-                  icon={<CalendarClock className="size-4" />}
-                  loading={isLoading}
-                />
-                <DetailRow
-                  label="Last updated"
-                  value={ticket?.updated_at ? formatTimestamp(ticket.updated_at) : null}
-                  icon={<CalendarClock className="size-4" />}
-                  loading={isLoading}
-                />
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <CardTitle>Activity highlights</CardTitle>
-                <CardDescription>Quick context for this thread.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm">
-                <DetailRow
-                  label="Replies"
-                  value={isLoading ? null : `${comments.length}`}
-                  icon={<MessageSquareText className="size-4" />}
-                  loading={isLoading}
-                />
-                <DetailRow
-                  label="Last reply"
-                  value={lastReply?.created_at ? formatTimestamp(lastReply.created_at) : 'No replies yet'}
-                  icon={<CalendarClock className="size-4" />}
-                  loading={isLoading}
-                />
-                <DetailRow
-                  label="Last responder"
-                  value={lastReply?.actor_name ?? '—'}
-                  icon={<UserRound className="size-4" />}
-                  loading={isLoading}
-                />
-              </CardContent>
-            </Card>
-          </div>
-        </div>
+        )}
       </div>
     </AppShell>
   );
