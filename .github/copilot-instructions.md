@@ -58,7 +58,7 @@
   - `pnpm test:file <file-name>` - Single test file, output to ./tmp/test-output.json
   - `pnpm test:single <test-file> <test-name>` - Single test from a suite by name
   - `pnpm test:failing-files` - List all failing test files
-- API tests confirm that the API is working as expected. No need to mock the API, just run the tests directly. The file tests/helpers/auth.ts shows how to authenticate a user in tests.
+- API tests confirm that the API is working as expected. No need to mock the API, just run the tests directly. Use temp users to avoid race conditions (see tests/helpers/auth.ts). The file tests/helpers/auth.ts shows how to authenticate a user in tests.
 
 ### 🚨 CRITICAL: ALWAYS Test Through Client APIs - NO EXCEPTIONS
 
@@ -164,7 +164,7 @@ await adminClient.from("user_buffer_presets").insert({
 - Leave things better than you found them. If you spot any code smells, inefficiencies, or areas for improvement, take the initiative to refactor and enhance the codebase as you work on tasks.
 - Run `pnpm lint` and solve any linting issues you find. If there are too many issues just run the command with `pnpm lint | head -n 10` to see a few at a time and not get overwhelmed. Do this until all error are resolved. You tend to leave a mess if `pnpm lint` is not run regularly.
 - Unit tests: place them in a directory named `__tests__` next to the file being tested. Use .test.ts or .test.tsx suffix.
-- API tests: place them in the tests/api/. We test against the actual API, no need to mock. Refer to the file tests/helpers/auth.ts for authenticating users in tests.
+- API tests: place them in the tests/api/. We test against the actual API, no need to mock. Use temp users to avoid race conditions (see tests/helpers/auth.ts). Refer to the file tests/helpers/auth.ts for authenticating users in tests.
 - The .history folder is used by vscode to store file history. Do not modify or delete this folder. This folder is not part of the codebase.
 - CRITICAL: ALWAYS review APP_FILE_INDEX.md and DB_STRUCTURE.md at the beginning of each session to stay familiar with the project structure and database schema. These documents are your primary references and will help you avoid duplications and propose improvements effectively. Update them immediately when you introduce new files, components, database elements, or make changes to the codebase or database schema.
 - Whenever scrolling is needed in a component, use `import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';` for consistent styling.

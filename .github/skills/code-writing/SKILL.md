@@ -45,4 +45,4 @@ Run `pnpm lint:file` and revise the resulting file  ./tmp/lint-errors.txt. Solve
 
 ## Stage 6: Write tests
 
-Write tests that prove that what you did actually works. Use the actual API; the same API that the end user would use. Check ./tests/helpers/auth.ts and ./tests/api/auth.test.ts (sample passing test)
+Write tests that prove that what you did actually works. Use the actual API; the same API that the end user would use. Use temp users to avoid race conditions (see ./tests/helpers/auth.ts). Check ./tests/helpers/auth.ts and ./tests/api/auth.test.ts (sample passing test)
