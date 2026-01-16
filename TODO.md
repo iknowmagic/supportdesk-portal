@@ -79,10 +79,8 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Display ticket cards/rows with: subject, fromName, status, priority, timestamp
 - [x] Add filtering UI (status dropdown: all/open/pending/closed)
 - [x] Add search input (filter by subject or body text)
-- [ ] Upgrade search to autocomplete (filter + direct ticket selection)
 - [x] Implement empty state for no tickets
-- [ ] Add "New Ticket" button (opens modal or form)
-- [ ] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
+- [x] Add "New Ticket" button (button only)
 - [x] Route ticket list through authenticated Edge function (no direct REST calls)
 
 ## Phase 3: Ticket Management
@@ -95,22 +93,53 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Display comment author (actorName), body, timestamp
 - [x] Add ticket detail Edge function + API helper for ticket detail data
 - [x] Add API tests for ticket detail Edge function
-- [ ] Add reply/comment form at bottom
-- [ ] Implement "Add Comment" functionality (insert into comments table)
+
+### Shared Ticket Data (actors)
+- [ ] Add actor lookup Edge function (customers + agents) for ticket creation/detail selectors
+- [ ] Register actor lookup Edge function in `supabase/config.toml`
+- [ ] Add API tests for actor lookup (auth required, returns expected role groups)
+- [ ] Add API helper + TanStack Query query for actor options
+
+### Ticket Creation (backend → UI)
+#### Backend
+- [ ] Add ticket creation Edge function (POST, auth required) that validates payload, derives defaults, and returns new ticket id + summary
+- [ ] Register ticket creation Edge function in `supabase/config.toml`
+- [ ] Add API tests: unauthenticated rejected; authenticated creates ticket; server sets status/priority defaults; denormalized fields consistent
+- [ ] Add API helper + TanStack Query mutation for ticket creation (invalidate inbox list on success)
+
+#### UI + Wiring
+- [ ] Build "New Ticket" modal/form shell (launch from Inbox button; reuse existing modal primitives)
+- [ ] Form fields: subject, body, priority (default normal), from actor (customer), optional assignee (agent), optional status (default open)
+- [ ] Load actor options from actor lookup (customers for "from", agents for "assignee"); handle loading state
+- [ ] Wire submit to mutation; invalidate inbox list; route to new ticket detail
+- [ ] UX: disable submit while saving, show success/error toasts, close modal on success
+- [ ] Add toast assertions for ticket creation success/failure
+- [ ] Test ticket creation flow end-to-end (UI + API)
+
+### Ticket Detail Actions (backend → UI)
+#### Backend
+- [ ] Add comment creation Edge function (POST, auth required)
+- [ ] Add status update Edge function (POST/PATCH, auth required)
+- [ ] Add assignee update Edge function (POST/PATCH, auth required)
+- [ ] Register ticket detail action Edge functions in `supabase/config.toml`
+- [ ] Add API tests: unauthenticated rejected; authenticated creates comment/updates status/assignee
+- [ ] Add API helpers + TanStack Query mutations for comment/status/assignee (refresh ticket detail on success)
+
+#### UI + Wiring
+- [ ] Add reply/comment form at bottom (wired to mutation)
 - [ ] Add status update controls (dropdown to change status)
 - [ ] Add assignee selector (dropdown of actors)
-- [ ] Test ticket detail and comment posting
-
-### Ticket Creation
-- [ ] Build "New Ticket" modal/form
-- [ ] Add form fields: subject, description/body, priority, from actor
-- [ ] Implement form validation (required fields)
-- [ ] Create ticket in DB on submit
-- [ ] Redirect to new ticket detail page after creation
-- [ ] Show success toast notification
-- [ ] Test ticket creation flow end-to-end
+- [ ] Add toast assertions for comment/status/assignee success/failure
+- [ ] Test ticket detail actions end-to-end (UI + API)
 
 ## Phase 4: Polish & Demo Features
+
+### Error & Empty States
+- [ ] Add loading states for data fetching (skeleton screens)
+- [ ] Add error state for failed API requests (retry option)
+- [ ] Add error boundary component for unexpected errors
+- [x] Design and implement empty state for inbox (no tickets)
+- [ ] Design and implement empty state for ticket with no comments
 
 ### Settings & Profile
 - [ ] Create settings page with minimal demo user profile display
@@ -119,14 +148,8 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Add confirmation dialog before reset
 - [x] Test reset demo functionality
 
-### Error & Empty States
-- [ ] Add error boundary component for unexpected errors
-- [ ] Design and implement empty state for inbox (no tickets)
-- [ ] Design and implement empty state for ticket with no comments
-- [ ] Add loading states for data fetching (skeleton screens)
-- [ ] Add error state for failed API requests (retry option)
-
 ### Final Testing & QA
+- [ ] Audit frontend to ensure all data access goes through Edge functions (no REST/GraphQL/supabase.from)
 - [ ] Run full lint check (`pnpm lint`) and fix all issues
 - [ ] Run full test suite (`pnpm test`) and ensure all pass
 - [ ] Manual QA: test login → inbox → create ticket → view ticket → add comment → logout
@@ -151,5 +174,9 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [ ] Verify production build works (`pnpm preview`)
 - [ ] Prepare deployment configuration for Vercel
 - [ ] Add deployment instructions to README
+
+## Deferred polish (cosmetic/later)
+- [ ] Upgrade search to autocomplete (filter + direct ticket selection)
+- [ ] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
 
 ---
