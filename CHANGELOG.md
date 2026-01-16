@@ -18,6 +18,7 @@
 - Added inbox and ticket detail routes, with / redirecting to /inbox.
 - Disabled refresh token rotation so demo sessions persist until explicit logout.
 - Added a ticket detail Edge function plus a richer ticket detail page layout.
+- Added session refresh handling and increased JWT expiry to keep demo sessions alive longer.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

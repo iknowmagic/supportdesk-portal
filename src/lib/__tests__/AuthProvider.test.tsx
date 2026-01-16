@@ -4,12 +4,14 @@ import { DEMO_AUTO_LOGIN_KEY } from '../authStorage';
 
 const signInWithPassword = vi.fn();
 const getSession = vi.fn();
+const refreshSession = vi.fn();
 const onAuthStateChange = vi.fn();
 
 vi.mock('@/lib/supabase', () => ({
   supabase: {
     auth: {
       getSession,
+      refreshSession,
       signInWithPassword,
       onAuthStateChange,
     },
@@ -21,6 +23,7 @@ describe('AuthProvider', () => {
     localStorage.clear();
     vi.clearAllMocks();
     getSession.mockResolvedValue({ data: { session: null } });
+    refreshSession.mockResolvedValue({ data: { session: null }, error: null });
     signInWithPassword.mockResolvedValue({
       data: { session: { user: { id: 'demo', email: 'demo@example.com' } } },
       error: null,
@@ -53,11 +56,15 @@ describe('AuthProvider', () => {
     });
   });
 
-  it('auto signs in when the stored session is expired', async () => {
+  it('refreshes when the stored session is expired', async () => {
     localStorage.setItem(DEMO_AUTO_LOGIN_KEY, 'true');
     vi.stubEnv('VITE_DEMO_USER_EMAIL', 'demo@example.com');
     vi.stubEnv('VITE_DEMO_USER_PASSWORD', 'password');
     getSession.mockResolvedValue({ data: { session: { expires_at: 1 } } });
+    refreshSession.mockResolvedValue({
+      data: { session: { user: { id: 'demo', email: 'demo@example.com' } } },
+      error: null,
+    });
 
     const { AuthProvider } = await import('../AuthProvider');
 
@@ -68,11 +75,10 @@ describe('AuthProvider', () => {
     );
 
     await waitFor(() => {
-      expect(signInWithPassword).toHaveBeenCalledWith({
-        email: 'demo@example.com',
-        password: 'password',
-      });
+      expect(refreshSession).toHaveBeenCalled();
     });
+
+    expect(signInWithPassword).not.toHaveBeenCalled();
   });
 
   it('skips auto-login when preference is disabled', async () => {

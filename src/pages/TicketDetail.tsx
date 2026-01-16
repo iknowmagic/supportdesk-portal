@@ -53,13 +53,13 @@ export default function TicketDetailPage() {
               ) : (
                 <h1 className="text-2xl font-semibold">{ticket?.subject ?? 'Ticket details'}</h1>
               )}
-              <p className="text-muted-foreground text-sm">
+              <div className="text-muted-foreground text-sm">
                 {isLoading ? (
                   <Skeleton className="h-4 w-40" />
                 ) : (
                   `ID ${ticket?.id ?? ticketId}`
                 )}
-              </p>
+              </div>
             </div>
           </div>
           <div className="flex flex-wrap gap-2 md:justify-end">

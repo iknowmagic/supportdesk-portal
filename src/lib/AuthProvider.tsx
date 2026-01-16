@@ -49,6 +49,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return;
         }
 
+        if (session && isExpired) {
+          const { data: refreshedData, error: refreshError } = await supabase.auth.refreshSession();
+
+          if (!isActive) return;
+
+          if (refreshError) {
+            noctare.log('[Auth] Session refresh failed', refreshError);
+          } else if (refreshedData.session) {
+            setSession(refreshedData.session);
+            setDemoAutoLoginEnabled(true);
+            setLoading(false);
+            return;
+          }
+        }
+
         const shouldAutoLogin = getDemoAutoLoginEnabled();
         const demoEmail = import.meta.env.VITE_DEMO_USER_EMAIL;
         const demoPassword = import.meta.env.VITE_DEMO_USER_PASSWORD;
@@ -65,6 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             noctare.log('[Auth] Auto-login failed', error);
           } else {
             setSession(signInData.session);
+            setDemoAutoLoginEnabled(true);
           }
         }
       } catch (error) {
