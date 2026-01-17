@@ -1,6 +1,7 @@
 import { useAtom, useSetAtom } from 'jotai';
 import {
-  applyInboxSearchAtom,
+  addInboxSearchHistoryAtom,
+  commitInboxSearchAtom,
   inboxSearchDraftAtom,
   inboxSearchHistoryAtom,
   inboxSearchQueryAtom,
@@ -14,7 +15,8 @@ export const useInboxSearch = () => {
   const [history] = useAtom(inboxSearchHistoryAtom);
 
   const setDraft = useSetAtom(setInboxSearchDraftAtom);
-  const applySearch = useSetAtom(applyInboxSearchAtom);
+  const commitSearch = useSetAtom(commitInboxSearchAtom);
+  const addHistory = useSetAtom(addInboxSearchHistoryAtom);
   const removeHistory = useSetAtom(removeInboxSearchHistoryAtom);
 
   return {
@@ -22,7 +24,8 @@ export const useInboxSearch = () => {
     query,
     history,
     setDraft,
-    applySearch,
+    commitSearch,
+    addHistory,
     removeHistory,
   };
 };

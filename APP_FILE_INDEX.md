@@ -130,8 +130,8 @@
 │   └── index.ts
 ├── reset_db
 │   └── index.ts
-    ├── reset_db_4214476
-    │   └── index.ts
+├── reset_db_4214476
+│   └── index.ts
 ├── ticket_detail
 │   └── index.ts
 ├── ticket_comment_create
@@ -139,6 +139,8 @@
 ├── ticket_status_update
 │   └── index.ts
 ├── ticket_assignee_update
+│   └── index.ts
+├── tickets_suggest
 │   └── index.ts
 └── tickets_list
     └── index.ts
@@ -151,6 +153,7 @@
 │   ├── ticket-actions.test.ts
 │   ├── ticket-create.test.ts
 │   ├── ticket-detail.test.ts
+│   ├── tickets-suggest.test.ts
 │   └── tickets-list.test.ts
 ├── helpers
 │   └── auth.ts

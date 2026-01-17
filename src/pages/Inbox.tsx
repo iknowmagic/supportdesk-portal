@@ -14,14 +14,15 @@ import { useQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { formatDistanceToNow } from 'date-fns';
 import { Inbox, Plus } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 export default function InboxPage() {
   const navigate = useNavigate();
   const { setOpen: setNewTicketModalOpen } = useNewTicketModal();
-  const { query: searchQuery } = useInboxSearch();
+  const { query: searchQuery, addHistory } = useInboxSearch();
   const [statusFilter, setStatusFilter] = useState('all');
+  const lastHistoryEntry = useRef('');
 
   const trimmedSearchQuery = searchQuery.trim();
   const { data, isLoading, error, refetch } = useQuery<TicketSummary[]>({
@@ -36,6 +37,14 @@ export default function InboxPage() {
       description: error instanceof Error ? error.message : 'Please try again',
     });
   }, [error]);
+
+  useEffect(() => {
+    if (!trimmedSearchQuery || !data || data.length === 0) return;
+    if (lastHistoryEntry.current === trimmedSearchQuery) return;
+
+    addHistory(trimmedSearchQuery);
+    lastHistoryEntry.current = trimmedSearchQuery;
+  }, [addHistory, data, trimmedSearchQuery]);
 
   const tickets = data ?? [];
 

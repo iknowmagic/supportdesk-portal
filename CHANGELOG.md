@@ -41,6 +41,8 @@
 - Added a global error boundary with a reset action to catch unexpected UI failures.
 - Added inbox search history suggestions with submit-to-search behavior.
 - Updated inbox search history tests to allow the history dropdown to close when empty.
+- Swapped inbox search to show history on focus, server-backed suggestions while typing, and history updates only on successful searches.
+- Added a tickets_suggest Edge function with auth coverage tests.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

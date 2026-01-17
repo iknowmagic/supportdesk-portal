@@ -2,10 +2,12 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { config as loadEnv } from 'dotenv';
+import { Provider as JotaiProvider, createStore } from 'jotai';
 import { resolve } from 'path';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setupTestUser } from '../../../tests/helpers/auth';
 import { listTickets } from '@/lib/api/tickets';
+import { inboxSearchDraftAtom, inboxSearchHistoryAtom, inboxSearchQueryAtom } from '@/store/inbox/atoms';
 
 loadEnv({ path: resolve(process.cwd(), '.env') });
 
@@ -28,9 +30,15 @@ const createWrapper = () => {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   });
+  const store = createStore();
+  store.set(inboxSearchDraftAtom, '');
+  store.set(inboxSearchQueryAtom, '');
+  store.set(inboxSearchHistoryAtom, []);
 
   return ({ children }: { children: React.ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <JotaiProvider store={store}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </JotaiProvider>
   );
 };
 
@@ -82,6 +90,8 @@ describe('Inbox search history', () => {
     if (error) {
       throw error;
     }
+
+    window.localStorage.removeItem('inboxhq:search-history');
   });
 
   afterAll(async () => {
@@ -89,7 +99,7 @@ describe('Inbox search history', () => {
     vi.unstubAllEnvs();
   });
 
-  it('applies search only on submit and stores history', async () => {
+  it('applies search only on submit and stores history for successful searches', async () => {
     const allTickets = await listTickets();
     const target = allTickets[0];
 
@@ -122,11 +132,74 @@ describe('Inbox search history', () => {
       expect(screen.queryByTestId(`ticket-card-${nonMatch.id}`)).toBeNull();
     });
 
+    await user.clear(input);
     await user.click(input);
 
     const historyList = await screen.findByTestId('ticket-search-history');
     const historyItem = within(historyList).getByTestId('ticket-search-history-item-0');
     expect(historyItem.textContent).toContain(target.subject);
+  });
+
+  it('shows server-backed suggestions when typing', async () => {
+    const allTickets = await listTickets();
+    const ticket = allTickets[0];
+    if (!ticket) {
+      throw new Error('No tickets available for suggestion tests');
+    }
+
+    const user = userEvent.setup();
+
+    render(<InboxPage />, { wrapper: createWrapper() });
+
+    const input = screen.getByTestId('ticket-search-input');
+    await user.type(input, ticket.subject);
+    await user.click(screen.getByTestId('ticket-search-submit'));
+
+    await user.clear(input);
+    await user.click(input);
+
+    const historyList = await screen.findByTestId('ticket-search-history');
+    const historyItem = within(historyList).getByTestId('ticket-search-history-item-0');
+    expect(historyItem.textContent).toContain(ticket.subject);
+
+    await user.type(input, ticket.subject);
+
+    await waitFor(() => {
+      const historyContainer = screen.queryByTestId('ticket-search-history');
+      expect(historyContainer).toBeNull();
+    });
+
+    const suggestionsList = await screen.findByTestId('ticket-search-suggestions');
+    const suggestionItems = within(suggestionsList).getAllByTestId(/ticket-search-suggestion-/);
+    const hasSuggestion = suggestionItems.some((item) => item.textContent?.includes(ticket.subject));
+    expect(hasSuggestion).toBe(true);
+  });
+
+  it('does not store unsuccessful searches in history', async () => {
+    const allTickets = await listTickets();
+    let unmatchedQuery = 'zzzz';
+    while (allTickets.some((ticket) => ticket.subject.toLowerCase().includes(unmatchedQuery))) {
+      unmatchedQuery += 'z';
+    }
+
+    const user = userEvent.setup();
+
+    render(<InboxPage />, { wrapper: createWrapper() });
+
+    const input = screen.getByTestId('ticket-search-input');
+    await user.type(input, unmatchedQuery);
+    await user.click(screen.getByTestId('ticket-search-submit'));
+
+    await waitFor(() => {
+      const ticketCards = screen.queryAllByTestId(/ticket-card-/);
+      expect(ticketCards.length).toBe(0);
+    });
+
+    await user.clear(input);
+    await user.click(input);
+
+    const historyList = screen.queryByTestId('ticket-search-history');
+    expect(historyList).toBeNull();
   });
 
   it('allows removing previous searches', async () => {
@@ -143,6 +216,7 @@ describe('Inbox search history', () => {
     await user.type(input, ticket.subject);
     await user.click(screen.getByTestId('ticket-search-submit'));
 
+    await user.clear(input);
     await user.click(input);
 
     const historyList = await screen.findByTestId('ticket-search-history');

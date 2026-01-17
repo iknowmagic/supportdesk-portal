@@ -5,9 +5,12 @@ import {
 } from '@/components/ui/command';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { listTicketSuggestions } from '@/lib/api/tickets';
+import { queryKeys } from '@/lib/queryKeys';
 import { useInboxSearch } from '@/store/inbox/hooks';
+import { useQuery } from '@tanstack/react-query';
 import { Search, X } from 'lucide-react';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 const STOP_MOUSE_DOWN: React.MouseEventHandler = (event) => {
   event.preventDefault();
@@ -19,26 +22,26 @@ const STOP_BUTTON_SELECT: React.PointerEventHandler<HTMLButtonElement> = (event)
 };
 
 export function InboxSearch() {
-  const { draft, history, setDraft, applySearch, removeHistory } = useInboxSearch();
+  const { draft, history, setDraft, commitSearch, removeHistory } = useInboxSearch();
   const [isOpen, setIsOpen] = useState(false);
 
   const normalizedDraft = draft.trim();
 
-  const visibleHistory = useMemo(() => {
-    if (normalizedDraft.length === 0) return history;
-
-    return history.filter((item) => item.toLowerCase().includes(normalizedDraft.toLowerCase()));
-  }, [history, normalizedDraft]);
+  const { data: suggestions = [] } = useQuery({
+    queryKey: queryKeys.ticketSuggestions(normalizedDraft),
+    queryFn: () => listTicketSuggestions(normalizedDraft),
+    enabled: isOpen && normalizedDraft.length > 0,
+    retry: false,
+  });
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    applySearch();
+    commitSearch();
     setIsOpen(false);
   };
 
-  const handleSelectHistory = (value: string) => {
-    applySearch(value);
-    setIsOpen(false);
+  const handleSelectValue = (value: string) => {
+    setDraft(value);
   };
 
   const handleRemoveHistory = (value: string, event: React.MouseEvent<HTMLButtonElement>) => {
@@ -76,30 +79,50 @@ export function InboxSearch() {
         </Button>
       </form>
 
-      {isOpen && visibleHistory.length > 0 && (
+      {isOpen && normalizedDraft.length === 0 && history.length > 0 && (
         <div className="absolute left-0 right-0 top-full z-30 mt-2" data-testid="ticket-search-history">
           <Command shouldFilter={false} className="rounded-md border shadow-md">
             <CommandList onMouseDown={STOP_MOUSE_DOWN}>
-              {visibleHistory.map((item, index) => (
+              {history.map((item, index) => (
                 <CommandItem
                   key={`${item}-${index}`}
                   value={item}
-                  onSelect={() => handleSelectHistory(item)}
+                  onSelect={() => handleSelectValue(item)}
                   className="flex items-center justify-between"
                   data-testid={`ticket-search-history-item-${index}`}
                 >
                   <span className="truncate font-medium text-foreground">{item}</span>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon-sm"
-                      onPointerDownCapture={STOP_BUTTON_SELECT}
-                      onClick={(event) => handleRemoveHistory(item, event)}
-                      aria-label={`Remove ${item}`}
-                      data-testid={`ticket-search-history-remove-${index}`}
-                    >
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon-sm"
+                    onPointerDownCapture={STOP_BUTTON_SELECT}
+                    onClick={(event) => handleRemoveHistory(item, event)}
+                    aria-label={`Remove ${item}`}
+                    data-testid={`ticket-search-history-remove-${index}`}
+                  >
                     <X className="size-4" />
                   </Button>
+                </CommandItem>
+              ))}
+            </CommandList>
+          </Command>
+        </div>
+      )}
+
+      {isOpen && normalizedDraft.length > 0 && suggestions.length > 0 && (
+        <div className="absolute left-0 right-0 top-full z-30 mt-2" data-testid="ticket-search-suggestions">
+          <Command shouldFilter={false} className="rounded-md border shadow-md">
+            <CommandList onMouseDown={STOP_MOUSE_DOWN}>
+              {suggestions.map((item, index) => (
+                <CommandItem
+                  key={`${item}-${index}`}
+                  value={item}
+                  onSelect={() => handleSelectValue(item)}
+                  className="flex items-center justify-between"
+                  data-testid={`ticket-search-suggestion-${index}`}
+                >
+                  <span className="truncate font-medium text-foreground">{item}</span>
                 </CommandItem>
               ))}
             </CommandList>

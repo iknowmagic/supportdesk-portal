@@ -62,6 +62,9 @@ export type TicketsListFilters = {
 type TicketsListResponse = {
   tickets: TicketSummary[];
 };
+type TicketSuggestionsResponse = {
+  suggestions: string[];
+};
 
 type TicketDetailResponse = TicketDetail;
 type TicketCreateResponse = {
@@ -131,6 +134,25 @@ export async function listTickets(filters: TicketsListFilters = {}): Promise<Tic
   }
 
   return data.tickets;
+}
+
+export async function listTicketSuggestions(query: string): Promise<string[]> {
+  const normalizedQuery = query.trim();
+  if (!normalizedQuery) {
+    return [];
+  }
+
+  const data = await invokeTicketFunction<TicketSuggestionsResponse>(
+    'tickets_suggest',
+    'You must be logged in to search tickets.',
+    { query: normalizedQuery }
+  );
+
+  if (!data || !Array.isArray(data.suggestions)) {
+    throw new Error('No suggestions returned from server.');
+  }
+
+  return data.suggestions;
 }
 
 export async function getTicketDetail(ticketId: string): Promise<TicketDetail> {

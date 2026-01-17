@@ -2,7 +2,7 @@ import { atom } from 'jotai';
 import { safeLocalStorage } from '@/store/utils/safeLocalStorage';
 
 const STORAGE_KEY = 'inboxhq:search-history';
-const MAX_HISTORY = 8;
+const MAX_HISTORY = 5;
 
 const loadHistory = () => {
   const stored = safeLocalStorage.getItem(STORAGE_KEY);
@@ -30,11 +30,14 @@ const setInboxSearchDraftAtom = atom(null, (_get, set, value: string) => {
   set(inboxSearchDraftAtom, value);
 });
 
-const applyInboxSearchAtom = atom(null, (get, set, value?: string) => {
+const commitInboxSearchAtom = atom(null, (get, set, value?: string) => {
   const nextValue = (value ?? get(inboxSearchDraftAtom)).trim();
   set(inboxSearchQueryAtom, nextValue);
   set(inboxSearchDraftAtom, nextValue);
+});
 
+const addInboxSearchHistoryAtom = atom(null, (get, set, value: string) => {
+  const nextValue = value.trim();
   if (!nextValue) return;
 
   const existing = get(inboxSearchHistoryAtom);
@@ -42,6 +45,10 @@ const applyInboxSearchAtom = atom(null, (get, set, value?: string) => {
     nextValue,
     ...existing.filter((item) => item.toLowerCase() !== nextValue.toLowerCase()),
   ].slice(0, MAX_HISTORY);
+
+  const isSameLength = nextHistory.length === existing.length;
+  const isSameOrder = isSameLength && nextHistory.every((item, index) => item === existing[index]);
+  if (isSameOrder) return;
 
   set(inboxSearchHistoryAtom, nextHistory);
   saveHistory(nextHistory);
@@ -59,6 +66,7 @@ export {
   inboxSearchQueryAtom,
   inboxSearchHistoryAtom,
   setInboxSearchDraftAtom,
-  applyInboxSearchAtom,
+  commitInboxSearchAtom,
+  addInboxSearchHistoryAtom,
   removeInboxSearchHistoryAtom,
 };

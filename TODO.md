@@ -133,7 +133,7 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Test ticket detail actions end-to-end (UI + API)
 
 ## Polish
-- [x] Upgrade search to autocomplete (filter + direct ticket selection)
+- [x] Refine search suggestions (history on focus, backend suggestions while typing, history only on successful search)
 - [ ] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
 
 ## Phase 4: Polish & Demo Features
