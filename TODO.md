@@ -134,7 +134,11 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 
 ## Polish
 - [x] Refine search suggestions (history on focus, backend suggestions while typing, history only on successful search)
-- [ ] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
+- [ ] Improve search UX: click behavior for suggestions/history and full keyboard navigation (arrow/enter) to run searches
+- [ ] Add suggestion affordances: Search icon per suggestion and bold matching text
+- [ ] Support fuzzy suggestions (pg_trgm similarity or levenshtein) and highlight corrected match segments
+- [ ] Ensure search always queries the full dataset (not filtered by previously loaded pages)
+- [x] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
 
 ## Phase 4: Polish & Demo Features
 

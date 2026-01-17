@@ -43,6 +43,8 @@
 - Updated inbox search history tests to allow the history dropdown to close when empty.
 - Swapped inbox search to show history on focus, server-backed suggestions while typing, and history updates only on successful searches.
 - Added a tickets_suggest Edge function with auth coverage tests.
+- Added pagination support to tickets_list and infinite scroll loading in the inbox.
+- Switched inbox pagination to 10 items per page and added total ticket counts to the list response.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

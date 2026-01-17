@@ -1,0 +1,1 @@
+export const DEFAULT_TICKETS_PAGE_SIZE = 10;

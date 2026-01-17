@@ -100,14 +100,14 @@ describe('Inbox search history', () => {
   });
 
   it('applies search only on submit and stores history for successful searches', async () => {
-    const allTickets = await listTickets();
+    const { tickets: allTickets } = await listTickets();
     const target = allTickets[0];
 
     if (!target) {
       throw new Error('No tickets available for search tests');
     }
 
-    const filtered = await listTickets({ query: target.subject });
+    const { tickets: filtered } = await listTickets({ query: target.subject });
     const filteredIds = new Set(filtered.map((ticket) => ticket.id));
     const nonMatch = allTickets.find((ticket) => !filteredIds.has(ticket.id));
 
@@ -141,7 +141,7 @@ describe('Inbox search history', () => {
   });
 
   it('shows server-backed suggestions when typing', async () => {
-    const allTickets = await listTickets();
+    const { tickets: allTickets } = await listTickets();
     const ticket = allTickets[0];
     if (!ticket) {
       throw new Error('No tickets available for suggestion tests');
@@ -176,7 +176,7 @@ describe('Inbox search history', () => {
   });
 
   it('does not store unsuccessful searches in history', async () => {
-    const allTickets = await listTickets();
+    const { tickets: allTickets } = await listTickets();
     let unmatchedQuery = 'zzzz';
     while (allTickets.some((ticket) => ticket.subject.toLowerCase().includes(unmatchedQuery))) {
       unmatchedQuery += 'z';
@@ -203,7 +203,8 @@ describe('Inbox search history', () => {
   });
 
   it('allows removing previous searches', async () => {
-    const [ticket] = await listTickets();
+    const { tickets: ticketsList } = await listTickets();
+    const [ticket] = ticketsList;
     if (!ticket) {
       throw new Error('No tickets available for search tests');
     }

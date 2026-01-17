@@ -4,6 +4,9 @@
  */
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
+const DEFAULT_LIMIT = 10;
+const MAX_LIMIT = 100;
+
 Deno.serve(async (req) => {
   if (req.method !== 'POST') {
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
@@ -44,15 +47,23 @@ Deno.serve(async (req) => {
     });
   }
 
-  let payload: { status?: string; query?: string } = {};
+  let payload: { status?: string; query?: string; offset?: number; limit?: number } = {};
   try {
-    payload = (await req.json()) as { status?: string; query?: string };
+    payload = (await req.json()) as { status?: string; query?: string; offset?: number; limit?: number };
   } catch (_) {
     payload = {};
   }
 
   const status = typeof payload.status === 'string' ? payload.status.trim() : '';
   const query = typeof payload.query === 'string' ? payload.query.trim() : '';
+  const offset =
+    typeof payload.offset === 'number' && Number.isFinite(payload.offset)
+      ? Math.max(0, Math.floor(payload.offset))
+      : 0;
+  const limit =
+    typeof payload.limit === 'number' && Number.isFinite(payload.limit)
+      ? Math.min(MAX_LIMIT, Math.max(1, Math.floor(payload.limit)))
+      : DEFAULT_LIMIT;
   const allowedStatuses = new Set(['open', 'pending', 'closed', 'all', '']);
 
   if (!allowedStatuses.has(status)) {
@@ -64,7 +75,9 @@ Deno.serve(async (req) => {
 
   let ticketsQuery = supabaseClient
     .from('tickets')
-    .select('id, subject, body, status, priority, from_name, assigned_to_name, created_at, updated_at')
+    .select('id, subject, body, status, priority, from_name, assigned_to_name, created_at, updated_at', {
+      count: 'exact',
+    })
     .order('updated_at', { ascending: false });
 
   if (status && status !== 'all') {
@@ -75,7 +88,9 @@ Deno.serve(async (req) => {
     ticketsQuery = ticketsQuery.or(`subject.ilike.%${query}%,body.ilike.%${query}%,from_name.ilike.%${query}%`);
   }
 
-  const { data, error } = await ticketsQuery;
+  ticketsQuery = ticketsQuery.order('id', { ascending: false }).range(offset, offset + limit - 1);
+
+  const { data, error, count } = await ticketsQuery;
 
   if (error) {
     const message = error.message?.toLowerCase() ?? '';
@@ -94,7 +109,7 @@ Deno.serve(async (req) => {
     });
   }
 
-  return new Response(JSON.stringify({ tickets: data ?? [] }), {
+  return new Response(JSON.stringify({ tickets: data ?? [], total: count ?? 0 }), {
     status: 200,
     headers: { 'Content-Type': 'application/json' },
   });

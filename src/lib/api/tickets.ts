@@ -57,11 +57,15 @@ export type TicketAssigneeUpdateInput = {
 export type TicketsListFilters = {
   status?: string;
   query?: string;
+  offset?: number;
+  limit?: number;
 };
 
 type TicketsListResponse = {
   tickets: TicketSummary[];
+  total: number;
 };
+export type TicketsListResult = TicketsListResponse;
 type TicketSuggestionsResponse = {
   suggestions: string[];
 };
@@ -111,8 +115,10 @@ const invokeTicketFunction = async <TResponse>(
   return data ?? null;
 };
 
-export async function listTickets(filters: TicketsListFilters = {}): Promise<TicketSummary[]> {
+export async function listTickets(filters: TicketsListFilters = {}): Promise<TicketsListResult> {
   const accessToken = await getAccessToken('You must be logged in to view tickets.');
+  const limit = typeof filters.limit === 'number' && Number.isFinite(filters.limit) ? filters.limit : undefined;
+  const offset = typeof filters.offset === 'number' && Number.isFinite(filters.offset) ? filters.offset : undefined;
 
   const { data, error } = await supabase.functions.invoke<TicketsListResponse>('tickets_list', {
     method: 'POST',
@@ -122,6 +128,8 @@ export async function listTickets(filters: TicketsListFilters = {}): Promise<Tic
     body: {
       status: filters.status,
       query: filters.query,
+      limit,
+      offset,
     },
   });
 
@@ -133,7 +141,10 @@ export async function listTickets(filters: TicketsListFilters = {}): Promise<Tic
     throw new Error('No tickets returned from server.');
   }
 
-  return data.tickets;
+  return {
+    tickets: data.tickets,
+    total: typeof data.total === 'number' ? data.total : data.tickets.length,
+  };
 }
 
 export async function listTicketSuggestions(query: string): Promise<string[]> {

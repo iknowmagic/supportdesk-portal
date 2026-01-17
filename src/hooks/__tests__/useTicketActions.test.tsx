@@ -114,7 +114,8 @@ describe('useTicketActions', () => {
       throw error;
     }
 
-    const [ticket] = await listTickets();
+    const { tickets: ticketsList } = await listTickets();
+    const [ticket] = ticketsList;
     const actors = await listActors();
     const agent = actors.agents[0];
 
@@ -179,7 +180,8 @@ describe('useTicketActions', () => {
       throw error;
     }
 
-    const [ticket] = await listTickets();
+    const { tickets: ticketsList } = await listTickets();
+    const [ticket] = ticketsList;
 
     if (!ticket) {
       throw new Error('Missing ticket for status mutation test');
@@ -246,7 +248,8 @@ describe('useTicketActions', () => {
       throw error;
     }
 
-    const [ticket] = await listTickets();
+    const { tickets: ticketsList } = await listTickets();
+    const [ticket] = ticketsList;
     const actors = await listActors();
     const agent = actors.agents[0];
 

@@ -42,7 +42,8 @@
 │   ├── UserMenu.tsx
 │   └── VerifyOtp.tsx
 ├── constants
-│   └── durationOptions.ts
+│   ├── durationOptions.ts
+│   └── pagination.ts
 ├── hooks
 │   ├── __tests__
 │   │   ├── useSupabaseLogout.test.tsx

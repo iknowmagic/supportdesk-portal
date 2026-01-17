@@ -107,7 +107,8 @@ describe('Ticket detail actions UI', () => {
       throw error;
     }
 
-    const [ticket] = await listTickets();
+    const { tickets: ticketsList } = await listTickets();
+    const [ticket] = ticketsList;
     if (!ticket) {
       throw new Error('No ticket found for reply tests');
     }
@@ -172,7 +173,8 @@ describe('Ticket detail actions UI', () => {
       throw error;
     }
 
-    const [ticket] = await listTickets();
+    const { tickets: ticketsList } = await listTickets();
+    const [ticket] = ticketsList;
     if (!ticket) {
       throw new Error('No ticket found for status tests');
     }
@@ -249,7 +251,8 @@ describe('Ticket detail actions UI', () => {
       throw error;
     }
 
-    const [ticket] = await listTickets();
+    const { tickets: ticketsList } = await listTickets();
+    const [ticket] = ticketsList;
     const actors = await listActors();
     const agent = actors.agents[0];
 

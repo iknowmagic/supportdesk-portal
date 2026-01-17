@@ -60,6 +60,7 @@ describe('tickets_list Edge Function', () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(Array.isArray(body.tickets)).toBe(true);
+    expect(typeof body.total).toBe('number');
   });
 
   test('filters by status when provided', async () => {
@@ -73,6 +74,7 @@ describe('tickets_list Edge Function', () => {
     expect(response.status).toBe(200);
     const body = await response.json();
     expect(Array.isArray(body.tickets)).toBe(true);
+    expect(typeof body.total).toBe('number');
     expect(body.tickets.length).toBeGreaterThan(0);
     body.tickets.forEach((ticket: { status: string }) => {
       expect(ticket.status).toBe('open');
@@ -109,7 +111,36 @@ describe('tickets_list Edge Function', () => {
     expect(searchResponse.status).toBe(200);
     const searchBody = await searchResponse.json();
     expect(Array.isArray(searchBody.tickets)).toBe(true);
+    expect(typeof searchBody.total).toBe('number');
     const ids = new Set(searchBody.tickets.map((ticket: { id: string }) => ticket.id));
     expect(ids.has(sampleTicket.id)).toBe(true);
+  });
+
+  test('paginates with limit and offset', async () => {
+    const headers = await getTestAuthHeaders();
+    const firstResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ limit: 5, offset: 0 }),
+    });
+
+    expect(firstResponse.status).toBe(200);
+    const firstBody = await firstResponse.json();
+    expect(Array.isArray(firstBody.tickets)).toBe(true);
+    expect(firstBody.tickets.length).toBeGreaterThan(0);
+
+    const secondResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ limit: 5, offset: 5 }),
+    });
+
+    expect(secondResponse.status).toBe(200);
+    const secondBody = await secondResponse.json();
+    expect(Array.isArray(secondBody.tickets)).toBe(true);
+
+    const firstIds = new Set(firstBody.tickets.map((ticket: { id: string }) => ticket.id));
+    const overlap = secondBody.tickets.some((ticket: { id: string }) => firstIds.has(ticket.id));
+    expect(overlap).toBe(false);
   });
 });
