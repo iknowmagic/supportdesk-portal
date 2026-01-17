@@ -66,8 +66,14 @@ type TicketsListResponse = {
   total: number;
 };
 export type TicketsListResult = TicketsListResponse;
+
+export type TicketSuggestion = {
+  subject: string;
+  matchStart: number;
+  matchLength: number;
+};
 type TicketSuggestionsResponse = {
-  suggestions: string[];
+  suggestions: TicketSuggestion[];
 };
 
 type TicketDetailResponse = TicketDetail;
@@ -147,7 +153,7 @@ export async function listTickets(filters: TicketsListFilters = {}): Promise<Tic
   };
 }
 
-export async function listTicketSuggestions(query: string): Promise<string[]> {
+export async function listTicketSuggestions(query: string): Promise<TicketSuggestion[]> {
   const normalizedQuery = query.trim();
   if (!normalizedQuery) {
     return [];

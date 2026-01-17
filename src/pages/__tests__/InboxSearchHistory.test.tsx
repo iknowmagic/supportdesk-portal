@@ -175,6 +175,80 @@ describe('Inbox search history', () => {
     expect(hasSuggestion).toBe(true);
   });
 
+  it('runs search when clicking a suggestion', async () => {
+    const { tickets: allTickets } = await listTickets();
+    const target = allTickets[0];
+
+    if (!target) {
+      throw new Error('No tickets available for suggestion click tests');
+    }
+
+    const { tickets: filtered } = await listTickets({ query: target.subject });
+    const filteredIds = new Set(filtered.map((ticket) => ticket.id));
+    const nonMatch = allTickets.find((ticket) => !filteredIds.has(ticket.id));
+
+    if (!nonMatch) {
+      throw new Error('Unable to find a non-matching ticket for suggestion click tests');
+    }
+
+    const user = userEvent.setup();
+
+    render(<InboxPage />, { wrapper: createWrapper() });
+
+    await screen.findByTestId(`ticket-card-${nonMatch.id}`);
+
+    const input = screen.getByTestId('ticket-search-input');
+    await user.type(input, target.subject);
+
+    const suggestionsList = await screen.findByTestId('ticket-search-suggestions');
+    const suggestionItems = within(suggestionsList).getAllByTestId(/ticket-search-suggestion-/);
+    const targetItem = suggestionItems.find((item) => item.textContent?.includes(target.subject));
+
+    if (!targetItem) {
+      throw new Error('Missing matching suggestion item for click test');
+    }
+
+    await user.click(targetItem);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId(`ticket-card-${nonMatch.id}`)).toBeNull();
+    });
+  });
+
+  it('runs search when selecting a suggestion with the keyboard', async () => {
+    const { tickets: allTickets } = await listTickets();
+    const target = allTickets[0];
+
+    if (!target) {
+      throw new Error('No tickets available for suggestion keyboard tests');
+    }
+
+    const { tickets: filtered } = await listTickets({ query: target.subject });
+    const filteredIds = new Set(filtered.map((ticket) => ticket.id));
+    const nonMatch = allTickets.find((ticket) => !filteredIds.has(ticket.id));
+
+    if (!nonMatch) {
+      throw new Error('Unable to find a non-matching ticket for suggestion keyboard tests');
+    }
+
+    const user = userEvent.setup();
+
+    render(<InboxPage />, { wrapper: createWrapper() });
+
+    await screen.findByTestId(`ticket-card-${nonMatch.id}`);
+
+    const input = screen.getByTestId('ticket-search-input');
+    await user.type(input, target.subject);
+
+    await screen.findByTestId('ticket-search-suggestions');
+
+    await user.keyboard('{ArrowDown}{Enter}');
+
+    await waitFor(() => {
+      expect(screen.queryByTestId(`ticket-card-${nonMatch.id}`)).toBeNull();
+    });
+  });
+
   it('does not store unsuccessful searches in history', async () => {
     const { tickets: allTickets } = await listTickets();
     let unmatchedQuery = 'zzzz';

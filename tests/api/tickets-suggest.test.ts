@@ -78,7 +78,49 @@ describe('tickets_suggest Edge Function', () => {
     const suggestBody = await suggestResponse.json();
 
     expect(Array.isArray(suggestBody.suggestions)).toBe(true);
-    const hasSuggestion = suggestBody.suggestions.some((item: string) => item === subject);
+    const hasSuggestion = suggestBody.suggestions.some(
+      (item: { subject: string; matchStart: number; matchLength: number }) => item.subject === subject
+    );
+    expect(hasSuggestion).toBe(true);
+
+    const firstSuggestion = suggestBody.suggestions[0];
+    expect(typeof firstSuggestion.subject).toBe('string');
+    expect(typeof firstSuggestion.matchStart).toBe('number');
+    expect(typeof firstSuggestion.matchLength).toBe('number');
+  });
+
+  test('returns suggestions for misspelled queries', async () => {
+    const headers = await getTestAuthHeaders();
+    const listResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({}),
+    });
+
+    expect(listResponse.status).toBe(200);
+    const listBody = await listResponse.json();
+    const sampleTicket = listBody.tickets?.[0];
+
+    expect(sampleTicket).toBeTruthy();
+
+    const subject = typeof sampleTicket?.subject === 'string' ? sampleTicket.subject.trim() : '';
+    const misspelled = subject ? `${subject}x` : '';
+
+    expect(misspelled).toBeTruthy();
+
+    const suggestResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_suggest`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query: misspelled }),
+    });
+
+    expect(suggestResponse.status).toBe(200);
+    const suggestBody = await suggestResponse.json();
+
+    expect(Array.isArray(suggestBody.suggestions)).toBe(true);
+    const hasSuggestion = suggestBody.suggestions.some(
+      (item: { subject: string }) => item.subject === subject
+    );
     expect(hasSuggestion).toBe(true);
   });
 });

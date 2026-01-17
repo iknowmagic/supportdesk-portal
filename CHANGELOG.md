@@ -45,6 +45,9 @@
 - Added a tickets_suggest Edge function with auth coverage tests.
 - Added pagination support to tickets_list and infinite scroll loading in the inbox.
 - Switched inbox pagination to 10 items per page and added total ticket counts to the list response.
+- Updated inbox search to run on click and keyboard selection, show search icons in suggestions, bold matched text, and return fuzzy-matched suggestions.
+- Kept search suggestions/history open when editing or pressing Escape by reopening on input change.
+- Escape now blurs the search input and collapses suggestions/history like Amazon.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.
