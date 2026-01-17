@@ -1,15 +1,11 @@
-import {
-  Command,
-  CommandList,
-  CommandItem,
-} from '@/components/ui/command';
-import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Command, CommandItem, CommandList } from '@/components/ui/command';
+import { Input } from '@/components/ui/input';
 import { listTicketSuggestions } from '@/lib/api/tickets';
 import { queryKeys } from '@/lib/queryKeys';
+import { cn } from '@/lib/utils';
 import { useInboxSearch } from '@/store/inbox/hooks';
 import { useQuery } from '@tanstack/react-query';
-import { cn } from '@/lib/utils';
 import { Search, X } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 
@@ -102,30 +98,28 @@ export function InboxSearch() {
       const value = typeof selected === 'string' ? selected : selected.subject;
       handleSelectValue(value);
     }
-
   };
 
   const renderHighlightedText = useMemo(
-    () =>
-      (subject: string, matchStart: number, matchLength: number) => {
-        if (matchStart < 0 || matchLength <= 0) {
-          return subject;
-        }
+    () => (subject: string, matchStart: number, matchLength: number) => {
+      if (matchStart < 0 || matchLength <= 0) {
+        return subject;
+      }
 
-        const safeStart = Math.min(matchStart, subject.length);
-        const safeEnd = Math.min(safeStart + matchLength, subject.length);
-        const before = subject.slice(0, safeStart);
-        const match = subject.slice(safeStart, safeEnd);
-        const after = subject.slice(safeEnd);
+      const safeStart = Math.min(matchStart, subject.length);
+      const safeEnd = Math.min(safeStart + matchLength, subject.length);
+      const before = subject.slice(0, safeStart);
+      const match = subject.slice(safeStart, safeEnd);
+      const after = subject.slice(safeEnd);
 
-        return (
-          <>
-            {before}
-            <strong className="font-semibold text-foreground">{match}</strong>
-            {after}
-          </>
-        );
-      },
+      return (
+        <>
+          {before}
+          <strong className="text-foreground font-extrabold">{match}</strong>
+          {after}
+        </>
+      );
+    },
     []
   );
 
@@ -150,9 +144,7 @@ export function InboxSearch() {
             className="pl-9"
             data-testid="ticket-search-input"
             aria-activedescendant={
-              activeIndex >= 0 && (showHistory || showSuggestions)
-                ? `ticket-search-option-${activeIndex}`
-                : undefined
+              activeIndex >= 0 && (showHistory || showSuggestions) ? `ticket-search-option-${activeIndex}` : undefined
             }
           />
         </div>
@@ -168,7 +160,7 @@ export function InboxSearch() {
       </form>
 
       {showHistory && (
-        <div className="absolute left-0 right-0 top-full z-30 mt-2" data-testid="ticket-search-history">
+        <div className="absolute top-full right-0 left-0 z-30 mt-2" data-testid="ticket-search-history">
           <Command shouldFilter={false} className="rounded-md border shadow-md">
             <CommandList onMouseDown={STOP_MOUSE_DOWN}>
               {history.map((item, index) => (
@@ -184,7 +176,7 @@ export function InboxSearch() {
                   id={`ticket-search-option-${index}`}
                   data-testid={`ticket-search-history-item-${index}`}
                 >
-                  <span className="truncate font-medium text-foreground">{item}</span>
+                  <span className="text-foreground truncate font-medium">{item}</span>
                   <Button
                     type="button"
                     variant="ghost"
@@ -204,7 +196,7 @@ export function InboxSearch() {
       )}
 
       {showSuggestions && (
-        <div className="absolute left-0 right-0 top-full z-30 mt-2" data-testid="ticket-search-suggestions">
+        <div className="absolute top-full right-0 left-0 z-30 mt-2" data-testid="ticket-search-suggestions">
           <Command shouldFilter={false} className="rounded-md border shadow-md">
             <CommandList onMouseDown={STOP_MOUSE_DOWN}>
               {suggestions.map((item, index) => (
@@ -221,7 +213,7 @@ export function InboxSearch() {
                   data-testid={`ticket-search-suggestion-${index}`}
                 >
                   <Search className="text-muted-foreground size-4" />
-                  <span className="truncate font-medium text-foreground">
+                  <span className="text-foreground truncate font-medium">
                     {renderHighlightedText(item.subject, item.matchStart, item.matchLength)}
                   </span>
                 </CommandItem>
