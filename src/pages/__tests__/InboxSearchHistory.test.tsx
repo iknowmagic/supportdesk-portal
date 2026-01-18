@@ -7,7 +7,16 @@ import { resolve } from 'path';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { setupTestUser } from '../../../tests/helpers/auth';
 import { listTickets } from '@/lib/api/tickets';
-import { inboxSearchDraftAtom, inboxSearchHistoryAtom, inboxSearchQueryAtom } from '@/store/inbox/atoms';
+import {
+  inboxAssigneeFilterAtom,
+  inboxPriorityFilterAtom,
+  inboxSearchDraftAtom,
+  inboxSearchFieldAtom,
+  inboxSearchHistoryAtom,
+  inboxSearchPendingHistoryAtom,
+  inboxSearchQueryAtom,
+  inboxStatusFilterAtom,
+} from '@/store/inbox/atoms';
 
 loadEnv({ path: resolve(process.cwd(), '.env') });
 
@@ -33,6 +42,11 @@ const createWrapper = () => {
   const store = createStore();
   store.set(inboxSearchDraftAtom, '');
   store.set(inboxSearchQueryAtom, '');
+  store.set(inboxSearchFieldAtom, 'all');
+  store.set(inboxAssigneeFilterAtom, '');
+  store.set(inboxStatusFilterAtom, 'all');
+  store.set(inboxPriorityFilterAtom, 'all');
+  store.set(inboxSearchPendingHistoryAtom, '');
   store.set(inboxSearchHistoryAtom, []);
 
   return ({ children }: { children: React.ReactNode }) => (
@@ -171,7 +185,9 @@ describe('Inbox search history', () => {
 
     const suggestionsList = await screen.findByTestId('ticket-search-suggestions');
     const suggestionItems = within(suggestionsList).getAllByTestId(/ticket-search-suggestion-/);
-    const hasSuggestion = suggestionItems.some((item) => item.textContent?.includes(ticket.subject));
+    const hasSuggestion = suggestionItems.some(
+      (item) => item.textContent?.includes('Title:') && item.textContent?.includes(ticket.subject)
+    );
     expect(hasSuggestion).toBe(true);
   });
 

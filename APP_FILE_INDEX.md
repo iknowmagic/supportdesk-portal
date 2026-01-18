@@ -20,6 +20,12 @@
 │   ├── Combobox.tsx
 │   ├── ConfirmDialog.tsx
 │   ├── ErrorBoundary.tsx
+│   ├── InputSearch
+│   │   ├── InputSearch.tsx
+│   │   ├── InputSearchHighlight.tsx
+│   │   ├── InputSearchHistoryList.tsx
+│   │   ├── InputSearchSuggestionList.tsx
+│   │   └── index.ts
 │   ├── LayoutHeader.tsx
 │   ├── Login.tsx
 │   ├── ModalShell.tsx
@@ -33,8 +39,6 @@
 │   ├── SidebarNav.tsx
 │   ├── Tabs.tsx
 │   ├── ThemeWatcher.tsx
-│   ├── inbox
-│   │   └── InboxSearch.tsx
 │   ├── ticketCreation
 │   │   └── NewTicketModal.tsx
 │   ├── ui

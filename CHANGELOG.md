@@ -48,6 +48,9 @@
 - Updated inbox search to run on click and keyboard selection, show search icons in suggestions, bold matched text, and return fuzzy-matched suggestions.
 - Kept search suggestions/history open when editing or pressing Escape by reopening on input change.
 - Escape now blurs the search input and collapses suggestions/history like Amazon.
+- Refactored inbox search into an InputSearch component split into history and suggestion subcomponents.
+- Expanded tickets_suggest to return structured suggestions (title/description/assignee/status/priority) with fuzzy matching and snippets.
+- Added assignee/priority/search-field filters to tickets_list and updated API helpers/tests.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

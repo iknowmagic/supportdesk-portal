@@ -1,5 +1,5 @@
 import { AppShell } from '@/components/AppShell';
-import { InboxSearch } from '@/components/inbox/InboxSearch';
+import { InputSearch } from '@/components/InputSearch';
 import { NewTicketModal } from '@/components/ticketCreation/NewTicketModal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +14,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { formatDistanceToNow } from 'date-fns';
 import { Inbox, Plus } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { DEFAULT_TICKETS_PAGE_SIZE } from '@/constants/pagination';
 
@@ -33,8 +33,17 @@ const TicketSkeletonCard = () => (
 export default function InboxPage() {
   const navigate = useNavigate();
   const { setOpen: setNewTicketModalOpen } = useNewTicketModal();
-  const { query: searchQuery, addHistory } = useInboxSearch();
-  const [statusFilter, setStatusFilter] = useState('all');
+  const {
+    query: searchQuery,
+    field: searchField,
+    assigneeFilter,
+    statusFilter,
+    priorityFilter,
+    pendingHistoryEntry,
+    addHistory,
+    clearPendingHistoryEntry,
+    setStatusFilter,
+  } = useInboxSearch();
   const lastHistoryEntry = useRef('');
   const isFetchingNextPageRef = useRef(false);
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
@@ -50,12 +59,22 @@ export default function InboxPage() {
     isFetchingNextPage,
     isFetchNextPageError,
   } = useInfiniteQuery<TicketsListResult>({
-    queryKey: queryKeys.ticketsList({ status: statusFilter, query: trimmedSearchQuery, limit: DEFAULT_TICKETS_PAGE_SIZE }),
+    queryKey: queryKeys.ticketsList({
+      status: statusFilter,
+      priority: priorityFilter,
+      assignee: assigneeFilter,
+      query: trimmedSearchQuery,
+      field: searchField,
+      limit: DEFAULT_TICKETS_PAGE_SIZE,
+    }),
     initialPageParam: 0,
     queryFn: ({ pageParam }) =>
       listTickets({
         status: statusFilter,
+        priority: priorityFilter,
+        assignee: assigneeFilter,
         query: trimmedSearchQuery,
+        field: searchField,
         limit: DEFAULT_TICKETS_PAGE_SIZE,
         offset: typeof pageParam === 'number' ? pageParam : 0,
       }),
@@ -74,14 +93,15 @@ export default function InboxPage() {
   }, [error]);
 
   useEffect(() => {
-    if (!trimmedSearchQuery || !data || data.pages.length === 0) return;
+    if (!pendingHistoryEntry || !data || data.pages.length === 0) return;
     const firstPage = data.pages[0]?.tickets ?? [];
     if (firstPage.length === 0) return;
-    if (lastHistoryEntry.current === trimmedSearchQuery) return;
+    if (lastHistoryEntry.current === pendingHistoryEntry) return;
 
-    addHistory(trimmedSearchQuery);
-    lastHistoryEntry.current = trimmedSearchQuery;
-  }, [addHistory, data, trimmedSearchQuery]);
+    addHistory(pendingHistoryEntry);
+    clearPendingHistoryEntry();
+    lastHistoryEntry.current = pendingHistoryEntry;
+  }, [addHistory, clearPendingHistoryEntry, data, pendingHistoryEntry]);
 
   useEffect(() => {
     isFetchingNextPageRef.current = isFetchingNextPage;
@@ -165,7 +185,7 @@ export default function InboxPage() {
 
         {/* Filters */}
         <div className="flex flex-col gap-4 sm:flex-row">
-          <InboxSearch />
+          <InputSearch />
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger className="w-full sm:w-45">
               <SelectValue placeholder="Filter by status" />

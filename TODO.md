@@ -138,6 +138,8 @@ Note: Conversation replies/comments are in scope for this view (reply form + pos
 - [x] Add suggestion affordances: Search icon per suggestion and bold matching text
 - [x] Support fuzzy suggestions (pg_trgm similarity or levenshtein) and highlight corrected match segments
 - [ ] Ensure search always queries the full dataset (not filtered by previously loaded pages)
+- [x] Refactor inbox search into InputSearch components (history + suggestions split)
+- [x] Add structured search suggestions (title, description, assignee, status, priority) and wire filters to results
 - [x] Add infinite scroll / lazy loading for ticket lists (Inbox and any other lists)
 
 ## Phase 4: Polish & Demo Features

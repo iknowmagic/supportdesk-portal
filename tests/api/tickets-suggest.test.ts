@@ -49,7 +49,7 @@ describe('tickets_suggest Edge Function', () => {
     expect(response.status).toBe(401);
   });
 
-  test('returns subject suggestions for matching query', async () => {
+  test('returns title suggestions for matching query', async () => {
     const headers = await getTestAuthHeaders();
     const listResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
       method: 'POST',
@@ -79,12 +79,14 @@ describe('tickets_suggest Edge Function', () => {
 
     expect(Array.isArray(suggestBody.suggestions)).toBe(true);
     const hasSuggestion = suggestBody.suggestions.some(
-      (item: { subject: string; matchStart: number; matchLength: number }) => item.subject === subject
+      (item: { kind: string; value: string; matchStart: number; matchLength: number }) =>
+        item.kind === 'title' && item.value === subject
     );
     expect(hasSuggestion).toBe(true);
 
     const firstSuggestion = suggestBody.suggestions[0];
-    expect(typeof firstSuggestion.subject).toBe('string');
+    expect(typeof firstSuggestion.kind).toBe('string');
+    expect(typeof firstSuggestion.value).toBe('string');
     expect(typeof firstSuggestion.matchStart).toBe('number');
     expect(typeof firstSuggestion.matchLength).toBe('number');
   });
@@ -119,8 +121,26 @@ describe('tickets_suggest Edge Function', () => {
 
     expect(Array.isArray(suggestBody.suggestions)).toBe(true);
     const hasSuggestion = suggestBody.suggestions.some(
-      (item: { subject: string }) => item.subject === subject
+      (item: { kind: string; value: string }) => item.kind === 'title' && item.value === subject
     );
     expect(hasSuggestion).toBe(true);
+  });
+
+  test('returns status suggestions for matching query', async () => {
+    const headers = await getTestAuthHeaders();
+    const suggestResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_suggest`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query: 'open' }),
+    });
+
+    expect(suggestResponse.status).toBe(200);
+    const suggestBody = await suggestResponse.json();
+
+    expect(Array.isArray(suggestBody.suggestions)).toBe(true);
+    const hasStatusSuggestion = suggestBody.suggestions.some(
+      (item: { kind: string; value: string }) => item.kind === 'status' && item.value.toLowerCase() === 'open'
+    );
+    expect(hasStatusSuggestion).toBe(true);
   });
 });

@@ -81,6 +81,75 @@ describe('tickets_list Edge Function', () => {
     });
   });
 
+  test('filters by priority when provided', async () => {
+    const headers = await getTestAuthHeaders();
+    const listResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({}),
+    });
+
+    expect(listResponse.status).toBe(200);
+    const listBody = await listResponse.json();
+    const sampleTicket = listBody.tickets?.[0];
+
+    expect(sampleTicket).toBeTruthy();
+
+    const priority = typeof sampleTicket?.priority === 'string' ? sampleTicket.priority : '';
+    expect(priority).toBeTruthy();
+
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ priority }),
+    });
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(Array.isArray(body.tickets)).toBe(true);
+    expect(typeof body.total).toBe('number');
+    expect(body.tickets.length).toBeGreaterThan(0);
+    body.tickets.forEach((ticket: { priority: string }) => {
+      expect(ticket.priority).toBe(priority);
+    });
+  });
+
+  test('filters by assignee when provided', async () => {
+    const headers = await getTestAuthHeaders();
+    const listResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({}),
+    });
+
+    expect(listResponse.status).toBe(200);
+    const listBody = await listResponse.json();
+    const sampleTicket = listBody.tickets?.find((ticket: { assigned_to_name?: string | null }) =>
+      ticket.assigned_to_name
+    );
+
+    if (!sampleTicket?.assigned_to_name) {
+      throw new Error('No assigned tickets available for assignee filter tests');
+    }
+
+    const assignee = sampleTicket.assigned_to_name;
+
+    const response = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ assignee }),
+    });
+
+    expect(response.status).toBe(200);
+    const body = await response.json();
+    expect(Array.isArray(body.tickets)).toBe(true);
+    expect(typeof body.total).toBe('number');
+    expect(body.tickets.length).toBeGreaterThan(0);
+    body.tickets.forEach((ticket: { assigned_to_name?: string | null }) => {
+      expect(ticket.assigned_to_name?.toLowerCase()).toContain(assignee.toLowerCase());
+    });
+  });
+
   test('filters by query when provided', async () => {
     const headers = await getTestAuthHeaders();
     const listResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
@@ -106,6 +175,41 @@ describe('tickets_list Edge Function', () => {
       method: 'POST',
       headers,
       body: JSON.stringify({ query: queryValue }),
+    });
+
+    expect(searchResponse.status).toBe(200);
+    const searchBody = await searchResponse.json();
+    expect(Array.isArray(searchBody.tickets)).toBe(true);
+    expect(typeof searchBody.total).toBe('number');
+    const ids = new Set(searchBody.tickets.map((ticket: { id: string }) => ticket.id));
+    expect(ids.has(sampleTicket.id)).toBe(true);
+  });
+
+  test('filters by title field when provided', async () => {
+    const headers = await getTestAuthHeaders();
+    const listResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({}),
+    });
+
+    expect(listResponse.status).toBe(200);
+    const listBody = await listResponse.json();
+    const sampleTicket = listBody.tickets?.[0];
+
+    expect(sampleTicket).toBeTruthy();
+
+    const queryValue =
+      typeof sampleTicket?.subject === 'string' && sampleTicket.subject.trim() !== ''
+        ? sampleTicket.subject.trim().split(' ')[0]
+        : '';
+
+    expect(queryValue).toBeTruthy();
+
+    const searchResponse = await fetch(`${SUPABASE_URL}/functions/v1/tickets_list`, {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({ query: queryValue, field: 'title' }),
     });
 
     expect(searchResponse.status).toBe(200);

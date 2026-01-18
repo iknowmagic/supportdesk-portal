@@ -1,20 +1,27 @@
 /**
  * Ticket suggestions Edge Function
- * Requires authentication - returns subject suggestions for the Inbox search bar.
+ * Requires authentication - returns structured suggestions for the Inbox search bar.
  */
 import { createClient } from 'npm:@supabase/supabase-js@2';
 
-const MAX_SUGGESTIONS = 5;
+const MAX_SUGGESTIONS = 8;
+const MAX_PER_KIND = 2;
 const SOURCE_LIMIT = 300;
 const MIN_SIMILARITY = 0.3;
+const DESCRIPTION_SNIPPET_LENGTH = 80;
+
+type SuggestionKind = 'title' | 'description' | 'assignee' | 'status' | 'priority';
 
 type SuggestionScore = {
-  subject: string;
+  kind: SuggestionKind;
+  value: string;
   updatedAt: string;
   score: number;
   matchStart: number;
   matchLength: number;
 };
+
+const SUGGESTION_ORDER: SuggestionKind[] = ['title', 'description', 'assignee', 'status', 'priority'];
 
 const toLower = (value: string) => value.toLowerCase();
 
@@ -53,11 +60,11 @@ const similarityScore = (left: string, right: string) => {
   return Math.max(0, 1 - distance / maxLength);
 };
 
-const findLongestPrefixMatch = (subject: string, query: string) => {
-  const maxLength = Math.min(subject.length, query.length);
+const findLongestPrefixMatch = (value: string, query: string) => {
+  const maxLength = Math.min(value.length, query.length);
   for (let length = maxLength; length >= 1; length -= 1) {
     const prefix = query.slice(0, length);
-    const index = subject.indexOf(prefix);
+    const index = value.indexOf(prefix);
     if (index >= 0) {
       return { matchStart: index, matchLength: length };
     }
@@ -65,16 +72,22 @@ const findLongestPrefixMatch = (subject: string, query: string) => {
   return { matchStart: -1, matchLength: 0 };
 };
 
-const scoreSuggestion = (subject: string, updatedAt: string, query: string): SuggestionScore | null => {
-  const normalizedSubject = toLower(subject);
+const scoreSuggestion = (
+  value: string,
+  updatedAt: string,
+  query: string,
+  kind: SuggestionKind
+): SuggestionScore | null => {
+  const normalizedValue = toLower(value);
   const normalizedQuery = toLower(query);
 
-  if (!normalizedSubject || !normalizedQuery) return null;
+  if (!normalizedValue || !normalizedQuery) return null;
 
-  const directIndex = normalizedSubject.indexOf(normalizedQuery);
+  const directIndex = normalizedValue.indexOf(normalizedQuery);
   if (directIndex >= 0) {
     return {
-      subject,
+      kind,
+      value,
       updatedAt,
       score: 1,
       matchStart: directIndex,
@@ -82,23 +95,58 @@ const scoreSuggestion = (subject: string, updatedAt: string, query: string): Sug
     };
   }
 
-  const prefixMatch = findLongestPrefixMatch(normalizedSubject, normalizedQuery);
-  const tokens = tokenize(normalizedSubject);
+  const prefixMatch = findLongestPrefixMatch(normalizedValue, normalizedQuery);
+  const tokens = tokenize(normalizedValue);
   const tokenScores = tokens.map((token) => similarityScore(normalizedQuery, token));
-  const subjectScore = similarityScore(normalizedQuery, normalizedSubject);
-  const score = Math.max(subjectScore, ...tokenScores);
+  const valueScore = similarityScore(normalizedQuery, normalizedValue);
+  const score = Math.max(valueScore, ...tokenScores);
 
   if (score < MIN_SIMILARITY && prefixMatch.matchLength === 0) {
     return null;
   }
 
   return {
-    subject,
+    kind,
+    value,
     updatedAt,
     score,
     matchStart: prefixMatch.matchStart,
     matchLength: prefixMatch.matchLength,
   };
+};
+
+const buildDescriptionSnippet = (value: string, matchStart: number, matchLength: number) => {
+  const trimmed = value.trim();
+  if (trimmed.length <= DESCRIPTION_SNIPPET_LENGTH) {
+    return { value: trimmed, matchStart, matchLength };
+  }
+
+  const halfWindow = Math.max(0, Math.floor((DESCRIPTION_SNIPPET_LENGTH - matchLength) / 2));
+  const start = matchStart >= 0 ? Math.max(0, matchStart - halfWindow) : 0;
+  const safeStart = Math.min(start, Math.max(0, trimmed.length - DESCRIPTION_SNIPPET_LENGTH));
+  const snippet = trimmed.slice(safeStart, safeStart + DESCRIPTION_SNIPPET_LENGTH);
+  const adjustedMatchStart = matchStart >= 0 ? matchStart - safeStart : -1;
+
+  return {
+    value: snippet,
+    matchStart: adjustedMatchStart,
+    matchLength,
+  };
+};
+
+const sortAndDedupe = (items: SuggestionScore[]) => {
+  const sorted = [...items].sort((left, right) => {
+    if (right.score !== left.score) return right.score - left.score;
+    return right.updatedAt.localeCompare(left.updatedAt);
+  });
+
+  const seen = new Set<string>();
+  return sorted.filter((item) => {
+    const normalized = item.value.toLowerCase();
+    if (seen.has(normalized)) return false;
+    seen.add(normalized);
+    return true;
+  });
 };
 
 Deno.serve(async (req) => {
@@ -160,7 +208,7 @@ Deno.serve(async (req) => {
 
   const { data, error } = await supabaseClient
     .from('tickets')
-    .select('subject, updated_at')
+    .select('subject, body, assigned_to_name, updated_at')
     .order('updated_at', { ascending: false })
     .limit(SOURCE_LIMIT);
 
@@ -181,33 +229,81 @@ Deno.serve(async (req) => {
     });
   }
 
-  const scored = (data ?? [])
-    .map((row) => {
-      const subject = typeof row?.subject === 'string' ? row.subject.trim() : '';
-      const updatedAt = typeof row?.updated_at === 'string' ? row.updated_at : '';
-      if (!subject || !updatedAt) return null;
-      return scoreSuggestion(subject, updatedAt, normalizedQuery);
-    })
-    .filter((entry): entry is SuggestionScore => Boolean(entry));
+  const scored: SuggestionScore[] = [];
 
-  const seen = new Set<string>();
-  const suggestions = scored
-    .sort((left, right) => {
-      if (right.score !== left.score) return right.score - left.score;
-      return right.updatedAt.localeCompare(left.updatedAt);
-    })
-    .filter((item) => {
-      const normalized = item.subject.toLowerCase();
-      if (seen.has(normalized)) return false;
-      seen.add(normalized);
-      return true;
-    })
-    .slice(0, MAX_SUGGESTIONS)
-    .map(({ subject, matchStart, matchLength }) => ({
-      subject,
-      matchStart,
-      matchLength,
-    }));
+  const pushSuggestion = (kind: SuggestionKind, value: string, updatedAt: string) => {
+    const trimmed = value.trim();
+    if (!trimmed) return;
+    const scoredValue = scoreSuggestion(trimmed, updatedAt, normalizedQuery, kind);
+    if (!scoredValue) return;
+
+    if (kind === 'description') {
+      const snippet = buildDescriptionSnippet(scoredValue.value, scoredValue.matchStart, scoredValue.matchLength);
+      scored.push({
+        ...scoredValue,
+        value: snippet.value,
+        matchStart: snippet.matchStart,
+        matchLength: snippet.matchLength,
+      });
+      return;
+    }
+
+    scored.push(scoredValue);
+  };
+
+  (data ?? []).forEach((row) => {
+    const updatedAt = typeof row?.updated_at === 'string' ? row.updated_at : '';
+    const subject = typeof row?.subject === 'string' ? row.subject : '';
+    const body = typeof row?.body === 'string' ? row.body : '';
+    const assignee = typeof row?.assigned_to_name === 'string' ? row.assigned_to_name : '';
+
+    if (updatedAt && subject) {
+      pushSuggestion('title', subject, updatedAt);
+    }
+
+    if (updatedAt && body) {
+      pushSuggestion('description', body, updatedAt);
+    }
+
+    if (updatedAt && assignee) {
+      pushSuggestion('assignee', assignee, updatedAt);
+    }
+  });
+
+  const nowIso = new Date().toISOString();
+  ['Open', 'Pending', 'Closed'].forEach((value) => pushSuggestion('status', value, nowIso));
+  ['Low', 'Normal', 'High', 'Urgent'].forEach((value) => pushSuggestion('priority', value, nowIso));
+
+  const grouped = new Map<SuggestionKind, SuggestionScore[]>();
+  scored.forEach((item) => {
+    const group = grouped.get(item.kind) ?? [];
+    group.push(item);
+    grouped.set(item.kind, group);
+  });
+
+  const suggestions: Array<Pick<SuggestionScore, 'kind' | 'value' | 'matchStart' | 'matchLength'>> = [];
+
+  for (const kind of SUGGESTION_ORDER) {
+    const items = grouped.get(kind) ?? [];
+    const sorted = sortAndDedupe(items).slice(0, MAX_PER_KIND);
+
+    for (const item of sorted) {
+      suggestions.push({
+        kind: item.kind,
+        value: item.value,
+        matchStart: item.matchStart,
+        matchLength: item.matchLength,
+      });
+
+      if (suggestions.length >= MAX_SUGGESTIONS) {
+        break;
+      }
+    }
+
+    if (suggestions.length >= MAX_SUGGESTIONS) {
+      break;
+    }
+  }
 
   return new Response(JSON.stringify({ suggestions }), {
     status: 200,

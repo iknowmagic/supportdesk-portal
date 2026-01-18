@@ -56,7 +56,10 @@ export type TicketAssigneeUpdateInput = {
 
 export type TicketsListFilters = {
   status?: string;
+  priority?: string;
+  assignee?: string;
   query?: string;
+  field?: string;
   offset?: number;
   limit?: number;
 };
@@ -68,7 +71,8 @@ type TicketsListResponse = {
 export type TicketsListResult = TicketsListResponse;
 
 export type TicketSuggestion = {
-  subject: string;
+  kind: 'title' | 'description' | 'assignee' | 'status' | 'priority';
+  value: string;
   matchStart: number;
   matchLength: number;
 };
@@ -133,7 +137,10 @@ export async function listTickets(filters: TicketsListFilters = {}): Promise<Tic
     },
     body: {
       status: filters.status,
+      priority: filters.priority,
+      assignee: filters.assignee,
       query: filters.query,
+      field: filters.field,
       limit,
       offset,
     },
