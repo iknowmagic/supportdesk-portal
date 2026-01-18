@@ -14,13 +14,13 @@
 │   │   ├── PageTransition.test.tsx
 │   │   ├── ResetCountdown.test.tsx
 │   │   ├── ResetDemoButton.test.tsx
-│   │   ├── SidebarNav.test.tsx
 │   │   └── UserMenu.test.tsx
 │   ├── AppShell.tsx
 │   ├── Combobox.tsx
 │   ├── ConfirmDialog.tsx
 │   ├── ErrorBoundary.tsx
 │   ├── InputSearch
+│   │   ├── InputSearchDropdown.tsx
 │   │   ├── InputSearch.tsx
 │   │   ├── InputSearchHighlight.tsx
 │   │   ├── InputSearchHistoryList.tsx
@@ -36,7 +36,6 @@
 │   ├── RootLayout.tsx
 │   ├── RouterApp.tsx
 │   ├── SectionCard.tsx
-│   ├── SidebarNav.tsx
 │   ├── Tabs.tsx
 │   ├── ThemeWatcher.tsx
 │   ├── ticketCreation
@@ -84,7 +83,6 @@
 │   ├── supabaseErrors.ts
 │   └── utils.ts
 ├── pages
-│   ├── ComponentsShowcase.tsx
 │   ├── Dashboard.tsx
 │   ├── Inbox.tsx
 │   ├── TicketDetail.tsx

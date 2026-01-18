@@ -51,6 +51,8 @@
 - Refactored inbox search into an InputSearch component split into history and suggestion subcomponents.
 - Expanded tickets_suggest to return structured suggestions (title/description/assignee/status/priority) with fuzzy matching and snippets.
 - Added assignee/priority/search-field filters to tickets_list and updated API helpers/tests.
+- Removed the Components showcase route and moved Inbox/Dashboard navigation into the header.
+- Simplified the app shell by removing the sidebar layout.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

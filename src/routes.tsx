@@ -1,6 +1,5 @@
 import { RootLayout } from '@/components/RootLayout';
 import { redirectIfAuthenticated, requireAuth } from '@/lib/authGuard';
-import ComponentsShowcasePage from '@/pages/ComponentsShowcase';
 import DashboardPage from '@/pages/Dashboard';
 import InboxPage from '@/pages/Inbox';
 import TicketDetailPage from '@/pages/TicketDetail';
@@ -55,12 +54,6 @@ const dashboardRoute = createRoute({
   component: DashboardPage,
 });
 
-const componentsRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: '/components',
-  beforeLoad: requireAuth,
-  component: ComponentsShowcasePage,
-});
 
 const loginRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -81,7 +74,6 @@ const routeTree = rootRoute.addChildren([
   inboxRoute,
   ticketDetailRoute,
   dashboardRoute,
-  componentsRoute,
   loginRoute,
   verifyOtpRoute,
 ]);

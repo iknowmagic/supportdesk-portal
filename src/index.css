@@ -614,7 +614,8 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground bg-gray-100;
+    @apply border-border mx-auto max-w-5xl border-x;
   }
   button {
     @apply cursor-pointer;

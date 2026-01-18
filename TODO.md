@@ -73,6 +73,7 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Build navigation component (links to Inbox; Settings may be added later if needed)
 - [x] Add route definitions for main screens (/inbox, /tickets/:id) (Settings may be added later if needed)
 - [x] Implement PageTransition animations for route changes
+- [x] Simplify navigation (remove Components showcase route, remove sidebar, move Inbox/Dashboard links into the header)
 
 ### Inbox/Dashboard
 - [x] Create inbox/dashboard page that lists all tickets
