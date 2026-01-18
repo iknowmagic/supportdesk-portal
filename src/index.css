@@ -614,10 +614,10 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply text-foreground bg-gray-100;
+    @apply text-foreground bg-gray-100 overflow-x-hidden;
   }
   #root {
-    @apply border-border mx-auto max-w-5xl border-x;
+    @apply mx-auto w-full max-w-5xl lg:border-x lg:border-border;
   }
   button {
     @apply cursor-pointer;

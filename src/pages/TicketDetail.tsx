@@ -43,16 +43,16 @@ export default function TicketDetailPage() {
     <AppShell>
       <div className="mx-auto max-w-6xl space-y-6">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-          <div className="flex items-start gap-3">
+          <div className="flex min-w-0 items-start gap-3">
             <Button variant="ghost" size="icon" onClick={() => navigate({ to: '/inbox' })}>
               <ArrowLeft className="size-4" />
             </Button>
-            <div className="space-y-1">
+            <div className="min-w-0 space-y-1">
               <p className="text-muted-foreground text-xs uppercase tracking-wide">Ticket</p>
               {isLoading ? (
                 <Skeleton className="h-7 w-64" />
               ) : (
-                <h1 className="text-2xl font-semibold">{ticket?.subject ?? 'Ticket details'}</h1>
+                <h1 className="break-words text-2xl font-semibold">{ticket?.subject ?? 'Ticket details'}</h1>
               )}
               <div className="text-muted-foreground text-sm">
                 {isLoading ? (
@@ -122,7 +122,7 @@ export default function TicketDetailPage() {
 
               <Card>
                 <CardHeader>
-                  <div className="flex items-center justify-between">
+                  <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <CardTitle>Conversation</CardTitle>
                       <CardDescription>All messages on this ticket.</CardDescription>

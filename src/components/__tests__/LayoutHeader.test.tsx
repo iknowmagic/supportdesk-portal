@@ -102,10 +102,16 @@ describe('LayoutHeader', () => {
     );
 
     const inboxNav = await screen.findByTestId('header-nav-inbox');
+    const header = inboxNav.closest('header');
     const dashboardNav = screen.getByTestId('header-nav-dashboard');
+    const mobileMenu = screen.getByTestId('header-nav-menu');
 
+    expect(header?.className).toContain('fixed');
+    expect(header?.className).toContain('max-w-5xl');
+    expect(mobileMenu.className).toContain('md:hidden');
     expect(inboxNav.getAttribute('aria-current')).toBe('page');
     expect(dashboardNav.getAttribute('aria-current')).toBe(null);
+    expect(inboxNav.className).toContain('after:bg-primary');
 
     const user = userEvent.setup();
     await user.click(dashboardNav);

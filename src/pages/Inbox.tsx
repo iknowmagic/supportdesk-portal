@@ -170,8 +170,8 @@ export default function InboxPage() {
       <div className="mx-auto max-w-6xl space-y-6">
         <NewTicketModal />
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <div className="min-w-0">
             <h2 className="text-foreground dark:text-foreground text-3xl font-bold">Inbox</h2>
             <p className="text-muted-foreground dark:text-muted-foreground">
               Showing {tickets.length} out of {totalTickets} {totalTickets === 1 ? 'ticket' : 'tickets'}
@@ -248,15 +248,17 @@ export default function InboxPage() {
                   onClick={() => navigate({ to: `/tickets/${ticket.id}` })}
                 >
                   <CardHeader>
-                    <div className="flex items-start justify-between gap-4">
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div className="min-w-0 flex-1">
-                        <CardTitle className="text-foreground dark:text-foreground truncate">{ticket.subject}</CardTitle>
+                        <CardTitle className="text-foreground dark:text-foreground break-words sm:truncate">
+                          {ticket.subject}
+                        </CardTitle>
                         <CardDescription className="mt-1">
                           From {ticket.from_name} •{' '}
                           {formatDistanceToNow(new Date(ticket.updated_at), { addSuffix: true })}
                         </CardDescription>
                       </div>
-                      <div className="flex shrink-0 gap-2">
+                      <div className="flex flex-wrap gap-2 sm:shrink-0 sm:justify-end">
                         <Badge variant={getStatusColor(ticket.status)}>{ticket.status}</Badge>
                         <Badge variant={getPriorityColor(ticket.priority)}>{ticket.priority}</Badge>
                       </div>

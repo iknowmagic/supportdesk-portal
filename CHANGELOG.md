@@ -53,6 +53,10 @@
 - Added assignee/priority/search-field filters to tickets_list and updated API helpers/tests.
 - Removed the Components showcase route and moved Inbox/Dashboard navigation into the header.
 - Simplified the app shell by removing the sidebar layout.
+- Made the header navigation sticky and added active-link underlines for Inbox/Dashboard.
+- Constrained the header content to the same max width as the main content.
+- Centered the fixed header container at max width to align with the app frame.
+- Added responsive header navigation with a mobile hamburger menu and overflow-safe layouts for inbox/dashboard/ticket detail.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.
