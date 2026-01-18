@@ -615,6 +615,8 @@
   }
   body {
     @apply text-foreground bg-gray-100;
+  }
+  #root {
     @apply border-border mx-auto max-w-5xl border-x;
   }
   button {
