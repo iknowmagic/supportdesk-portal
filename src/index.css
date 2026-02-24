@@ -51,11 +51,11 @@
   --light-sky-700: color-mix(in oklch, var(--light-silver-chalice) 50%, var(--light-mine-shaft) 50%);
 
   /* Chart Colors (Light) */
-  --light-chart-1: var(--light-silver-chalice);
-  --light-chart-2: var(--light-alto);
-  --light-chart-3: color-mix(in oklch, var(--light-mine-shaft) 40%, var(--light-silver-chalice) 60%);
-  --light-chart-4: color-mix(in oklch, var(--light-wild-sand) 60%, var(--light-silver-chalice) 40%);
-  --light-chart-5: color-mix(in oklch, var(--light-mine-shaft) 60%, var(--light-alto) 40%);
+  --light-chart-1: oklch(0.62 0.16 255);
+  --light-chart-2: oklch(0.72 0.14 160);
+  --light-chart-3: oklch(0.78 0.16 95);
+  --light-chart-4: oklch(0.67 0.18 30);
+  --light-chart-5: oklch(0.62 0.12 310);
 }
 
 /* ============================================================================
@@ -97,11 +97,11 @@
   --dark-purple-500: color-mix(in oklch, var(--dark-oslo-gray) 60%, var(--dark-pickled-bluewood-mid) 40%);
 
   /* Chart Colors (Dark) */
-  --dark-chart-1: var(--dark-buttercup);
-  --dark-chart-2: var(--dark-oslo-gray);
-  --dark-chart-3: var(--dark-cinnabar);
-  --dark-chart-4: var(--dark-pickled-bluewood-mid);
-  --dark-chart-5: var(--dark-pickled-bluewood);
+  --dark-chart-1: oklch(0.78 0.16 255);
+  --dark-chart-2: oklch(0.76 0.13 160);
+  --dark-chart-3: oklch(0.82 0.16 95);
+  --dark-chart-4: oklch(0.76 0.18 30);
+  --dark-chart-5: oklch(0.72 0.13 310);
 }
 
 /* ============================================================================
@@ -236,11 +236,11 @@
   --tone-dark-categories-border: oklch(0.8 0.045 250);
   --tone-dark-categories-text: var(--tone-dark-text-strong);
 
-  --tone-dark-chart-1: oklch(0.78 0.14 95);
-  --tone-dark-chart-2: oklch(0.62 0.07 180);
-  --tone-dark-chart-3: oklch(0.52 0.06 260);
-  --tone-dark-chart-4: oklch(0.7 0.12 20);
-  --tone-dark-chart-5: oklch(0.45 0.05 310);
+  --tone-dark-chart-1: var(--dark-chart-1);
+  --tone-dark-chart-2: var(--dark-chart-2);
+  --tone-dark-chart-3: var(--dark-chart-3);
+  --tone-dark-chart-4: var(--dark-chart-4);
+  --tone-dark-chart-5: var(--dark-chart-5);
 
   --tone-dark-destructive: oklch(0.6 0.14 30);
 }

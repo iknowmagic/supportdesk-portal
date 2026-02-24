@@ -57,6 +57,9 @@
 - Constrained the header content to the same max width as the main content.
 - Centered the fixed header container at max width to align with the app frame.
 - Added responsive header navigation with a mobile hamburger menu and overflow-safe layouts for inbox/dashboard/ticket detail.
+- Added dashboard_summary Edge function with aggregated ticket metrics and replaced the dashboard with Recharts-based insights.
+- Averaged open ticket age over the last 30 days and now display days in age labels when needed.
+- Applied a dedicated dashboard chart palette and wired charts to use chart color tokens.
 
 ## 2026-01-06
 - Added GENERAL_GUIDELINES.md as the reusable playbook for setup, workflow, testing, and theming.

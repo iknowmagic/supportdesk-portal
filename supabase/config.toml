@@ -411,3 +411,8 @@ entrypoint = "./functions/ticket_status_update/index.ts"
 enabled = true
 verify_jwt = true
 entrypoint = "./functions/ticket_assignee_update/index.ts"
+
+[functions.dashboard_summary]
+enabled = true
+verify_jwt = true
+entrypoint = "./functions/dashboard_summary/index.ts"

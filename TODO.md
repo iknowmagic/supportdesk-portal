@@ -85,6 +85,12 @@ IMPORTANT: Refer APP.md for background information regarding this app. Read it a
 - [x] Implement empty state for no tickets
 - [x] Add "New Ticket" button (button only)
 - [x] Route ticket list through authenticated Edge function (no direct REST calls)
+- [x] Build dashboard summary Edge function (auth required) for ticket metrics + chart series
+- [x] Register dashboard summary function in `supabase/config.toml`
+- [x] Add API tests for dashboard summary (auth required, returns expected shapes)
+- [x] Add API helper + TanStack Query for dashboard summary
+- [x] Replace dashboard demo widgets with charts (status counts, priority mix, volume over time, assignee workload)
+- [x] Apply a dedicated color palette to dashboard charts (distinct series colors)
 
 ## Phase 3: Ticket Management
 

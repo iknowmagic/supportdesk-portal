@@ -67,6 +67,7 @@
 │   ├── api
 │   │   ├── actors.ts
 │   │   ├── auth.ts
+│   │   ├── dashboard.ts
 │   │   ├── resetDemo.ts
 │   │   └── tickets.ts
 │   ├── AuthProvider.tsx
@@ -89,6 +90,7 @@
 │   ├── __tests__
 │   │   ├── InboxErrorState.test.tsx
 │   │   ├── InboxSearchHistory.test.tsx
+│   │   ├── DashboardCharts.test.tsx
 │   │   └── TicketDetailErrorState.test.tsx
 │   └── ticketDetail
 │       ├── TicketActionsPanel.tsx
@@ -143,6 +145,8 @@
 │   └── index.ts
 ├── ticket_assignee_update
 │   └── index.ts
+├── dashboard_summary
+│   └── index.ts
 ├── tickets_suggest
 │   └── index.ts
 └── tickets_list
@@ -152,6 +156,7 @@
 │   ├── actors-list.test.ts
 │   ├── authz-rest.test.ts
 │   ├── auth.test.ts
+│   ├── dashboard-summary.test.ts
 │   ├── reset-db.test.ts
 │   ├── ticket-actions.test.ts
 │   ├── ticket-create.test.ts

@@ -22,4 +22,5 @@ export const queryKeys = {
   ticketSuggestions: (query?: string) => ['tickets', 'suggestions', query ?? ''] as const,
   actorsList: ['actors', 'list'] as const,
   ticketDetail: (ticketId: string) => ['tickets', 'detail', ticketId] as const,
+  dashboardSummary: ['dashboard', 'summary'] as const,
 };

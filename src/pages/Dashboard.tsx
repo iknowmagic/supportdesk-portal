@@ -3,124 +3,184 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { counterAtom, darkPrefersAtom } from '@/store/demo/atoms';
-import { useAtom } from 'jotai';
-import { useTheme } from 'next-themes';
-import { useMemo } from 'react';
+import { getDashboardSummary } from '@/lib/api/dashboard';
+import { queryKeys } from '@/lib/queryKeys';
+import { useQuery } from '@tanstack/react-query';
+import {
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+} from 'recharts';
+import { type ReactNode, useEffect } from 'react';
 import { toast } from 'sonner';
 
+const CHART_COLORS = {
+  volume: 'var(--chart-1)',
+  workload: 'var(--chart-5)',
+};
+
+const PRIORITY_COLORS: Record<string, string> = {
+  low: 'var(--chart-2)',
+  normal: 'var(--chart-1)',
+  high: 'var(--chart-3)',
+  urgent: 'var(--chart-4)',
+};
+
+const StatusCard = ({ label, value, isLoading }: { label: string; value: string | number; isLoading: boolean }) => (
+  <Card>
+    <CardHeader className="pb-2">
+      <CardDescription>{label}</CardDescription>
+      {isLoading ? <Skeleton className="h-7 w-20" /> : <CardTitle>{value}</CardTitle>}
+    </CardHeader>
+  </Card>
+);
+
+const ChartCard = ({
+  title,
+  description,
+  isLoading,
+  children,
+  testId,
+}: {
+  title: string;
+  description: string;
+  isLoading: boolean;
+  children: ReactNode;
+  testId?: string;
+}) => (
+  <Card data-testid={testId}>
+    <CardHeader>
+      <CardTitle>{title}</CardTitle>
+      <CardDescription>{description}</CardDescription>
+    </CardHeader>
+    <CardContent className="h-72">{isLoading ? <Skeleton className="h-full w-full" /> : children}</CardContent>
+  </Card>
+);
+
 export default function DashboardPage() {
-  const { theme, setTheme, systemTheme } = useTheme();
-  const [count, setCount] = useAtom(counterAtom);
-  const [, setDarkPrefers] = useAtom(darkPrefersAtom);
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: queryKeys.dashboardSummary,
+    queryFn: getDashboardSummary,
+    retry: false,
+  });
 
-  const activeTheme = useMemo(() => (theme === 'system' ? systemTheme : theme), [theme, systemTheme]);
+  useEffect(() => {
+    if (!error) return;
+    toast.error('Failed to load dashboard', {
+      description: error instanceof Error ? error.message : 'Please try again.',
+    });
+  }, [error]);
 
-  const toggleTheme = () => {
-    const next = activeTheme === 'dark' ? 'light' : 'dark';
-    setTheme(next || 'light');
-    setDarkPrefers(next === 'dark');
-    toast.success(`Theme set to ${next}`);
-  };
+  const totals = data?.totals;
+  const avgOpenAge = data?.avgOpenAge;
+  const dailyVolume = data?.dailyVolume ?? [];
+  const priorityBreakdown = data?.priorityBreakdown ?? [];
+  const assigneeWorkload = data?.assigneeWorkload ?? [];
 
   return (
     <AppShell>
-      <div className="space-y-8">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="min-w-0">
-            <p className="text-muted-foreground text-sm">Starter template</p>
+      <div className="mx-auto max-w-6xl space-y-6">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="space-y-1">
+            <p className="text-muted-foreground text-sm">Dashboard overview</p>
             <h1 className="text-2xl font-semibold">Dashboard</h1>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <Badge variant="secondary">Theme: {activeTheme ?? 'system'}</Badge>
-            <Button onClick={toggleTheme} variant="outline">
-              Toggle Theme
-            </Button>
-            <Button onClick={() => toast.success('Demo toast fired')}>Show Toast</Button>
-          </div>
+          <Badge variant="secondary">Last 30 days</Badge>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <Card>
-            <CardHeader>
-              <CardTitle>Jotai Counter</CardTitle>
-              <CardDescription>Minimal atom state</CardDescription>
-            </CardHeader>
-            <CardContent className="flex items-center gap-3">
-              <Button size="icon" variant="outline" onClick={() => setCount((c) => c - 1)}>
-                -
-              </Button>
-              <div className="text-2xl font-semibold" aria-live="polite">
-                {count}
+        {error ? (
+          <Card data-testid="dashboard-error-state">
+            <CardContent className="flex flex-col items-center justify-center gap-3 py-12 text-center">
+              <div className="space-y-1">
+                <h3 className="text-foreground text-lg font-semibold">Unable to load dashboard</h3>
+                <p className="text-muted-foreground text-sm">Please try again in a moment.</p>
               </div>
-              <Button size="icon" variant="outline" onClick={() => setCount((c) => c + 1)}>
-                +
+              <Button variant="secondary" onClick={() => refetch()} data-testid="dashboard-error-retry">
+                Try again
               </Button>
             </CardContent>
           </Card>
+        ) : (
+          <>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+              <StatusCard label="Total tickets" value={totals?.total ?? 0} isLoading={isLoading} />
+              <StatusCard label="Open" value={totals?.open ?? 0} isLoading={isLoading} />
+              <StatusCard label="Pending" value={totals?.pending ?? 0} isLoading={isLoading} />
+              <StatusCard label="Closed" value={totals?.closed ?? 0} isLoading={isLoading} />
+              <StatusCard label="Avg open age" value={avgOpenAge?.label ?? '0min'} isLoading={isLoading} />
+            </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
-              <CardDescription>Showcase buttons</CardDescription>
-            </CardHeader>
-            <CardContent className="flex flex-wrap gap-3">
-              <Button>Primary</Button>
-              <Button variant="secondary">Secondary</Button>
-              <Button variant="outline">Outline</Button>
-              <Button variant="ghost">Ghost</Button>
-              <Button variant="destructive">Destructive</Button>
-            </CardContent>
-          </Card>
+            <div className="grid gap-6 lg:grid-cols-[1.6fr_1fr]">
+              <ChartCard
+                title="Ticket volume"
+                description="Daily tickets created over the last 30 days."
+                isLoading={isLoading}
+                testId="dashboard-volume-chart"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <AreaChart data={dailyVolume} margin={{ left: 8, right: 8, top: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="label" tick={{ fontSize: 12 }} interval={6} minTickGap={16} />
+                    <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
+                    <Tooltip />
+                    <Area
+                      type="monotone"
+                      dataKey="count"
+                      stroke={CHART_COLORS.volume}
+                      fill={CHART_COLORS.volume}
+                      fillOpacity={0.18}
+                    />
+                  </AreaChart>
+                </ResponsiveContainer>
+              </ChartCard>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Skeleton Loading</CardTitle>
-              <CardDescription>Useful while fetching</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Skeleton className="h-4 w-3/4" />
-              <Skeleton className="h-4 w-2/3" />
-              <Skeleton className="h-4 w-1/2" />
-            </CardContent>
-          </Card>
-        </div>
+              <ChartCard
+                title="Priority mix"
+                description="How tickets stack by priority."
+                isLoading={isLoading}
+                testId="dashboard-priority-chart"
+              >
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={priorityBreakdown} margin={{ left: 8, right: 8, top: 8, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <XAxis dataKey="priority" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} allowDecimals={false} />
+                    <Tooltip />
+                    <Bar dataKey="count" radius={[6, 6, 0, 0]} isAnimationActive={false}>
+                      {priorityBreakdown.map((entry) => (
+                        <Cell key={entry.priority} fill={PRIORITY_COLORS[entry.priority] || CHART_COLORS.volume} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </ChartCard>
+            </div>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Tabbed Content</CardTitle>
-            <CardDescription>Tabs from shadcn/ui</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Tabs defaultValue="overview">
-              <TabsList>
-                <TabsTrigger value="overview">Overview</TabsTrigger>
-                <TabsTrigger value="details">Details</TabsTrigger>
-                <TabsTrigger value="activity">Activity</TabsTrigger>
-              </TabsList>
-              <TabsContent value="overview" className="space-y-2 pt-4">
-                <p className="text-muted-foreground text-sm">Use this tab to summarize key info.</p>
-                <div className="grid gap-2 sm:grid-cols-3">
-                  <Badge variant="secondary">Light/Dark ready</Badge>
-                  <Badge variant="outline">Jotai state</Badge>
-                  <Badge>shadcn/ui</Badge>
-                </div>
-              </TabsContent>
-              <TabsContent value="details" className="pt-4">
-                <p className="text-muted-foreground text-sm">Place richer content or forms here.</p>
-              </TabsContent>
-              <TabsContent value="activity" className="space-y-2 pt-4">
-                <p className="text-muted-foreground text-sm">Recent actions:</p>
-                <ul className="text-muted-foreground list-disc space-y-1 pl-5 text-sm">
-                  <li>Theme toggled</li>
-                  <li>Toast fired</li>
-                  <li>Counter updated</li>
-                </ul>
-              </TabsContent>
-            </Tabs>
-          </CardContent>
-        </Card>
+            <ChartCard
+              title="Assignee workload"
+              description="Open and pending tickets by assignee."
+              isLoading={isLoading}
+              testId="dashboard-assignee-chart"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={assigneeWorkload} layout="vertical" margin={{ left: 8, right: 16, top: 8, bottom: 0 }}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis type="number" tick={{ fontSize: 12 }} allowDecimals={false} />
+                  <YAxis dataKey="assignee" type="category" tick={{ fontSize: 12 }} width={120} />
+                  <Tooltip />
+                  <Bar dataKey="count" fill={CHART_COLORS.workload} radius={[0, 6, 6, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartCard>
+          </>
+        )}
       </div>
     </AppShell>
   );
