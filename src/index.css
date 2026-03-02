@@ -251,6 +251,9 @@
 /** Semantic Mappings Start Here **/
 /** Do not rename variables on the left unless you are certain no components depend on them. **/
 @theme inline {
+  --font-sans:
+    'Inter Variable', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);

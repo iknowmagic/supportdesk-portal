@@ -1,3 +1,4 @@
+import '@fontsource-variable/inter/index.css';
 import { RouterApp } from '@/components/RouterApp';
 import { Toaster } from '@/components/ui/sonner';
 import { Provider as QueryProvider } from '@/integrations/tanstack-query/root-provider';
